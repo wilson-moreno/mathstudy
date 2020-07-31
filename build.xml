@@ -31,8 +31,8 @@
         </java>
     </target>
 
-    <target name="matrixCalulator.run">
-        <java classname="AugmentedMatrixCaculator">
+    <target name="matrixCalculator.run">
+        <java classname="AugmentedMatrixCalculator">
           <classpath>
               <pathelement location="build/jar/MatrixStudy.jar"/>
               <pathelement path="build/classes"/>
