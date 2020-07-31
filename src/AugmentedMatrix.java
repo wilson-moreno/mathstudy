@@ -51,7 +51,7 @@ public class AugmentedMatrix{
       }
 
       public void divideRowBy( int row, double value ){
-            multiplyBy( row, ( 1.0 / value ) );
+            multiplyRowBy( row, ( 1.0 / value ) );
       }
 
       public void multiplyRowBy( int row, double value ){
@@ -75,7 +75,7 @@ public class AugmentedMatrix{
         String matrix = new String();
 
         for( int i = 0; i < rowSize; i++){
-          matrix += " [";
+          matrix += String.format( "%2d: [", i);
           for( int j = 0; j < columnSize; j++ ){
             matrix += String.format("%5.2f ", coefficientMatrix[ i ][ j ] );
           }
