@@ -1,6 +1,7 @@
 
 import java.util.Scanner;
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -31,11 +32,44 @@ public class AugmentedMatrixCalculator{
 
       private static void executeCommand( String command, Map< String, Object > arguments ){
           switch( command ){
+                case "add"          : addMultipleTo( arguments ); break;
                 case "create"       : createMatrix( arguments ); break;
                 case "coefficient"  : setCoefficient( arguments ); break;
                 case "constant"     : setConstant( arguments ); break;
+                case "divide"       : divideBy( arguments ); break;
+                case "interchange"  : interchangeRows( arguments ); break;
+                case "multiply"     : multiplyBy( arguments ); break;
                 case "quit"         : terminate = true; break;
           }
+      }
+
+      private static void divideBy( Map< String, Object > arguments ){
+          Integer row = (Integer) arguments.get( "row" );
+          Double scalarValue = (Double) arguments.get( "scalar value" );
+          matrix.divideRowBy( row.intValue(), scalarValue.doubleValue() );
+          System.out.println( "\n" + matrix.toString() );
+      }
+
+      private static void multiplyBy( Map< String, Object > arguments ){
+          Integer row = (Integer) arguments.get( "row" );
+          Double scalarValue = (Double) arguments.get( "scalar value" );
+          matrix.multiplyRowBy( row.intValue(), scalarValue.doubleValue() );
+          System.out.println( "\n" + matrix.toString() );
+      }
+
+      private static void interchangeRows( Map< String, Object > arguments ){
+          Integer firstRow = (Integer) arguments.get( "first row" );
+          Integer secondRow = (Integer) arguments.get( "second row" );
+          matrix.interchangeRows( firstRow.intValue(), secondRow.intValue() );
+          System.out.println( "\n" + matrix.toString() );
+      }
+
+      private static void addMultipleTo( Map< String, Object > arguments ){
+          Integer firstRow = (Integer) arguments.get( "first row" );
+          Integer secondRow = (Integer) arguments.get( "second row" );
+          Double scalarValue = (Double) arguments.get( "scalar value" );
+          matrix.addMultipleTo( firstRow.intValue(), secondRow.intValue(), scalarValue.doubleValue() );
+          System.out.println( "\n" + matrix.toString() );
       }
 
       private static void setConstant( Map< String, Object > arguments ){
@@ -89,6 +123,7 @@ class CommandParser{
               switch( scanner.next() ){
                   case "add"          : command = "add"; addCommand( scanner );  break;
                   case "create"       : command = "create"; createMatrixCommand( scanner ); break;
+                  case "divide"       : command = "divide"; divideCommand( scanner ); break;
                   case "help"         : command = "help"; helpCommand( scanner ); break;
                   case "interchange"  : command = "interchange"; interchangeCommand( scanner ); break;
                   case "multiply"     : command = "multiply"; multiplyCommand( scanner ); break;
@@ -98,8 +133,13 @@ class CommandParser{
                                           case "constant"     : command = "constant"; constantCommand( scanner ); break;
                                         } break;
                   default             : command = null;
+                                        isValid = false;
+                                        System.out.println( "Not a valid command" );
               }
-            } catch ( InputMismatchException e){
+            } catch ( InputMismatchException ime){
+              System.out.println("Invalid command input");
+              isValid = false;
+            } catch ( NoSuchElementException nse ){
               System.out.println("Invalid command input");
               isValid = false;
             }
@@ -112,7 +152,7 @@ class CommandParser{
       public String getCommand(){ return command; }
       public Map< String, Object > getArguments(){ return arguments; }
 
-      private void constantCommand( Scanner scanner ) throws InputMismatchException {
+      private void constantCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
         arguments.clear();
         int row = scanner.nextInt();
         double scalarValue = scanner.nextDouble();
@@ -122,7 +162,7 @@ class CommandParser{
         arguments.put( "scalar value", scalarValue );
       }
 
-      private void coefficientCommand( Scanner scanner ) throws InputMismatchException {
+      private void coefficientCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
         arguments.clear();
         int row = scanner.nextInt();
         int column = scanner.nextInt();
@@ -135,23 +175,36 @@ class CommandParser{
       }
 
 
-      private void quitCommand( Scanner scanner ) throws InputMismatchException {
+      private void quitCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
         arguments.clear();
         if( scanner.hasNext() ) throw new InputMismatchException();
         isValid = true;
       }
 
-      private void multiplyCommand( Scanner scanner ) throws InputMismatchException {
+      private void divideCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
         arguments.clear();
         int row = scanner.nextInt();
         String by = scanner.next();
         double scalarValue = scanner.nextDouble();
         if( !by.equals("by") || scanner.hasNext() ) throw new InputMismatchException();
         isValid = true;
+        arguments.put( "row", row );
         arguments.put( "scalar value", scalarValue );
       }
 
-      private void interchangeCommand( Scanner scanner ) throws InputMismatchException {
+
+      private void multiplyCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
+        arguments.clear();
+        int row = scanner.nextInt();
+        String by = scanner.next();
+        double scalarValue = scanner.nextDouble();
+        if( !by.equals("by") || scanner.hasNext() ) throw new InputMismatchException();
+        isValid = true;
+        arguments.put( "row", row );
+        arguments.put( "scalar value", scalarValue );
+      }
+
+      private void interchangeCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
         arguments.clear();
         int firstRow = scanner.nextInt();
         int secondRow = scanner.nextInt();
@@ -161,13 +214,13 @@ class CommandParser{
         arguments.put( "second row", secondRow );
       }
 
-      private void helpCommand( Scanner scanner ) throws InputMismatchException {
+      private void helpCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
         arguments.clear();
         if( scanner.hasNext() ) throw new InputMismatchException();
         isValid = true;
       }
 
-      private void createMatrixCommand( Scanner scanner ) throws InputMismatchException {
+      private void createMatrixCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
         arguments.clear();
         String matrix = scanner.next();
         int rowSize = scanner.nextInt();
@@ -178,7 +231,7 @@ class CommandParser{
         arguments.put( "column size", columnSize );
       }
 
-      private void addCommand( Scanner scanner ) throws InputMismatchException{
+      private void addCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException{
           arguments.clear();
           int firstRow = scanner.nextInt();
           String times = scanner.next();

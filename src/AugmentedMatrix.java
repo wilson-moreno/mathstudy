@@ -50,6 +50,10 @@ public class AugmentedMatrix{
           constantMatrix[ row2 ] = temp;
       }
 
+      public void divideRowBy( int row, double value ){
+            multiplyBy( row, ( 1.0 / value ) );
+      }
+
       public void multiplyRowBy( int row, double value ){
 
           for( int column = 0; column < columnSize; column++ )
