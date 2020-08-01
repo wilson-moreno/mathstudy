@@ -70,6 +70,44 @@ public class AugmentedMatrix{
         constantMatrix[ row2 ] += constantMatrix[ row1 ] * multiplier;
       }
 
+      public void gaussianElimination(){
+            rowEchelon( this, 0, 0, rowSize, columnSize );
+      }
+
+      private void rowEchelon(AugmentedMatrix matrix, int row, int col, int rowSize, int colSize ){
+
+            if( row >= rowSize || col >= colSize ) return;
+
+            if( matrix.getCoefficientAt( row, col ) == 0.0 ){
+              for( int i = row + 1; i < rowSize; i++){
+                if( matrix.getCoefficientAt( i, col ) != 0.0){
+                  matrix.interchangeRows( row, i );
+                  break;
+                }
+              }
+            }
+
+
+            if( matrix.getCoefficientAt( row, col ) != 1.0 ){
+              matrix.divideRowBy( row, matrix.getCoefficientAt( row, col ) );
+            }
+
+
+            for( int i = row + 1; i < rowSize; i++ ){
+              if( matrix.getCoefficientAt( i, col ) != 0.0){
+                matrix.addMultipleTo( row, i, matrix.getCoefficientAt( i, col ) * -1 );
+              }
+            }
+
+            for( int i = row - 1; i >= 0; i-- ){
+              if( matrix.getCoefficientAt( i, col ) != 0.0){
+                matrix.addMultipleTo( row, i, matrix.getCoefficientAt( i, col ) * -1 );
+              }
+            }
+
+            rowEchelon( matrix, row + 1, col + 1, rowSize, colSize );
+      }
+
       public String toString(){
 
         String matrix = new String();

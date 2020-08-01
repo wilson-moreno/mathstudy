@@ -37,10 +37,16 @@ public class AugmentedMatrixCalculator{
                 case "coefficient"  : setCoefficient( arguments ); break;
                 case "constant"     : setConstant( arguments ); break;
                 case "divide"       : divideBy( arguments ); break;
+                case "gaussian"     : gaussianElimination( ); break;
                 case "interchange"  : interchangeRows( arguments ); break;
                 case "multiply"     : multiplyBy( arguments ); break;
                 case "quit"         : terminate = true; break;
           }
+      }
+
+      private static void gaussianElimination(){
+        matrix.gaussianElimination();
+        System.out.println( "\n" + matrix.toString() );
       }
 
       private static void divideBy( Map< String, Object > arguments ){
@@ -128,6 +134,7 @@ class CommandParser{
                   case "interchange"  : command = "interchange"; interchangeCommand( scanner ); break;
                   case "multiply"     : command = "multiply"; multiplyCommand( scanner ); break;
                   case "quit"         : command = "quit"; quitCommand( scanner ) ;break;
+                  case "gaussian"     : command = "gaussian"; gaussianCommand( scanner ); break;
                   case "set"          : switch( scanner.next() ){
                                           case "coefficient"  : command = "coefficient";  coefficientCommand( scanner ); break;
                                           case "constant"     : command = "constant"; constantCommand( scanner ); break;
@@ -151,6 +158,12 @@ class CommandParser{
       public boolean isValid(){ return isValid; }
       public String getCommand(){ return command; }
       public Map< String, Object > getArguments(){ return arguments; }
+
+      private void gaussianCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
+        arguments.clear();
+        if( scanner.hasNext() ) throw new InputMismatchException();
+        isValid = true;
+      }
 
       private void constantCommand( Scanner scanner ) throws InputMismatchException, NoSuchElementException {
         arguments.clear();
