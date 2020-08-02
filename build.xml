@@ -40,4 +40,13 @@
         </java>
     </target>
 
+    <target name="elementaryMatrixDemo.run">
+        <java classname="edu.thinkbox.math.matrix.MatrixDemo">
+          <classpath>
+              <pathelement location="build/jar/MatrixStudy.jar"/>
+              <pathelement path="build/classes"/>
+          </classpath>
+        </java>
+    </target>
+
 </project>
