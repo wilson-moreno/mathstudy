@@ -220,6 +220,18 @@ public class Matrix{
     }
 
     /**
+    * Switches the values of row1 and row2
+    * @param row1 index of the first row to switch with row2
+    * @param row2 index of the second row to switch with row1
+    */
+    public void switchRows( int row1, int row2 ) throws IndexOutOfBoundsException{
+      double[] temp;
+      temp = entries[ row1 ];
+      entries[ row1 ] = entries[ row2 ];
+      entries[ row2 ] = temp;
+    }
+
+    /**
     * Determines if the size of the row and column of the matrix object is equal.
     * @return true if the size of the row and column of the matrix object is equal, and false otherwise.
     */

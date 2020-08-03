@@ -1,127 +1,105 @@
 package edu.thinkbox.math.matrix;
 
 public class AugmentedMatrix{
-      private int         rowSize = 0;
-      private int         columnSize = 0;
-      private double[][]  coefficientMatrix;
-      private double[]    constantMatrix;
+        private Matrix coefficients;  // coefficients of the system of equations.
+        private Matrix constants;     // constants of the system of equations.
 
-      public AugmentedMatrix( int rowSize, int columnSize ){
-        this.rowSize = rowSize;
-        this.columnSize = columnSize;
-
-        coefficientMatrix = new double[ rowSize ][ columnSize ];
-        constantMatrix = new double[ rowSize ];
-      }
-
-      public int getRowSize(){ return rowSize; }
-      public int getColumnSize(){ return columnSize; }
-
-      public void setCoefficientAt( int row, int column, double coefficient ){
-        if( ( row >= 0 && row < rowSize ) && ( column >= 0 && column < columnSize ) ){
-          coefficientMatrix[ row ][ column ] = coefficient;
+        public AugmentedMatrix( int equations, int variables ){
+            coefficients = new Matrix( equations, variables );
+            constants = Matrix.createColumnMatrix( equations );
         }
-      }
 
-      public double getCoefficientAt( int row, int column ){
-        return coefficientMatrix[ row ][ column ];
-      }
+        /**
+        * Gets the number of equations in the augmented matrix.
+        * @return the number of equations in <code>integer</code>.
+        */
+        public int getEquations(){ return coefficients.getRows(); }
 
-      public void setConstantAt( int row, double constant ){
-        if( row >= 0 && row < rowSize ){
-          constantMatrix[ row ] = constant;
+        /**
+        * Gets the number of variables in the augmented matrix.
+        * @return the number of variables in <code>integer</code>.
+        */
+        public int getVariables(){ return coefficients.getColumns(); }
+
+
+        public double getCoefficient( int equation, int variable ){ return coefficients.getEntry( equation, variable ); }
+        public void setCoefficient( int equation, int variable, double coefficient ){
+            coefficients.setEntry( equation, variable, coefficient );
         }
-      }
+        public double getConstant( int equation ){ return constants.getEntry( equation, 0 ); }
+        public void setConstant( int equation, double constant ){
+            constants.setEntry( equation, 0, constant );
+        }
 
-      public double getConstantAt( int row ){
-        return constantMatrix[ row ];
-      }
+        public void generateRandomValues(){
+            coefficients.generateRandomEntries();
+            constants.generateRandomEntries();
+        }
 
-      public void interchangeRows( int row1, int row2 ){
-          double temp;
+        public void interchange( int equation1, int equation2 ){
+            coefficients.switchRows( equation1, equation2 );
+            constants.switchRows( equation1, equation2 );
+        }
 
-          for( int column = 0; column < columnSize; column++ ){
-            temp = coefficientMatrix[ row1 ][ column ];
-            coefficientMatrix[ row1 ][ column ] = coefficientMatrix[ row2 ][ column ];
-            coefficientMatrix[ row2 ][ column ] = temp;
+        public void multiply( int equation, double nonzero ) throws ZeroValueException {
+            if( nonzero == 0.0 ) throw new ZeroValueException();
+            for( int variable = 0; variable < coefficients.getColumns(); variable++ ){
+              coefficients.setEntry( equation, variable, coefficients.getEntry( equation, variable ) * nonzero );
+            }
+            constants.setEntry( equation, 0, constants.getEntry( equation, 0 ) * nonzero );
+        }
+
+        public void addMultiple( int equation1, int equation2, double multiple ){
+            double sum = 0;
+
+            for( int variable = 0; variable < coefficients.getColumns(); variable++ ){
+               sum = coefficients.getEntry( equation2, variable ) +
+                     ( coefficients.getEntry( equation1, variable ) * multiple);
+              coefficients.setEntry( equation2, variable, sum );
+            }
+
+            sum = constants.getEntry( equation2, 0 ) + ( constants.getEntry( equation1, 0) * multiple );
+            constants.setEntry( equation2, 0,  sum );
+        }
+
+        public void gaussianElimination(){
+            rowEchelon( this, 0, 0, getEquations() , getVariables() );
+        }
+
+        private void rowEchelon( AugmentedMatrix matrix, int row, int column, int rows, int columns ){
+            if( (row < 0 || row >= rows) || ( column < 0 || column >= columns ) ) return;
+
+            int max = row;
+            for( int i =  row + 1; i < rows; i++ ){
+              if( Math.abs( getCoefficient( i, column ) ) >  Math.abs( getCoefficient( max, column ) ) )
+                max = i;
+            }
+
+            interchange( row, max );
+            if( getCoefficient( row, column ) != 0.0 )
+              multiply( row, ( 1.0 / getCoefficient( row, column ) ) );
+
+            for( int i = row + 1; i < rows; i++ ){
+                if( getCoefficient( i, column ) != 0.0 )
+                  addMultiple( row, i, getCoefficient( i, column ) * -1 );
+            }
+
+            rowEchelon( matrix, row + 1, column + 1, rows, columns );
+        }
+
+        public String toString(){
+
+          String rectFormat = new String();
+
+          for( int i = 0; i < coefficients.getRows(); i++){
+            rectFormat += String.format( "%2d: [", i );
+            for( int j = 0; j < coefficients.getColumns(); j++ ){
+              rectFormat += String.format("%5.2f ", coefficients.getEntry( i, j ) );
+            }
+            rectFormat += String.format("| %5.2f ]\n", getConstant( i ) );
           }
 
-          temp = constantMatrix[ row1 ];
-          constantMatrix[ row1 ] = constantMatrix[ row2 ];
-          constantMatrix[ row2 ] = temp;
-      }
-
-      public void divideRowBy( int row, double value ){
-            multiplyRowBy( row, ( 1.0 / value ) );
-      }
-
-      public void multiplyRowBy( int row, double value ){
-
-          for( int column = 0; column < columnSize; column++ )
-            coefficientMatrix[ row ][ column ] *= value;
-
-          constantMatrix[ row ] *= value;
-      }
-
-      public void addMultipleTo( int row1, int row2, double multiplier ){
-
-        for( int column = 0; column < columnSize; column++ )
-          coefficientMatrix[ row2 ][ column ] += coefficientMatrix[ row1 ][ column ] * multiplier;
-
-        constantMatrix[ row2 ] += constantMatrix[ row1 ] * multiplier;
-      }
-
-      public void gaussianElimination(){
-            rowEchelon( this, 0, 0, rowSize, columnSize );
-      }
-
-      private void rowEchelon(AugmentedMatrix matrix, int row, int col, int rowSize, int colSize ){
-
-            if( row >= rowSize || col >= colSize ) return;
-
-            if( matrix.getCoefficientAt( row, col ) == 0.0 ){
-              for( int i = row + 1; i < rowSize; i++){
-                if( matrix.getCoefficientAt( i, col ) != 0.0){
-                  matrix.interchangeRows( row, i );
-                  break;
-                }
-              }
-            }
-
-
-            if( matrix.getCoefficientAt( row, col ) != 1.0 ){
-              matrix.divideRowBy( row, matrix.getCoefficientAt( row, col ) );
-            }
-
-
-            for( int i = row + 1; i < rowSize; i++ ){
-              if( matrix.getCoefficientAt( i, col ) != 0.0){
-                matrix.addMultipleTo( row, i, matrix.getCoefficientAt( i, col ) * -1 );
-              }
-            }
-
-            for( int i = row - 1; i >= 0; i-- ){
-              if( matrix.getCoefficientAt( i, col ) != 0.0){
-                matrix.addMultipleTo( row, i, matrix.getCoefficientAt( i, col ) * -1 );
-              }
-            }
-
-            rowEchelon( matrix, row + 1, col + 1, rowSize, colSize );
-      }
-
-      public String toString(){
-
-        String matrix = new String();
-
-        for( int i = 0; i < rowSize; i++){
-          matrix += String.format( "%2d: [", i);
-          for( int j = 0; j < columnSize; j++ ){
-            matrix += String.format("%5.2f ", coefficientMatrix[ i ][ j ] );
-          }
-          matrix += String.format("| %5.2f ]\n", constantMatrix[ i ] );
+          return rectFormat;
         }
 
-
-        return matrix;
-      }
 }
