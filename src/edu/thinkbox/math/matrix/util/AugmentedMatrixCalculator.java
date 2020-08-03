@@ -1,3 +1,4 @@
+package edu.thinkbox.math.matrix.util;
 
 import java.util.Scanner;
 import java.util.InputMismatchException;

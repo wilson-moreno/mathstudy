@@ -1,3 +1,4 @@
+package edu.thinkbox.math.matrix;
 
 public class AugmentedMatrix{
       private int         rowSize = 0;
