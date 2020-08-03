@@ -66,19 +66,23 @@ public class Matrix{
         return sizeEquals( matrix ) && entriesEquals( matrix );
     }
 
-    public void add( Matrix matrix ){
+    public void add( Matrix matrix ) throws MatrixSizeMismatchException {
         if( this.sizeEquals( matrix) ){
           for( int i = 0; i < rows; i++ )
             for( int j = 0; j < columns; j++ )
               entries[ i ][ j ] += matrix.getEntry( i, j );
+        } else {
+          throw new MatrixSizeMismatchException();
         }
     }
 
-    public void subtract( Matrix matrix ){
+    public void subtract( Matrix matrix ) throws MatrixSizeMismatchException {
         if( this.sizeEquals( matrix) ){
           for( int i = 0; i < rows; i++ )
             for( int j = 0; j < columns; j++ )
               entries[ i ][ j ] -= matrix.getEntry( i, j );
+        } else {
+          throw new MatrixSizeMismatchException();
         }
     }
 
@@ -96,11 +100,13 @@ public class Matrix{
         columns = temp;
     }
 
-    public void copy( Matrix matrix ){
+    public void copy( Matrix matrix ) throws MatrixSizeMismatchException{
         if( sizeEquals( matrix ) ){
           for( int i = 0; i < rows; i++ )
             for( int j = 0; j < columns; j++ )
               entries[ i ][ j ] = matrix.getEntry( i, j );
+        } else {
+          throw new MatrixSizeMismatchException();
         }
     }
 

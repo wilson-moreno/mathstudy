@@ -1,5 +1,7 @@
 package edu.thinkbox.math.matrix.util;
 
+import edu.thinkbox.math.matrix.Matrix;
+
 public class MatrixDemo{
 
     public static void main( String[] args ){
