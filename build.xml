@@ -23,7 +23,7 @@
     </target>
 
     <target name="matrixDemo.run">
-        <java classname="MatrixOperationDemo">
+        <java classname="edu.thinkbox.math.matrix.util.MatrixDemo">
           <classpath>
               <pathelement location="build/jar/MatrixStudy.jar"/>
               <pathelement path="build/classes"/>
@@ -31,22 +31,24 @@
         </java>
     </target>
 
-    <target name="matrixCalculator.run">
-        <java classname="AugmentedMatrixCalculator">
-          <classpath>
-              <pathelement location="build/jar/MatrixStudy.jar"/>
-              <pathelement path="build/classes"/>
-          </classpath>
-        </java>
-    </target>
 
-    <target name="elementaryMatrixDemo.run">
-        <java classname="edu.thinkbox.math.matrix.MatrixDemo">
-          <classpath>
-              <pathelement location="build/jar/MatrixStudy.jar"/>
-              <pathelement path="build/classes"/>
-          </classpath>
-        </java>
+    <target name="documentation">
+        <javadoc  destdir="docs/api"
+                  author="true"
+                  version="true"
+                  use="true"
+                  windowtitle="Test API">
+
+                  <packageset dir="src" defaultexcludes="yes">
+                    <include name="edu/thinkbox/math/**"/>
+                  </packageset>
+
+                  <doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
+                  <bottom><![CDATA[<i>Copyright &#169; 2000 Dummy Corp. All Rights Reserved.</i>]]></bottom>
+                  <tag name="todo" scope="all" description="To do:"/>
+                  <group title="Matrix Packages" packages="edu.thinkbox.math.matrix.*"/>
+                  <group title="Matrix Utility Packages" packages="edu.thinkbox.math.matrix.util.*"/>
+        </javadoc>
     </target>
 
 </project>

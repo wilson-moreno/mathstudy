@@ -6,7 +6,7 @@ public class MatrixDemo{
 
     public static void main( String[] args ){
         System.out.println( "Welcome to the Matrix driver program!" );
-        System.out.println( "This program will demonstrate the elementary matrix operation implementation in a java class." );
+        System.out.println( "This program will demonstrate the elementary matrix operation implementation in Java." );
         System.out.println( "The primary class that represents a matrix is named Matrix.\n\n" );
         System.out.println( "Create two matrix object named A and B. \n");
         Matrix a = Matrix.createSquareMatrix( 5 );
@@ -16,6 +16,7 @@ public class MatrixDemo{
         System.out.println( "Generate random entries for Matrix A and B.\n");
         a.generateRandomEntries();
         b.generateRandomEntries();
+        b.scalarProduct( 2.0 );
         System.out.println( "Matrix A: \n" + a );
         System.out.println( "Matrix B: \n" + b );
         System.out.println( "Adding Matrix B to A.\n");
