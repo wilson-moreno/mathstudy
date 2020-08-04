@@ -86,7 +86,7 @@ public class Matrix{
 
         for( int i = 0; i < rows; i++ )
           for( int j = 0; j < columns; j++ )
-              entries[ i ][ j ] = 99 * random.nextDouble();
+              entries[ i ][ j ] = ( -100.0 + 200.0 * random.nextDouble() );
     }
 
     /**

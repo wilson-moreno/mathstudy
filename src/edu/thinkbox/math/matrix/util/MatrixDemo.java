@@ -60,13 +60,15 @@ public class MatrixDemo{
         AugmentedMatrix e = new AugmentedMatrix( 3, 3 );
         System.out.println( "Matrix E: \n" + e );
         System.out.println( "Set entries for Matrix E.\n");
-        e.setCoefficients( 0, "  1 -2  1 ");
-        e.setCoefficients( 1, "  0  2 -8 ");
-        e.setCoefficients( 2, " -4  5  9 ");
-        e.setConstants(" 0 8 -9 ");
+        e.setCoefficients( 0, "  2  0 -6 " );
+        e.setCoefficients( 1, "  0  1  2 " );
+        e.setCoefficients( 2, "  3  6 -2 " );
+        e.setConstants( " -8  3 -4 " );
         System.out.println( "Matrix E: \n" + e );
+        System.out.println( "System of equations of matrix E: \n\n" + e.systemOfEquations() );
         e.gaussianElimination();
-        System.out.println( "Gaussian applied to matrix E: \n" + e );
+        System.out.println( "Gaussian elimination applied to matrix E: \n" + e );
+        System.out.println( "System of equations of matrix E: \n\n" + e.systemOfEquations() );
     }
 
 }

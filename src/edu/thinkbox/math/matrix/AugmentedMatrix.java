@@ -3,8 +3,8 @@ package edu.thinkbox.math.matrix;
 import java.util.Scanner;
 
 public class AugmentedMatrix{
-        private Matrix coefficients;  // coefficients of the system of equations.
-        private Matrix constants;     // constants of the system of equations.
+        private Matrix   coefficients;  // coefficients of the system of equations.
+        private Matrix   constants;     // constants of the system of equations.
 
         public AugmentedMatrix( int equations, int variables ){
             coefficients = new Matrix( equations, variables );
@@ -83,7 +83,7 @@ public class AugmentedMatrix{
         }
 
 
-        private void rowEchelon( AugmentedMatrix matrix, int row, int column, int rows, int columns ){
+        private void rowEchelon( AugmentedMatrix matrix, int pivotRow, int pivotColumn, int rows, int columns ){
 
             // Visual representation of the matrix when rowEchelon is first called
             //
@@ -92,38 +92,42 @@ public class AugmentedMatrix{
             //                [ 1  9  5  5 |  1 ]
             //                [ 7  3  1  0 |  9 ]
             //                [ 9  9  0  5 |  8 ]
+            //
+            // The p
 
 
             // Base case of the recursive method
             //  Checks whether pivot row and pivot column is within the valid index range for rows and columns
-            if( (row < 0 || row >= rows) || ( column < 0 || column >= columns ) ) return;
+            if( ( pivotRow < 0 || pivotRow >= rows) || ( pivotColumn < 0 || pivotColumn >= columns ) ) return;
 
 
-            int max = row; // Saves the index of the pivot row and assumes it points to the maximum value in the pivot column
+            int max = pivotRow; // Saves the index of the pivot row and assumes it points to the maximum value in the pivot column
 
             // Find the largest coefficient in the current column and saves the index
-            for( int i =  row + 1; i < rows; i++ ){
-              if( Math.abs( getCoefficient( i, column ) ) >  Math.abs( getCoefficient( max, column ) ) )
+            for( int i =  pivotRow + 1; i < rows; i++ ){
+              if( Math.abs( getCoefficient( i, pivotColumn ) ) >  Math.abs( getCoefficient( max, pivotColumn ) ) )
                 max = i;
             }
 
             // If the pivot row does not contain the largest coefficient in the pivot column, switch rows
-            if( row != max ) interchange( row, max );
+            if( pivotRow != max ) interchange( pivotRow, max );
 
             // If the coefficient at pivot index ( row, column ) is a nonzero value, scale the equation
             // at row by the coefficient at ( row, column ).
-            if( getCoefficient( row, column ) != 0.0 )
-              scale( row, ( 1.0 / getCoefficient( row, column ) ) );
+            if( getCoefficient( pivotRow, pivotColumn ) != 0.0 ){
+                scale( pivotRow, ( 1.0 / getCoefficient( pivotRow, pivotColumn ) ) );
 
+                // Set all the coefficients in the pivot column below the pivot row to 0.
+                for( int i = pivotRow + 1; i < rows; i++ ){
+                  if( getCoefficient( i, pivotColumn ) != 0.0 )
+                    replace( i, pivotRow, getCoefficient( i, pivotColumn ) * -1 );
+                }
 
-            // Set all the coefficients in the pivot column below the pivot row to 0.
-            for( int i = row + 1; i < rows; i++ ){
-                if( getCoefficient( i, column ) != 0.0 )
-                  replace( i, row, getCoefficient( i, column ) * -1 );
+                // Calls rowEcholon for the next pivot, which is ( row + 1, column + 1 )
+                rowEchelon( matrix, pivotRow + 1, pivotColumn + 1, rows, columns );
+            } else {
+                rowEchelon( matrix, pivotRow, pivotColumn + 1, rows, columns );
             }
-
-            // Calls rowEcholon for the next pivot, which is ( row + 1, column + 1 )
-            rowEchelon( matrix, row + 1, column + 1, rows, columns );
         }
 
         /**
@@ -143,6 +147,39 @@ public class AugmentedMatrix{
           }
 
           return rectFormat;
+        }
+
+        public String systemOfEquations(){
+            String systemOfEquations = new String();
+            String equation;
+            double sign;
+
+            for( int i = 0; i < getEquations(); i++ ) {
+              equation = new String();
+              sign = 0.0;
+              for( int j = 0; j < getVariables(); j++ ){
+                if( getCoefficient( i, j ) != 0.0 ){
+                  sign = Math.signum( getCoefficient( i, j ) );
+                  if( j < getVariables() ) {
+                    if( sign == -1.0 ){
+                       if( equation.length() == 0 ) equation += " -";
+                       else equation += " - ";
+                    }
+                    else
+                       if( equation.length() > 0 )equation += " + ";
+                  }
+
+                  if( getCoefficient( i, j ) == 1.0 )
+                    equation += String.format( "%c ", j + 'x' );
+                  else
+                    equation += String.format( "%5.2f%c ", getCoefficient( i, j ) * sign , j + 'x' );
+                }
+              }
+              equation += String.format( " = %5.2f\n", getConstant( i ) );
+              systemOfEquations += String.format( "%40s", equation );
+            }
+
+            return systemOfEquations;
         }
 
 }
