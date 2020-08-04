@@ -5,7 +5,7 @@ import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.HashMap;
-import edu.thinkbox.math.matrix.AugmentedMatrix;
+import edu.thinkbox.math.matrix.util.AugmentedMatrix;
 
 public class AugmentedMatrixCalculator{
       private static Scanner commandScanner;

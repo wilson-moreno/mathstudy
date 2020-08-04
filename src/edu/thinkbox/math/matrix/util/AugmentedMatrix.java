@@ -23,6 +23,8 @@ public class AugmentedMatrix{
         }
       }
 
+      
+
       public double getCoefficientAt( int row, int column ){
         return coefficientMatrix[ row ][ column ];
       }

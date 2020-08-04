@@ -1,5 +1,6 @@
 package edu.thinkbox.math.matrix;
 
+import java.util.Scanner;
 import java.util.Random;
 import java.time.LocalTime;
 
@@ -59,6 +60,21 @@ public class Matrix{
     public void setEntry( int row, int column, double entry ) throws IndexOutOfBoundsException
     {
       entries[ row ][ column ] = entry;
+    }
+
+    /**
+    * Set all the values of the entries at once of a specified row.
+    * @param row the index of the row where the values will be set.
+    * @param entries a String of values that will be set in the entries of the specified row.
+    */
+    public void setEntries( int row, String entries ){
+        Scanner scanner = new Scanner( entries );
+
+        int column = 0;
+        while( scanner.hasNext() && column < columns ){
+          setEntry( row, column, scanner.nextDouble() );
+          column++;
+        }
     }
 
     /**
