@@ -192,6 +192,41 @@ public class Matrix{
             entries[ i ][ j ] *= scalarValue;
     }
 
+    public Matrix vectorProduct( Matrix vector ) throws MatrixSizeMismatchException{
+        // Matrix-Vector Product: Ax = b
+        // A is an m x n matrix
+        // x is an n-vector
+        // b is an m-vector
+        if( this.columns == vector.getRows() && vector.isVector() ){
+            Matrix product = createColumnMatrix( this.rows );
+            for( int i = 0; i < this.columns; i++ ){
+              Matrix columnVector = getColumnVector( i );
+              columnVector.scalarProduct( vector.getEntry( i, 0 ) );
+              product.add( columnVector );
+            }
+            return product;
+        } else {
+          throw new MatrixSizeMismatchException();
+        }
+    }
+
+    public Matrix dotProduct( Matrix vector ) throws MatrixSizeMismatchException {
+        if(  this.columns == vector.getRows() && vector.isVector() ){
+            Matrix product = createColumnMatrix( this.rows );
+            double k;
+            for( int i = 0; i < this.rows; i++ ) {
+              k = 0.0;
+              for( int j = 0; j < this.columns; j++ ){
+                k += entries[ i ][ j ] * vector.getEntry( j, 0 );
+              }
+              product.setEntry( i, 0, k );
+            }
+            return product;
+        } else {
+          throw new MatrixSizeMismatchException();
+        }
+    }
+
     /**
     * Transpose the entries of the matrix object. If A is an m x n matrix, the transpose of A, is the n x m matrix whose
     * rows are just the columns of A in the same order.
@@ -255,6 +290,36 @@ public class Matrix{
         return rows == columns;
     }
 
+    public Matrix getColumnVector( int column ){
+        Matrix vector = createColumnMatrix( rows );
+
+        for( int i = 0; i < rows; i++ )
+            vector.setEntry( i, 0, entries[ i ][ column ] );
+
+        return vector;
+    }
+
+    public Matrix getRowVector( int row ){
+        Matrix vector = createRowMatrix( columns );
+
+        for( int j = 0; j < columns; j++ )
+            vector.setEntry( 0, j, entries[ row ][ j ] );
+
+        return vector;
+    }
+
+    public boolean isVector(){
+        return isRowVector() || isColumnVector();
+    }
+
+    public boolean isRowVector(){
+        return this.rows == 1;
+    }
+
+    public boolean isColumnVector(){
+        return this.columns ==  1;
+    }
+
     /**
     * Creates a matrix object of size 1 x n. A 1 x n matrix is called a row matrix.
     * @param columns is the number of columns in the row matrix.
@@ -275,4 +340,13 @@ public class Matrix{
     * @return a matrix object of size n x n.
     */
     public static Matrix createSquareMatrix( int n ){ return new Matrix( n, n ); }
+
+    public static Matrix createIdentityMatrix( int n ){
+        Matrix identityMatrix = new Matrix( n, n );
+
+        for( int i = 0; i < identityMatrix.getRows(); i++ )
+          identityMatrix.setEntry( i, i, 1.0 );
+
+        return identityMatrix;
+    }
 }

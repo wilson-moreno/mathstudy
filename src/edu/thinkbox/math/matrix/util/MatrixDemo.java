@@ -20,6 +20,8 @@ public class MatrixDemo{
         b.scalarProduct( 2.0 );
         System.out.println( "Matrix A: \n" + a );
         System.out.println( "Matrix B: \n" + b );
+        System.out.println( "Get column vector 1 from matrix A: \n" + a.getColumnVector( 0 ) );
+        System.out.println( "Get row vector 1 from matrix A: \n" + a.getRowVector( 0 ) );
         System.out.println( "Adding Matrix B to A.\n");
         a.add( b );
         System.out.println( "Matrix A: \n" + a );
@@ -69,6 +71,23 @@ public class MatrixDemo{
         e.gaussianElimination();
         System.out.println( "Gaussian elimination applied to matrix E: \n" + e );
         System.out.println( "System of equations of matrix E: \n\n" + e.systemOfEquations() );
+        System.out.println( "Creating a 3 x 4 matrix and 4-vector");
+        Matrix f = new Matrix( 3, 4 );
+        Matrix g = Matrix.createColumnMatrix( 4 );
+        f.setEntries( 0, "  2 -1  3  5 " );
+        f.setEntries( 1, "  0  2 -3  1 " );
+        f.setEntries( 2, " -3  4  1  2 " );
+        g.setEntries( 0, "  2 " );
+        g.setEntries( 1, "  1 " );
+        g.setEntries( 2, "  0 " );
+        g.setEntries( 3, " -2 " );
+        System.out.println( "A 3 x 4 Matrix: \n" + f );
+        System.out.println( "A 4-vector: \n" + g );
+        System.out.println( "Demonstrating vector product: \n" + f.vectorProduct( g ) );
+        System.out.println( "Demonstrating dot product: \n" + f.dotProduct( g ) );
+        Matrix h = Matrix.createIdentityMatrix( 4 );
+        System.out.println( "Identity matrix: \n" + h );
+        System.out.println( " Dot product of I and x: \n" + h.dotProduct( g ) );
     }
 
 }
