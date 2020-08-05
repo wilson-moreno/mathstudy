@@ -192,26 +192,17 @@ public class Matrix{
             entries[ i ][ j ] *= scalarValue;
     }
 
-    public void multiply( Matrix matrix ) throws MatrixSizeMismatchException {
-        if( this.columns == matrix.getRows() ){
-          Matrix product = new Matrix( this.rows, matrix.getColumns() );
-
-        } else {
-          throw new MatrixSizeMismatchException();
-        }
-    }    
-
-    public Matrix vectorProduct( Matrix vector ) throws MatrixSizeMismatchException{
+    public Matrix multiply( Matrix matrix ) throws MatrixSizeMismatchException{
         // Matrix-Vector Product: Ax = b
         // A is an m x n matrix
         // x is an n-vector
         // b is an m-vector
-        if( this.columns == vector.getRows() && vector.isVector() ){
-            Matrix product = createColumnMatrix( this.rows );
-            for( int i = 0; i < this.columns; i++ ){
-              Matrix columnVector = getColumnVector( i );
-              columnVector.scalarProduct( vector.getEntry( i, 0 ) );
-              product.add( columnVector );
+        if( this.columns == matrix.getRows() ){
+            Matrix product = new Matrix( this.rows, matrix.getColumns() );
+            Matrix columnVector;
+            for( int i = 0; i < matrix.columns; i++ ){
+                columnVector = dotProduct( matrix.getColumnVector( i ) );
+                product.setColumnVector( i, columnVector );
             }
             return product;
         } else {
@@ -219,18 +210,20 @@ public class Matrix{
         }
     }
 
-    public Matrix dotProduct( Matrix vector ) throws MatrixSizeMismatchException {
-        if(  this.columns == vector.getRows() && vector.isVector() ){
-            Matrix product = createColumnMatrix( this.rows );
-            double k;
-            for( int i = 0; i < this.rows; i++ ) {
-              k = 0.0;
-              for( int j = 0; j < this.columns; j++ ){
-                k += entries[ i ][ j ] * vector.getEntry( j, 0 );
+    public Matrix dotProduct( Matrix matrix ) throws MatrixSizeMismatchException {
+        if(  this.columns == matrix.getRows() ){
+          Matrix product = new Matrix( this.rows, matrix.getColumns() );
+          for( int i = 0; i < this.rows; i++ ){
+            for( int j = 0; j < matrix.getColumns(); j++ ){
+              double sum = 0.0;
+              for( int k = 0; k < this.columns; k++ ){
+                sum += entries[ i ][ k ] * matrix.getEntry( k, j );
               }
-              product.setEntry( i, 0, k );
+              product.setEntry( i, j, sum );
             }
-            return product;
+          }
+
+          return product;
         } else {
           throw new MatrixSizeMismatchException();
         }
@@ -306,6 +299,14 @@ public class Matrix{
             vector.setEntry( i, 0, entries[ i ][ column ] );
 
         return vector;
+    }
+
+    private void setColumnVector( int column, Matrix vector ){
+        if( vector.isColumnVector() && this.rows == vector.getRows() ){
+          for( int i = 0; i < this.rows; i++ ){
+            entries[ i ][ column ] = vector.getEntry( i, 0 );
+          }
+        }
     }
 
     public Matrix getRowVector( int row ){
