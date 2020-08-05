@@ -192,6 +192,15 @@ public class Matrix{
             entries[ i ][ j ] *= scalarValue;
     }
 
+    public void multiply( Matrix matrix ) throws MatrixSizeMismatchException {
+        if( this.columns == matrix.getRows() ){
+          Matrix product = new Matrix( this.rows, matrix.getColumns() );
+
+        } else {
+          throw new MatrixSizeMismatchException();
+        }
+    }    
+
     public Matrix vectorProduct( Matrix vector ) throws MatrixSizeMismatchException{
         // Matrix-Vector Product: Ax = b
         // A is an m x n matrix
