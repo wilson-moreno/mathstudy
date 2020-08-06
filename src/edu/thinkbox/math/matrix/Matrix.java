@@ -67,14 +67,145 @@ public class Matrix{
     * @param row the index of the row where the values will be set.
     * @param entries a String of values that will be set in the entries of the specified row.
     */
-    public void setEntries( int row, String entries ){
+    public void setRowEntries( int row, String entries ){
         Scanner scanner = new Scanner( entries );
 
         int column = 0;
         while( scanner.hasNext() && column < columns ){
-          setEntry( row, column, scanner.nextDouble() );
-          column++;
+          setEntry( row, column++, scanner.nextDouble() );
         }
+    }
+
+    public void setColumnEntries( int column, String entries ){
+      Scanner scanner = new Scanner( entries );
+
+      int row = 0;
+      while( scanner.hasNext() && column < columns ){
+        setEntry( row++, column, scanner.nextDouble() );
+      }
+    }
+
+
+    public void reducedRowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
+        if( getRows() == matrix.getRows() ){
+          reducedRowEchelon(0, 0, rows, columns, matrix );
+        } else
+          throw new MatrixSizeMismatchException();
+
+    }
+
+    private void reducedRowEchelon( int pivotRow, int pivotColumn, int rows, int columns, Matrix matrix){
+        if( ( pivotRow < 0 || pivotRow >= rows ) ||
+            ( pivotColumn < 0 || pivotColumn >= columns ) ) return;
+
+        // Find index of max value in column vector starting from pivot row
+        int max = pivotRow;
+        for( int i = pivotRow + 1; i < rows; i++ )
+            if( Math.abs( entries[ i ][ pivotColumn ] ) > Math.abs( entries[ max ][ pivotColumn ] ) ) max = i;
+
+        if( max != pivotRow ){
+          switchRows( pivotRow, max );
+          matrix.switchRows( pivotRow, max );
+        }
+
+        if( entries[ pivotRow ][ pivotColumn ] == 0.0 ){
+          rowEchelon( pivotRow, pivotColumn + 1, rows, columns, matrix );
+        } else {
+          double nonzero = 0.0;
+
+          nonzero = ( 1.0 / entries[ pivotRow ][ pivotColumn ] );
+          scale( pivotRow,  nonzero );
+          matrix.scale( pivotRow, nonzero );
+
+          for( int i = pivotRow + 1; i < rows; i++ ){
+            if( entries[ i ][ pivotColumn ] != 0.0 ){
+              nonzero = entries[ i ][ pivotColumn ] * -1.0;
+              replace( i, pivotRow, nonzero );
+              matrix.replace( i, pivotRow, nonzero );
+            }
+          }
+
+          for( int j = pivotRow - 1; j >= 0; j--){
+            if( entries[ j ][ pivotColumn ] != 0.0 ){
+              nonzero = entries[ j ][ pivotColumn ] * -1.0;
+              replace( j, pivotRow, nonzero );
+              matrix.replace( j, pivotRow, nonzero );
+            }
+          }
+
+          reducedRowEchelon( pivotRow + 1, pivotColumn + 1, rows, columns, matrix );
+        }
+    }
+
+    public void rowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
+        if( getRows() == matrix.getRows() )
+          rowEchelon(0, 0, rows, columns, matrix );
+        else
+          throw new MatrixSizeMismatchException();
+    }
+
+    private void rowEchelon( int pivotRow, int pivotColumn, int rows, int columns, Matrix matrix){
+        if( ( pivotRow < 0 || pivotRow >= rows ) ||
+            ( pivotColumn < 0 || pivotColumn >= columns ) ) return;
+
+        // Find index of max value in column vector starting from pivot row
+        int max = pivotRow;
+        for( int i = pivotRow + 1; i < rows; i++ )
+            if( Math.abs( entries[ i ][ pivotColumn ] ) > Math.abs( entries[ max ][ pivotColumn ] ) ) max = i;
+
+        if( max != pivotRow ){
+          switchRows( pivotRow, max );
+          matrix.switchRows( pivotRow, max );
+        }
+
+        if( entries[ pivotRow ][ pivotColumn ] == 0.0 ){
+          rowEchelon( pivotRow, pivotColumn + 1, rows, columns, matrix );
+        } else {
+          double nonzero = 0.0;
+
+          nonzero = ( 1.0 / entries[ pivotRow ][ pivotColumn ] );
+          scale( pivotRow,  nonzero );
+          matrix.scale( pivotRow, nonzero );
+
+
+          for( int i = pivotRow + 1; i < rows; i++ ){
+            if( entries[ i ][ pivotColumn ] != 0.0 ){
+              nonzero = entries[ i ][ pivotColumn ] * -1.0;
+              replace( i, pivotRow, nonzero );
+              matrix.replace( i, pivotRow, nonzero );
+            }
+          }
+
+          rowEchelon( pivotRow + 1, pivotColumn + 1, rows, columns, matrix );
+        }
+    }
+
+    public void scale( int row, double nonzero ) throws ZeroValueException {
+        if( nonzero != 0.0 )
+          for( int j = 0; j < columns; j++ )
+            entries[ row ][ j ] = entries[ row ][ j ] * nonzero;
+        else
+          throw new ZeroValueException();
+    }
+
+    public void replace( int row2, int row1, double nonzero ) throws ZeroValueException {
+      if( nonzero != 0.0 )
+        for( int j = 0; j < columns; j++ )
+          entries[ row2 ][ j ] += entries[ row1 ][ j ] * nonzero;
+      else
+        throw new ZeroValueException();
+    }
+
+    /**
+    * Switches the values of row1 and row2
+    * @param row1 index of the first row to switch with row2
+    * @param row2 index of the second row to switch with row1
+    */
+    public void switchRows( int row1, int row2 ) throws IndexOutOfBoundsException{
+      double[] temp;
+      temp = entries[ row1 ];
+      entries[ row1 ] = entries[ row2 ];
+      entries[ row2 ] = temp;
     }
 
     /**
@@ -272,17 +403,7 @@ public class Matrix{
           entries[ i ][ j ] *= -1;
     }
 
-    /**
-    * Switches the values of row1 and row2
-    * @param row1 index of the first row to switch with row2
-    * @param row2 index of the second row to switch with row1
-    */
-    public void switchRows( int row1, int row2 ) throws IndexOutOfBoundsException{
-      double[] temp;
-      temp = entries[ row1 ];
-      entries[ row1 ] = entries[ row2 ];
-      entries[ row2 ] = temp;
-    }
+
 
     /**
     * Determines if the size of the row and column of the matrix object is equal.

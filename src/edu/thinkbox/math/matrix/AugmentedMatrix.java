@@ -28,8 +28,8 @@ public class AugmentedMatrix{
         public void setCoefficient( int equation, int variable, double coefficient ){
             coefficients.setEntry( equation, variable, coefficient );
         }
-        public void setCoefficients( int equation, String coefficients ){
-            this.coefficients.setEntries( equation, coefficients );
+        public void setRowCoefficients( int equation, String coefficients ){
+            this.coefficients.setRowEntries( equation, coefficients );
         }
 
         public double getConstant( int equation ){ return constants.getEntry( equation, 0 ); }

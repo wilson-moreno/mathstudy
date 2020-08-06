@@ -10,6 +10,7 @@ public class MatrixDemo{
         System.out.println( "This program will demonstrate the elementary matrix operation implementation in Java." );
         System.out.println( "The primary class that represents a matrix is named Matrix.\n\n" );
         System.out.println( "Create two matrix object named A and B. \n");
+        /*
         Matrix a = Matrix.createSquareMatrix( 5 );
         Matrix b = Matrix.createSquareMatrix( 5 );
         System.out.println( "Matrix A: \n" + a );
@@ -20,6 +21,9 @@ public class MatrixDemo{
         b.scalarProduct( 2.0 );
         System.out.println( "Matrix A: \n" + a );
         System.out.println( "Matrix B: \n" + b );
+        b.rowEchelon( a );
+        System.out.println( "Matrix B row echelon: \n" + b );
+        System.out.println( "Matrix A affected by B row echelon: \n" + a );
         System.out.println( "Get column vector 1 from matrix A: \n" + a.getColumnVector( 0 ) );
         System.out.println( "Get row vector 1 from matrix A: \n" + a.getRowVector( 0 ) );
         System.out.println( "Adding Matrix B to A.\n");
@@ -31,8 +35,8 @@ public class MatrixDemo{
         AugmentedMatrix c = new AugmentedMatrix( 2, 2 );
         System.out.println( "Matrix C: \n" + c );
         System.out.println( "Set coefficients and constants of C. \n");
-        c.setCoefficients( 0, "1.0 2.0");
-        c.setCoefficients( 1, "2.0 1.0");
+        c.setRowCoefficients( 0, "1.0 2.0");
+        c.setRowCoefficients( 1, "2.0 1.0");
         c.setConstants( "-2.0 7.0" );
         System.out.println( "Matrix C: \n" + c );
         System.out.println( "Multiply equation 1 with -2 then add to equation 2. \n");
@@ -48,9 +52,9 @@ public class MatrixDemo{
         AugmentedMatrix d = new AugmentedMatrix( 3, 3 );
         System.out.println( "Matrix D: \n" + d );
         System.out.println( "Set entries for Matrix D.\n");
-        d.setCoefficients( 0, "  1 -2  1 ");
-        d.setCoefficients( 1, "  0  2 -8 ");
-        d.setCoefficients( 2, " -4  5  9 ");
+        d.setRowCoefficients( 0, "  1 -2  1 ");
+        d.setRowCoefficients( 1, "  0  2 -8 ");
+        d.setRowCoefficients( 2, " -4  5  9 ");
         d.setConstants(" 0 8 -9 ");
         System.out.println( "Matrix D: \n" + d );
         d.replace( 2, 0, 4.0 );
@@ -62,9 +66,9 @@ public class MatrixDemo{
         AugmentedMatrix e = new AugmentedMatrix( 3, 3 );
         System.out.println( "Matrix E: \n" + e );
         System.out.println( "Set entries for Matrix E.\n");
-        e.setCoefficients( 0, "  2  0 -6 " );
-        e.setCoefficients( 1, "  0  1  2 " );
-        e.setCoefficients( 2, "  3  6 -2 " );
+        e.setRowCoefficients( 0, "  2  0 -6 " );
+        e.setRowCoefficients( 1, "  0  1  2 " );
+        e.setRowCoefficients( 2, "  3  6 -2 " );
         e.setConstants( " -8  3 -4 " );
         System.out.println( "Matrix E: \n" + e );
         System.out.println( "System of equations of matrix E: \n\n" + e.systemOfEquations() );
@@ -74,13 +78,13 @@ public class MatrixDemo{
         System.out.println( "Creating a 3 x 4 matrix and 4-vector");
         Matrix f = new Matrix( 3, 4 );
         Matrix g = new Matrix( 4, 2 );
-        f.setEntries( 0, "  2 -1  3  5 " );
-        f.setEntries( 1, "  0  2 -3  1 " );
-        f.setEntries( 2, " -3  4  1  2 " );
-        g.setEntries( 0, "  2  2 " );
-        g.setEntries( 1, "  1  3 " );
-        g.setEntries( 2, "  0  1 " );
-        g.setEntries( 3, " -2  0 " );
+        f.setRowEntries( 0, "  2 -1  3  5 " );
+        f.setRowEntries( 1, "  0  2 -3  1 " );
+        f.setRowEntries( 2, " -3  4  1  2 " );
+        g.setRowEntries( 0, "  2  2 " );
+        g.setRowEntries( 1, "  1  3 " );
+        g.setRowEntries( 2, "  0  1 " );
+        g.setRowEntries( 3, " -2  0 " );
         Matrix i = new Matrix( 4, 2 );
         i.generateRandomEntries();
         System.out.println( "A 3 x 4 Matrix: \n" + f );
@@ -92,6 +96,17 @@ public class MatrixDemo{
         Matrix h = Matrix.createIdentityMatrix( 4 );
         System.out.println( "Identity matrix: \n" + h );
         System.out.println( " Dot product of I and x: \n" + h.dotProduct( g ) );
+        */
+        Matrix a = new Matrix( 3, 3 );
+        Matrix b = Matrix.createIdentityMatrix( 3 );
+        a.setRowEntries( 0, " 2  7  1 " );
+        a.setRowEntries( 1, " 1  4 -1 " );
+        a.setRowEntries( 2, " 1  3  0 " );        
+        System.out.println( "Matrix A entries: \n" + a );
+        System.out.println( "Matrix B entries: \n" + b );
+        a.reducedRowEchelon( b );
+        System.out.println( "Matrix A entries in row-echelon: \n" + a );
+        System.out.println( "Matrix B entries after row-echelon: \n" + b );
     }
 
 }
