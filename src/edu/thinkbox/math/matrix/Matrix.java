@@ -76,6 +76,11 @@ public class Matrix{
         }
     }
 
+    /**
+    * Set all the values of the entries at once of a specified column
+    * @param column the index of the column where the values will be set.
+    * @param entries a String of values that will be set in the entries of the specified column.
+    */
     public void setColumnEntries( int column, String entries ){
       Scanner scanner = new Scanner( entries );
 
@@ -86,12 +91,12 @@ public class Matrix{
     }
 
 
+
     public void reducedRowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
         if( getRows() == matrix.getRows() ){
           reducedRowEchelon(0, 0, rows, columns, matrix );
         } else
           throw new MatrixSizeMismatchException();
-
     }
 
     private void reducedRowEchelon( int pivotRow, int pivotColumn, int rows, int columns, Matrix matrix){
@@ -332,13 +337,28 @@ public class Matrix{
             Matrix product = new Matrix( this.rows, matrix.getColumns() );
             Matrix columnVector;
             for( int i = 0; i < matrix.columns; i++ ){
-                columnVector = dotProduct( matrix.getColumnVector( i ) );
+                columnVector = vectorProduct( matrix.getColumnVector( i ) );
                 product.setColumnVector( i, columnVector );
             }
             return product;
         } else {
           throw new MatrixSizeMismatchException();
         }
+    }
+
+    private Matrix vectorProduct( Matrix vector ) throws MatrixSizeMismatchException {
+      if( this.columns == vector.getRows() && vector.isVector() ){
+        Matrix product = new Matrix( this.rows, vector.getColumns() );
+        Matrix columnVector;
+        for( int i = 0; i < getColumns(); i++ ){
+          columnVector = getColumnVector( i );
+          columnVector.scalarProduct( vector.getEntry( i, 0 ) );
+          product.add( columnVector );
+        }
+        return product;
+      } else {
+        throw new MatrixSizeMismatchException();
+      }
     }
 
     public Matrix dotProduct( Matrix matrix ) throws MatrixSizeMismatchException {
@@ -430,6 +450,11 @@ public class Matrix{
         }
     }
 
+    /**
+    * Returns a row vector with entries from the row index.
+    * @param row the index of the row where the entries will be copied.
+    * @return Matrix object with 1 row and contains the entries of the matrix from row index.
+    */
     public Matrix getRowVector( int row ){
         Matrix vector = createRowMatrix( columns );
 
@@ -439,16 +464,44 @@ public class Matrix{
         return vector;
     }
 
+    /**
+    * Determines whether the matrix is either a row or column vector.
+    * @return true if the matrix is a row or column vector, and false otherwise.
+    */
     public boolean isVector(){
         return isRowVector() || isColumnVector();
     }
 
+    /**
+    * Determines if the matrix is a row vector.
+    * @return true if the matrix is a row vector, and false otherwise.
+    */
     public boolean isRowVector(){
         return this.rows == 1;
     }
 
+    /**
+    * Determines if the matrix is a column vector.
+    * @return true if the matrix is a column vector, and false otherwise.
+    */
     public boolean isColumnVector(){
         return this.columns ==  1;
+    }
+
+    /**
+    * Determines whether the matrix is an identity matrix.
+    * @return true if the matrix is an identity matrix, and false otherwise.
+    */
+    public boolean isIdentity(){
+        if( !isSquare() ) return false;
+
+        for( int i = 0; i < rows; i++ )
+          for( int j = 0; j < columns; j++ ){
+             if( i == j && entries[ i ][ j ] != 1.0 ) return false;
+             else if( i != j && entries[ i ][ j ] != 0.0 ) return false;
+          }
+
+        return true;
     }
 
     /**
@@ -472,6 +525,12 @@ public class Matrix{
     */
     public static Matrix createSquareMatrix( int n ){ return new Matrix( n, n ); }
 
+    /**
+    * Creates a identity matrix object of size n x n. An identity matrix is a square matrix with 1's on the main
+    * diagonal (upper left to lower right), and zeros elsewhere.
+    * @param n is the number of rows and columns of the identity matrix.
+    * @return a identity matrix object of size n x n.
+    */
     public static Matrix createIdentityMatrix( int n ){
         Matrix identityMatrix = new Matrix( n, n );
 

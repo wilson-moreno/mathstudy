@@ -7,10 +7,10 @@ public class MatrixDemo{
 
     public static void main( String[] args ){
         System.out.println( "Welcome to the Matrix driver program!" );
-        System.out.println( "This program will demonstrate the elementary matrix operation implementation in Java." );
+        System.out.println( "This program will demonstrate the elementary and advanced matrix operation implementation in Java." );
         System.out.println( "The primary class that represents a matrix is named Matrix.\n\n" );
-        System.out.println( "Create two matrix object named A and B. \n");
         /*
+        System.out.println( "Create two matrix object named A and B. \n");
         Matrix a = Matrix.createSquareMatrix( 5 );
         Matrix b = Matrix.createSquareMatrix( 5 );
         System.out.println( "Matrix A: \n" + a );
@@ -97,16 +97,18 @@ public class MatrixDemo{
         System.out.println( "Identity matrix: \n" + h );
         System.out.println( " Dot product of I and x: \n" + h.dotProduct( g ) );
         */
-        Matrix a = new Matrix( 3, 3 );
-        Matrix b = Matrix.createIdentityMatrix( 3 );
-        a.setRowEntries( 0, " 2  7  1 " );
-        a.setRowEntries( 1, " 1  4 -1 " );
-        a.setRowEntries( 2, " 1  3  0 " );        
+        Matrix a = new Matrix( 3, 4 );
+        Matrix b = new Matrix( 4, 3 );
+        a.setRowEntries( 0, " 2  -1  3  5 " );
+        a.setRowEntries( 1, " 0   2 -3  1 " );
+        a.setRowEntries( 2, "-3   4  1  2 " );
+        b.setColumnEntries( 0, " 2  1 0 -2 " );
+        b.setColumnEntries( 1, " 2  1 0 -2 " );
+        b.setColumnEntries( 2, " 2  1 0 -2 " );
         System.out.println( "Matrix A entries: \n" + a );
         System.out.println( "Matrix B entries: \n" + b );
-        a.reducedRowEchelon( b );
-        System.out.println( "Matrix A entries in row-echelon: \n" + a );
-        System.out.println( "Matrix B entries after row-echelon: \n" + b );
-    }
+        System.out.println( "Multiply A by B: \n" + a.multiply( b ) );
+        System.out.println( "A dot product B: \n" + a.dotProduct( b ) );
+        }
 
 }
