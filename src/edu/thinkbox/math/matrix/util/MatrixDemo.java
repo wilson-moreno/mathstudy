@@ -96,7 +96,7 @@ public class MatrixDemo{
         Matrix h = Matrix.createIdentityMatrix( 4 );
         System.out.println( "Identity matrix: \n" + h );
         System.out.println( " Dot product of I and x: \n" + h.dotProduct( g ) );
-        */
+
         Matrix a = new Matrix( 3, 4 );
         Matrix b = new Matrix( 4, 3 );
         a.setRowEntries( 0, " 2  -1  3  5 " );
@@ -109,6 +109,14 @@ public class MatrixDemo{
         System.out.println( "Matrix B entries: \n" + b );
         System.out.println( "Multiply A by B: \n" + a.multiply( b ) );
         System.out.println( "A dot product B: \n" + a.dotProduct( b ) );
+        */
+
+        Matrix a = new Matrix( 2, 2 );
+        a.generateRandomEntries();
+        System.out.println( "Matrix A: \n" + a );
+        for( int r = 0; r < 10; r++ )
+          System.out.printf( "Matrix A^%d: \n%s", r, a.power( r ) );
+
         }
 
 }

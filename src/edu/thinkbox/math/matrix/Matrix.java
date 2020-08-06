@@ -222,7 +222,7 @@ public class Matrix{
 
         for( int i = 0; i < rows; i++ )
           for( int j = 0; j < columns; j++ )
-              entries[ i ][ j ] = ( -100.0 + 200.0 * random.nextDouble() );
+              entries[ i ][ j ] = ( -5.0 + 10.0 * random.nextDouble() );
     }
 
     /**
@@ -397,6 +397,27 @@ public class Matrix{
         rows = columns;
         columns = temp;
     }
+
+
+    public Matrix power( int r ) throws MatrixSizeMismatchException {
+        if( this.isSquare() ){
+          Matrix matrixPower = createIdentityMatrix( rows );
+
+          for( int s = 0; s < r; s++)
+             matrixPower = matrixPower.multiply( this );
+
+          return matrixPower;
+        } else {
+          throw new MatrixSizeMismatchException();
+        }
+    }
+
+    private Matrix createCopy() throws MatrixSizeMismatchException {
+        Matrix copyOfMatrix = new Matrix( rows, columns );
+        copyOfMatrix.copy( this );
+        return copyOfMatrix;
+    }
+
 
     /**
     * Copies the corresponding entries of another matrix object to the entries of the calling matrix object.
