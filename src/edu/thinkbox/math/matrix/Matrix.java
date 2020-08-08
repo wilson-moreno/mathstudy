@@ -91,6 +91,26 @@ public class Matrix{
     }
 
 
+    public double determinant(){
+        return determinant( 0, 0, this );
+    }
+
+    private double determinant( int i, int j, Matrix matrix ){
+        double determinant = 0.0;
+
+        if( matrix.isSquare() && matrix.getRows() == 1 )  {
+            determinant = matrix.getEntry( 0, 0 );
+        } else if( matrix.isSquare() && matrix.getRows() == 2 ) {
+            determinant = ( matrix.getEntry( 0, 0 ) * matrix.getEntry( 1, 1 ) ) -
+                          ( matrix.getEntry( 0, 1 ) * matrix.getEntry( 1, 0 ) );
+        } else if( matrix.isSquare() && matrix.getRows() > 2 ) {
+            determinant += Math.pow( -1, i + j );
+        }
+
+        return determinant;
+    }
+
+
 
     public void reducedRowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
         if( getRows() == matrix.getRows() ){

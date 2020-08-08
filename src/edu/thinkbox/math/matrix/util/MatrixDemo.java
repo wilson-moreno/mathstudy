@@ -111,12 +111,10 @@ public class MatrixDemo{
         System.out.println( "A dot product B: \n" + a.dotProduct( b ) );
         */
 
-        Matrix a = new Matrix( 2, 2 );
-        a.generateRandomEntries();
-        System.out.println( "Matrix A: \n" + a );
-        for( int r = 0; r < 10; r++ )
-          System.out.printf( "Matrix A^%d: \n%s", r, a.power( r ) );
-
-        }
-
+        Matrix matrix = new Matrix( 2, 2 );
+        matrix.setRowEntries( 0, "-4  0 " );
+        matrix.setRowEntries( 1, " 1  5 " );
+        System.out.println( "Square matrix: \n" + matrix );
+        System.out.println( "Determinant: " + matrix.determinant() );
+      }
 }
