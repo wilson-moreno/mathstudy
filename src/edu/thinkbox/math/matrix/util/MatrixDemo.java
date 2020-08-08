@@ -111,10 +111,13 @@ public class MatrixDemo{
         System.out.println( "A dot product B: \n" + a.dotProduct( b ) );
         */
 
-        Matrix matrix = new Matrix( 2, 2 );
-        matrix.setRowEntries( 0, "-4  0 " );
-        matrix.setRowEntries( 1, " 1  5 " );
-        System.out.println( "Square matrix: \n" + matrix );
-        System.out.println( "Determinant: " + matrix.determinant() );
+        Matrix matrix = new Matrix( 4, 4 );
+        matrix.setRowEntries( 0, "  3  0  0  0 " );
+        matrix.setRowEntries( 1, "  5  1  2  0 " );
+        matrix.setRowEntries( 2, "  2  6  0 -1 " );
+        matrix.setRowEntries( 3, " -6  3  1  0 " );
+        System.out.println( "The matrix: \n" + matrix );
+        System.out.println( "Determinant of matrix: \n" + matrix.determinant() );
+
       }
 }

@@ -92,11 +92,12 @@ public class Matrix{
 
 
     public double determinant(){
-        return determinant( 0, 0, this );
+        return determinant( 0, this );
     }
 
-    private double determinant( int i, int j, Matrix matrix ){
+    private double determinant( int pivotColumn, Matrix matrix ){
         double determinant = 0.0;
+
 
         if( matrix.isSquare() && matrix.getRows() == 1 )  {
             determinant = matrix.getEntry( 0, 0 );
@@ -104,10 +105,60 @@ public class Matrix{
             determinant = ( matrix.getEntry( 0, 0 ) * matrix.getEntry( 1, 1 ) ) -
                           ( matrix.getEntry( 0, 1 ) * matrix.getEntry( 1, 0 ) );
         } else if( matrix.isSquare() && matrix.getRows() > 2 ) {
-            determinant += Math.pow( -1, i + j );
+            for( int j = 0; j < matrix.getColumns(); j++ )
+              determinant += cofactor( j, matrix );
+        } else {
+          determinant = 0.0;
         }
 
         return determinant;
+    }
+
+    private double cofactor( int pivotColumn, Matrix matrix ){
+        double scalar = Math.pow( -1, pivotColumn ) * matrix.getEntry( 0, pivotColumn );
+        Matrix comatrix = new Matrix( matrix.getRows(), matrix.getRows() );
+        comatrix.copy( matrix );
+        comatrix.removeRow( 0 );
+        comatrix.removeColumn( pivotColumn );
+        System.out.printf( "%.2f\n", scalar );
+        System.out.println( comatrix );
+        return scalar * determinant( 0, comatrix );
+    }
+
+    public boolean removeRow( int row ){
+        if( this.rows > 1 ){
+          double[][] newEntries = new double[ this.rows - 1 ][ this.columns ];
+
+          for( int i = 0, k = 0; i < this.rows; i++ ){
+            if( row == i ) continue;
+            for( int j = 0; j < this.columns; j++ )
+              newEntries[ k ][ j ] = entries[ i ][ j ];
+            k++;
+          }
+
+          this.rows--;
+          this.entries = newEntries;
+          return true;
+        }
+        return false;
+    }
+
+    public boolean removeColumn( int column ){
+        if( this.columns > 1 ){
+          double[][] newEntries = new double[ this.rows ][ this.columns - 1 ];
+
+          for( int i = 0; i < this.rows; i++ ){
+            for( int j = 0, k = 0; j < this.columns; j++ ){
+              if( j == column ) continue;
+              newEntries[ i ][ k++ ] = entries[ i ][ j ];
+            }
+          }
+
+          this.columns--;
+          this.entries = newEntries;
+          return true;
+        }
+        return false;
     }
 
 
