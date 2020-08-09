@@ -111,13 +111,9 @@ public class MatrixDemo{
         System.out.println( "A dot product B: \n" + a.dotProduct( b ) );
         */
 
-        Matrix matrix = new Matrix( 4, 4 );
-        matrix.setRowEntries( 0, "  3  0  0  0 " );
-        matrix.setRowEntries( 1, "  5  1  2  0 " );
-        matrix.setRowEntries( 2, "  2  6  0 -1 " );
-        matrix.setRowEntries( 3, " -6  3  1  0 " );
+        Matrix matrix = new Matrix( 5, 5 );
+        matrix.generateRandomEntries();
         System.out.println( "The matrix: \n" + matrix );
         System.out.println( "Determinant of matrix: \n" + matrix.determinant() );
-
       }
 }

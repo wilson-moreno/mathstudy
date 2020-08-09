@@ -92,10 +92,10 @@ public class Matrix{
 
 
     public double determinant(){
-        return determinant( 0, this );
+        return cofactorExpansion( this );
     }
 
-    private double determinant( int pivotColumn, Matrix matrix ){
+    private double cofactorExpansion( Matrix matrix ){
         double determinant = 0.0;
 
 
@@ -106,7 +106,7 @@ public class Matrix{
                           ( matrix.getEntry( 0, 1 ) * matrix.getEntry( 1, 0 ) );
         } else if( matrix.isSquare() && matrix.getRows() > 2 ) {
             for( int j = 0; j < matrix.getColumns(); j++ )
-              determinant += cofactor( j, matrix );
+              determinant += matrix.getEntry( 0, j ) * cofactor( j, matrix );
         } else {
           determinant = 0.0;
         }
@@ -115,15 +115,35 @@ public class Matrix{
     }
 
     private double cofactor( int pivotColumn, Matrix matrix ){
-        double scalar = Math.pow( -1, pivotColumn ) * matrix.getEntry( 0, pivotColumn );
-        Matrix comatrix = new Matrix( matrix.getRows(), matrix.getRows() );
-        comatrix.copy( matrix );
-        comatrix.removeRow( 0 );
-        comatrix.removeColumn( pivotColumn );
-        System.out.printf( "%.2f\n", scalar );
-        System.out.println( comatrix );
-        return scalar * determinant( 0, comatrix );
+        double scalar = Math.pow( -1, pivotColumn );
+        Matrix submatrix = new Matrix( matrix.getRows(), matrix.getRows() );
+        submatrix.copy( matrix );
+        submatrix.removeRow( 0 );
+        submatrix.removeColumn( pivotColumn );
+        return scalar * cofactorExpansion( submatrix );
     }
+
+    /*
+    private double cofactor( int pivotRow, int pivotColumn, Matrix matrix ){
+        double scalar = Math.pow( -1, ( pivotRow + 1 ) + ( pivotColumn + 1 ) );
+        Matrix submatrix = new Matrix( matrix.getRows(), matrix.getRows() );
+        submatrix.copy( matrix );
+        submatrix.removeRow( pivotRow );
+        submatrix.removeColumn( pivotColumn );
+        System.out.println( submatrix );
+        return scalar * cofactorExpansion( submatrix );
+    }
+
+    public Matrix adjugate(){
+        Matrix adjugate = new Matrix( getRows(), getColumns() );
+
+        for( int i = 0; i < getRows(); i++ )
+         for( int j = 0; j < getColumns(); j++ )
+            adjugate.setEntry( i, j, cofactor( i, j, this ) );
+
+        return adjugate;
+    }
+    */
 
     public boolean removeRow( int row ){
         if( this.rows > 1 ){
@@ -293,7 +313,7 @@ public class Matrix{
 
         for( int i = 0; i < rows; i++ )
           for( int j = 0; j < columns; j++ )
-              entries[ i ][ j ] = ( -5.0 + 10.0 * random.nextDouble() );
+              entries[ i ][ j ] = ( double ) ( -10 + random.nextInt( 20 ) );
     }
 
     /**
