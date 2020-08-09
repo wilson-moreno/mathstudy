@@ -90,60 +90,48 @@ public class Matrix{
       }
     }
 
-
-    public double determinant(){
-        return cofactorExpansion( this );
-    }
-
-    private double cofactorExpansion( Matrix matrix ){
+    public double determinant() throws NonSquareMatrixException {
+        if( !isSquare() ) throw new NonSquareMatrixException();
         double determinant = 0.0;
 
-
-        if( matrix.isSquare() && matrix.getRows() == 1 )  {
-            determinant = matrix.getEntry( 0, 0 );
-        } else if( matrix.isSquare() && matrix.getRows() == 2 ) {
-            determinant = ( matrix.getEntry( 0, 0 ) * matrix.getEntry( 1, 1 ) ) -
-                          ( matrix.getEntry( 0, 1 ) * matrix.getEntry( 1, 0 ) );
-        } else if( matrix.isSquare() && matrix.getRows() > 2 ) {
-            for( int j = 0; j < matrix.getColumns(); j++ )
-              determinant += matrix.getEntry( 0, j ) * cofactor( j, matrix );
-        } else {
-          determinant = 0.0;
+        if( getRows() == 1 )  {
+            determinant = entries[ 0 ][ 0 ];
+        } else if( getRows() == 2 ) {
+            determinant = ( entries[ 0 ][ 0 ] * entries[ 1 ][ 1 ] ) -
+                          ( entries[ 0 ][ 1 ] * entries[ 1 ][ 0 ] );
+        } else if( getRows() > 2 ){
+            // Cofactor expansion: det( A ) = a11C11 + a12C12 + ... + a1nC1n
+            for( int j = 0; j < getColumns(); j++ )
+              determinant += entries[ 0 ][ j ] * cofactor( 0, j );
         }
 
         return determinant;
     }
 
-    private double cofactor( int pivotColumn, Matrix matrix ){
-        double scalar = Math.pow( -1, pivotColumn );
-        Matrix submatrix = new Matrix( matrix.getRows(), matrix.getRows() );
-        submatrix.copy( matrix );
-        submatrix.removeRow( 0 );
-        submatrix.removeColumn( pivotColumn );
-        return scalar * cofactorExpansion( submatrix );
+    private double cofactor( int rowIndex, int columnIndex ) throws NonSquareMatrixException {
+        if( !isSquare() ) throw new NonSquareMatrixException();
+
+        double sign = Math.pow( -1, rowIndex + columnIndex );
+        Matrix submatrix = new Matrix( getRows(), getColumns() );
+        submatrix.copy( this );
+        submatrix.removeRow( rowIndex );
+        submatrix.removeColumn( columnIndex );
+        return sign * submatrix.determinant();
     }
 
-    /*
-    private double cofactor( int pivotRow, int pivotColumn, Matrix matrix ){
-        double scalar = Math.pow( -1, ( pivotRow + 1 ) + ( pivotColumn + 1 ) );
-        Matrix submatrix = new Matrix( matrix.getRows(), matrix.getRows() );
-        submatrix.copy( matrix );
-        submatrix.removeRow( pivotRow );
-        submatrix.removeColumn( pivotColumn );
-        System.out.println( submatrix );
-        return scalar * cofactorExpansion( submatrix );
-    }
+    public Matrix adjugate() throws NonSquareMatrixException {
+        if ( !isSquare() ) throw new NonSquareMatrixException();
 
-    public Matrix adjugate(){
-        Matrix adjugate = new Matrix( getRows(), getColumns() );
+        Matrix cofactorMatrix = new Matrix( getRows(), getColumns() );
 
         for( int i = 0; i < getRows(); i++ )
          for( int j = 0; j < getColumns(); j++ )
-            adjugate.setEntry( i, j, cofactor( i, j, this ) );
+            cofactorMatrix.setEntry( i, j, cofactor( i, j ) );
 
-        return adjugate;
+        cofactorMatrix.transpose();
+
+        return cofactorMatrix;
     }
-    */
 
     public boolean removeRow( int row ){
         if( this.rows > 1 ){
@@ -181,6 +169,14 @@ public class Matrix{
         return false;
     }
 
+
+    public Matrix inverse() throws NonInvertibleMatrixException {
+        if( determinant() == 0.0 ) throw new NonInvertibleMatrixException();
+        
+        Matrix result = adjugate();
+        result.scalarProduct( 1.0 / determinant() );
+        return result;
+    }
 
 
     public void reducedRowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
