@@ -108,11 +108,8 @@ public class Matrix{
         if( !isSquare() ) throw new NonSquareMatrixException();
 
         double sign = Math.pow( -1, rowIndex + columnIndex );
-        Matrix submatrix = new Matrix( getRows(), getColumns() );
-        submatrix.copy( this );
-        submatrix.removeRow( rowIndex );
-        submatrix.removeColumn( columnIndex );
-        return sign * submatrix.determinant();
+        Matrix submatrix = duplicate();
+        return sign * submatrix.removeRow( rowIndex ).removeColumn( columnIndex ).determinant();
     }
 
     public Matrix adjugate() throws NonSquareMatrixException {
@@ -124,60 +121,48 @@ public class Matrix{
          for( int j = 0; j < getColumns(); j++ )
             cofactorMatrix.setEntry( i, j, cofactor( i, j ) );
 
-        cofactorMatrix.transpose();
-
-        return cofactorMatrix;
+        return cofactorMatrix.transpose();
     }
 
-    public boolean removeRow( int row ){
-        if( getRows() > 1 ){
-          double[][] newEntries = new double[ getRows() - 1 ][ getColumns() ];
+    public Matrix removeRow( int row ){
+        //if( getRows() > 1 ){
+        Matrix submatrix = new Matrix( getRows() - 1, getColumns() );
 
-          for( int i = 0, k = 0; i < getRows(); i++ ){
-            if( row == i ) continue;
-            for( int j = 0; j < getColumns(); j++ )
-              newEntries[ k ][ j ] = entries[ i ][ j ];
-            k++;
-          }
-
-          this.entries = newEntries;
-          return true;
+        for( int i = 0, k = 0; i < getRows(); i++ ){
+          if( row == i ) continue;
+          for( int j = 0; j < getColumns(); j++ )
+            submatrix.setEntry( k, j, entries[ i ][ j ] );
+          k++;
         }
-        return false;
+
+        return submatrix;
     }
 
-    public boolean removeColumn( int column ){
-        if( getColumns() > 1 ){
-          double[][] newEntries = new double[ getRows() ][ getColumns() - 1 ];
+    public Matrix removeColumn( int column ){
+        //if( getColumns() > 1 )
+        Matrix submatrix = new Matrix( getRows(), getColumns() - 1 );
 
-          for( int i = 0; i < getRows(); i++ ){
-            for( int j = 0, k = 0; j < getColumns(); j++ ){
-              if( j == column ) continue;
-              newEntries[ i ][ k++ ] = entries[ i ][ j ];
-            }
+        for( int i = 0; i < getRows(); i++ ){
+          for( int j = 0, k = 0; j < getColumns(); j++ ){
+            if( j == column ) continue;
+            submatrix.setEntry( i, k++, entries[ i ][ j ] );
           }
-
-          this.entries = newEntries;
-          return true;
         }
-        return false;
+
+        return submatrix;
     }
 
 
     public Matrix inverse() throws NonInvertibleMatrixException {
         if( determinant() == 0.0 ) throw new NonInvertibleMatrixException();
-
-        Matrix result = adjugate();
-        result.scalarProduct( 1.0 / determinant() );
-        return result;
+        return adjugate().scalarProduct( 1.0 / determinant() );
     }
 
 
     public void reducedRowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
-        if( getRows() == matrix.getRows() ){
-          reducedRowEchelon(0, 0, matrix );
-        } else
-          throw new MatrixSizeMismatchException();
+        if( getRows() != matrix.getRows() ) throw new MatrixSizeMismatchException();
+
+        reducedRowEchelon( 0, 0, matrix );
     }
 
     private void reducedRowEchelon( int pivotRow, int pivotColumn, Matrix matrix){
@@ -224,10 +209,9 @@ public class Matrix{
     }
 
     public void rowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
-        if( getRows() == matrix.getRows() )
-          rowEchelon(0, 0, matrix );
-        else
-          throw new MatrixSizeMismatchException();
+        if( getRows() != matrix.getRows() ) throw new MatrixSizeMismatchException();
+
+        rowEchelon(0, 0, matrix );
     }
 
     private void rowEchelon( int pivotRow, int pivotColumn, Matrix matrix){
@@ -328,7 +312,7 @@ public class Matrix{
         if( sizeEquals( matrix ) ){
             for( int i = 0; i < getRows(); i++ )
               for( int j = 0; j < getColumns(); j++ )
-                if( entries[ i ][ j ] != matrix.getEntry( i, j ))return false;
+                if( entries[ i ][ j ] != matrix.getEntry( i, j ) ) return false;
 
             return true;
         } else {
@@ -343,8 +327,14 @@ public class Matrix{
     public String toString(){
         String rectForm = new String();
 
+        rectForm = "        ";
+        for( int s = 1; s <= getColumns(); s++ )
+            rectForm += String.format("%8s ", "x" + s );
+
+        rectForm += "\n";
+
         for( int i = 0; i < getRows(); i++){
-            rectForm += "[ ";
+            rectForm += String.format("%4d: [ ", i + 1 );
           for( int j = 0; j < getColumns(); j++ ){
             rectForm += String.format("%8.2f ", entries[ i ][ j ] );
           }
@@ -370,11 +360,15 @@ public class Matrix{
     * @param matrix another object of the Matrix class.
     * @throws MatrixSizeMismatchException in the case that the matrices is of different sizes.
     */
-    public void add( Matrix matrix ) throws MatrixSizeMismatchException {
+    public Matrix add( Matrix matrix ) throws MatrixSizeMismatchException {
         if( this.sizeEquals( matrix) ){
+          Matrix sum = new Matrix( getRows(), getColumns() );
+
           for( int i = 0; i < getRows(); i++ )
             for( int j = 0; j < getColumns(); j++ )
-              entries[ i ][ j ] += matrix.getEntry( i, j );
+              sum.setEntry( i, j, entries[ i ][ j ] + matrix.getEntry( i, j ) );
+
+          return sum;
         } else {
           throw new MatrixSizeMismatchException();
         }
@@ -387,11 +381,15 @@ public class Matrix{
     * @param matrix another object of the Matrix class.
     * @throws MatrixSizeMismatchException in the case that the matrices is of different sizes.
     */
-    public void subtract( Matrix matrix ) throws MatrixSizeMismatchException {
+    public Matrix subtract( Matrix matrix ) throws MatrixSizeMismatchException {
         if( this.sizeEquals( matrix) ){
+          Matrix difference = new Matrix( getRows(), getColumns() );
+
           for( int i = 0; i < getRows(); i++ )
             for( int j = 0; j < getColumns(); j++ )
-              entries[ i ][ j ] -= matrix.getEntry( i, j );
+              difference.setEntry( i, j, entries[ i ][ j ] - matrix.getEntry( i, j ) );
+
+          return difference;
         } else {
           throw new MatrixSizeMismatchException();
         }
@@ -403,10 +401,14 @@ public class Matrix{
     * the scalar multiple kA is the matrix obtained from A by multiplying each entry of A by k.
     * @param scalarValue is the value multiplied to each entry of matrix object.
     */
-    public void scalarProduct( double scalarValue){
+    public Matrix scalarProduct( double scalarValue){
+        Matrix product = duplicate();
+
         for( int i = 0; i < getRows(); i++ )
           for( int j = 0; j < getColumns(); j++ )
-            entries[ i ][ j ] *= scalarValue;
+            product.setEntry( i, j, entries[ i ][ j ] * scalarValue );
+
+        return product;
     }
 
     public Matrix multiply( Matrix matrix ) throws MatrixSizeMismatchException{
@@ -417,9 +419,9 @@ public class Matrix{
         if( getColumns() == matrix.getRows() ){
             Matrix product = new Matrix( getRows(), matrix.getColumns() );
             Matrix columnVector;
-            for( int i = 0; i < matrix.getColumns(); i++ ){
-                columnVector = vectorProduct( matrix.getColumnVector( i ) );
-                product.setColumnVector( i, columnVector );
+            for( int j = 0; j < matrix.getColumns(); j++ ){
+                columnVector = vectorProduct( matrix.getColumnVector( j ) );
+                product.setColumnVector( j, columnVector );
             }
             return product;
         } else {
@@ -433,8 +435,7 @@ public class Matrix{
         Matrix columnVector;
         for( int i = 0; i < getColumns(); i++ ){
           columnVector = getColumnVector( i );
-          columnVector.scalarProduct( vector.getEntry( i, 0 ) );
-          product.add( columnVector );
+          product = product.add( columnVector.scalarProduct( vector.getEntry( i, 0 ) ) );
         }
         return product;
       } else {
@@ -465,15 +466,14 @@ public class Matrix{
     * Transpose the entries of the matrix object. If A is an m x n matrix, the transpose of A, is the n x m matrix whose
     * rows are just the columns of A in the same order.
     */
-    public void transpose(){
-        double[][] transposed = new double[ getColumns() ][ getRows() ];
+    public Matrix transpose(){
+        Matrix transposedMatrix = new Matrix( getColumns(), getRows() );
 
         for( int i = 0; i < getRows(); i++ )
           for( int j = 0; j < getColumns(); j++ )
-            transposed[ j ][ i ] = entries[ i ][ j ];
+            transposedMatrix.setEntry( j, i, entries[ i ][ j ] );
 
-        this.entries = null;
-        this.entries = transposed;
+        return transposedMatrix;
     }
 
 
@@ -490,19 +490,12 @@ public class Matrix{
         }
     }
 
-    private Matrix createCopy() throws MatrixSizeMismatchException {
-        Matrix copyOfMatrix = new Matrix( getRows(), getColumns() );
-        copyOfMatrix.copy( this );
-        return copyOfMatrix;
-    }
-
-
     /**
     * Copies the corresponding entries of another matrix object to the entries of the calling matrix object.
     * @param matrix another object of the Matrix class.
     * @throws MatrixSizeMismatchException in the case that the matrices is of different sizes.
     */
-    public void copy( Matrix matrix ) throws MatrixSizeMismatchException{
+    public void copyEntries( Matrix matrix ) throws MatrixSizeMismatchException{
         if( sizeEquals( matrix ) ){
           for( int i = 0; i < getRows(); i++ )
             for( int j = 0; j < getColumns(); j++ )
@@ -512,16 +505,29 @@ public class Matrix{
         }
     }
 
+    public Matrix duplicate(){
+        Matrix duplicate = new Matrix( getRows(), getColumns() );
+
+        for( int i = 0; i < getRows(); i++ )
+          for( int j = 0; j < getColumns(); j++ )
+            duplicate.setEntry( i, j, entries[ i ][ j ] );
+
+        return duplicate;
+    }
+
     /**
     * Turns the matrix object to its negative matrix. The negative of an m x n matrix A ( written -A ) is defined to be the
     * m x n matrix obtained by multiplying each entry of A by -1. If A = a[ row ][ column ], this becomes -A = -a[ row ][ column ].
     */
-    public void negative(){
+    public Matrix negative(){
+      Matrix negativeMatrix = new Matrix( getRows(), getColumns() );
+
       for( int i = 0; i < getRows(); i++ )
         for( int j = 0; j < getColumns(); j++ )
-          entries[ i ][ j ] *= -1;
-    }
+          negativeMatrix.setEntry( i, j, entries[ i ][ j ] * -1);
 
+      return negativeMatrix;
+    }
 
 
     /**
@@ -541,11 +547,13 @@ public class Matrix{
         return vector;
     }
 
-    private void setColumnVector( int column, Matrix vector ){
+    private void setColumnVector( int column, Matrix vector ) throws MatrixSizeMismatchException {
         if( vector.isColumnVector() && getRows() == vector.getRows() ){
           for( int i = 0; i < getRows(); i++ ){
             entries[ i ][ column ] = vector.getEntry( i, 0 );
           }
+        } else {
+          throw new MatrixSizeMismatchException();
         }
     }
 

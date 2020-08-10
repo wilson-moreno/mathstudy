@@ -2,6 +2,7 @@ package edu.thinkbox.math.matrix.util;
 
 import edu.thinkbox.math.matrix.Matrix;
 import edu.thinkbox.math.matrix.AugmentedMatrix;
+import java.math.BigInteger;
 
 public class MatrixDemo{
 
@@ -10,6 +11,7 @@ public class MatrixDemo{
         System.out.println( "This program will demonstrate the elementary and advanced matrix operation implementation in Java." );
         System.out.println( "The primary class that represents a matrix is named Matrix.\n\n" );
         System.out.println( "Create two matrix object named A and B. \n");
+        /*
         Matrix a = Matrix.createSquareMatrix( 5 );
         Matrix b = Matrix.createSquareMatrix( 5 );
         System.out.println( "Matrix A: \n" + a );
@@ -108,5 +110,26 @@ public class MatrixDemo{
         System.out.println( "Matrix B entries: \n" + b );
         System.out.println( "Multiply A by B: \n" + a.multiply( b ) );
         System.out.println( "A dot product B: \n" + a.dotProduct( b ) );
+
+        Matrix coeffs = Matrix.createSquareMatrix( 3 );
+        Matrix constants = Matrix.createColumnMatrix( 3 );
+        coeffs.setRowEntries( 0, " 0  1  1 ");
+        coeffs.setRowEntries( 1, " 1  1  2 ");
+        coeffs.setRowEntries( 2, " 1  3  4 ");
+        constants.setColumnEntries( 0, " 5 13 23 " );
+        System.out.println( "Vitamin Brands and units of each vitamin per pill: \n\n" + coeffs );
+        System.out.println( "Required unit per vitamins: \n\n" + constants );
+        coeffs.reducedRowEchelon( constants );
+        System.out.println( "Vitamin Brands and units of each vitamin per pill: \n\n" + coeffs );
+        System.out.println( "Solution: \n\n" + constants );
+        */
+        Matrix a = new Matrix( 3, 3 );
+        a.generateRandomEntries();
+        System.out.println( "Matrix: \n" + a );
+        System.out.println( "Negative matrix: \n" + a.negative() );
+        System.out.println( "Multiply: \n" + a.multiply( a ) );
+        System.out.println( "Third power of matrix: \n" + a.power( 3 ) ) ;
+        System.out.println( "Inverse of matrix: \n" + a.inverse() );
+        System.out.println( a.determinant() );
       }
 }
