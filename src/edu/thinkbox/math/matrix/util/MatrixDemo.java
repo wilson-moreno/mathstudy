@@ -111,16 +111,13 @@ public class MatrixDemo{
         System.out.println( "A dot product B: \n" + a.dotProduct( b ) );
         */
 
-        Matrix matrix = new Matrix( 5, 5 );
-        matrix.generateRandomEntries();
-        //matrix.setRowEntries( 0, "  1  3 -2 " );
-        //matrix.setRowEntries( 1, "  0  1  5 " );
-        //matrix.setRowEntries( 2, " -2 -6  7 " );
-        System.out.println( "The matrix: \n" + matrix );
-        System.out.println( "Determinant of matrix: \n" + matrix.determinant() );
-        System.out.println( "Adjugate of Matrix: \n" + matrix.adjugate() );
-        System.out.println( "Inverse of matrix: \n" + matrix.inverse() );
-        System.out.println( "Inverse of matrix: \n" + matrix.inverse() );
-        System.out.println( "Matrix multiplied by inverse: \n" + matrix.multiply( matrix.inverse() ) );
+        Matrix coeff = new Matrix( 20, 20 );
+	Matrix cons = new Matrix( 20, 1 );
+        coeff.generateRandomEntries();
+ 	cons.generateRandomEntries();
+        System.out.println( "The coefficients matrix: \n" + coeff );
+        System.out.println( "The constants matrix: \n" + cons );
+	coeff.reducedRowEchelon( cons );
+	System.out.println( "The solution: \n" + cons );
       }
 }

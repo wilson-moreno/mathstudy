@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 public class CartesianPlane extends Application{
       private static final int WIDTH = 400;
       private static final int HEIGHT = 400;
+      private static final int PADDING = 5;
       private double CenterX = WIDTH / 2;
       private double CenterY = HEIGHT / 2;
       private double zoomFactor = 20.0;
@@ -35,17 +36,17 @@ public class CartesianPlane extends Application{
 
       private void showGrid( GraphicsContext gc ){
         gc.setLineWidth( 0.25 );
-        for( int i = 0; ( i * zoomFactor ) < drawingCanvas.getHeight(); i++ )
+        for( int i = 0; ( i * zoomFactor ) <= drawingCanvas.getHeight(); i++ )
           gc.strokeLine( 0, i * zoomFactor, drawingCanvas.getWidth(), i * zoomFactor );
 
-        for( int j = 0; ( j * zoomFactor ) < drawingCanvas.getWidth(); j++ )
+        for( int j = 0; ( j * zoomFactor ) <= drawingCanvas.getWidth(); j++ )
           gc.strokeLine( j * zoomFactor, 0 , j * zoomFactor, drawingCanvas.getHeight() );
 
         gc.setStroke( Color.BLACK );
         // Draw axes
         gc.setLineWidth( 0.75 );
-        gc.strokeLine( 0 + 10, CenterY, drawingCanvas.getWidth() - 10, CenterY );
-        gc.strokeLine( CenterX, 0 + 10, CenterX, drawingCanvas.getHeight() - 10 );
+        gc.strokeLine( 0 + PADDING, CenterY, drawingCanvas.getWidth() - PADDING, CenterY );
+        gc.strokeLine( CenterX, 0 + PADDING, CenterX, drawingCanvas.getHeight() - PADDING );
       }
 
 }
