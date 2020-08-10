@@ -13,6 +13,7 @@ import java.time.LocalTime;
 */
 public class Matrix{
     private Vector< String > rowLabels;
+    private Vector< String > columnLabels;
     private double entries[][];
 
     /**
@@ -23,15 +24,34 @@ public class Matrix{
     public Matrix( int rows, int columns ){
       entries = new double[ rows ][ columns ];
       rowLabels = new Vector< String >( rows );
+      columnLabels = new Vector< String >( columns );
     }
 
     public void setColumnLabels( String labels ){
         Scanner input = new Scanner( labels ).useDelimiter( ";" );
 
         while( input.hasNext() ){
+          columnLabels.add( input.next() );
+        }
+    }
+
+    public void setRowLabels( String labels ){
+        Scanner input = new Scanner( labels ).useDelimiter( ";" );
+
+        while( input.hasNext() ){
           rowLabels.add( input.next() );
         }
     }
+
+    public int getColumnLabelMax(){
+        int max = 4;
+
+        for( String label : columnLabels )
+            if( label.length() > max ) max = label.length();
+
+        return max;
+    }
+
 
     /**
     * Gets the number of rows
@@ -345,15 +365,17 @@ public class Matrix{
     */
     public String toString(){
         String rectForm = new String();
+        int columnMax = getColumnLabelMax();
 
-        rectForm = "        ";
+        rectForm = String.format("%" + columnMax + "s", " ");
         for( int s = 0; s < getColumns(); s++ )
             rectForm += String.format("%8s ", getColumnLabel( s ) );
 
         rectForm += "\n";
 
         for( int i = 0; i < getRows(); i++){
-            rectForm += String.format("%4d: [ ", i + 1 );
+            String space = "%" + columnMax + "s";
+            rectForm += String.format( space + ": [ ", getRowLabel( i ) );
           for( int j = 0; j < getColumns(); j++ ){
             rectForm += String.format("%8.2f ", entries[ i ][ j ] );
           }
@@ -364,9 +386,15 @@ public class Matrix{
     }
 
     private String getColumnLabel( int index ){
+        if( columnLabels.size() > 0 && index < columnLabels.size() ) return columnLabels.get( index );
+        else return "x" + ( index + 1 );
+    }
+
+    private String getRowLabel( int index ){
         if( rowLabels.size() > 0 && index < rowLabels.size() ) return rowLabels.get( index );
         else return "x" + ( index + 1 );
     }
+
 
     /**
     * Compares the matrix object with another matrix if their size and entries are equal.
