@@ -130,6 +130,8 @@ public class MatrixDemo{
         System.out.println( "Multiply: \n" + a.multiply( a ) );
         System.out.println( "Third power of matrix: \n" + a.power( 3 ) ) ;
         System.out.println( "Inverse of matrix: \n" + a.inverse() );
-        System.out.println( a.determinant() );
+        Matrix identity = Matrix.createIdentityMatrix( 3 );
+        System.out.println( "Echelon Form: \n" + a.reducedRowEchelon( identity ) );
+        System.out.println( identity );
       }
 }

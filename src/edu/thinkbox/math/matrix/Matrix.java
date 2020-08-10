@@ -159,94 +159,102 @@ public class Matrix{
     }
 
 
-    public void reducedRowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
+    public Matrix reducedRowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
         if( getRows() != matrix.getRows() ) throw new MatrixSizeMismatchException();
 
-        reducedRowEchelon( 0, 0, matrix );
+        Matrix echelonForm = duplicate();
+
+        reducedRowEchelon( 0, 0, echelonForm, matrix );
+
+        return echelonForm;
     }
 
-    private void reducedRowEchelon( int pivotRow, int pivotColumn, Matrix matrix){
+    private void reducedRowEchelon( int pivotRow, int pivotColumn, Matrix echelonForm, Matrix matrix){
         if( ( pivotRow < 0 || pivotRow >= getRows() ) ||
             ( pivotColumn < 0 || pivotColumn >= getColumns() ) ) return;
 
         // Find index of max value in column vector starting from pivot row
         int max = pivotRow;
         for( int i = pivotRow + 1; i < getRows(); i++ )
-            if( Math.abs( entries[ i ][ pivotColumn ] ) > Math.abs( entries[ max ][ pivotColumn ] ) ) max = i;
+            if( Math.abs( echelonForm.getEntry( i, pivotColumn ) ) > Math.abs( echelonForm.getEntry( max, pivotColumn ) ) ) max = i;
 
         if( max != pivotRow ){
-          switchRows( pivotRow, max );
+          echelonForm.switchRows( pivotRow, max );
           matrix.switchRows( pivotRow, max );
         }
 
-        if( entries[ pivotRow ][ pivotColumn ] == 0.0 ){
-          reducedRowEchelon( pivotRow, pivotColumn + 1, matrix );
+        if( echelonForm.getEntry( pivotRow, pivotColumn ) == 0.0 ){
+          reducedRowEchelon( pivotRow, pivotColumn + 1, echelonForm, matrix );
         } else {
           double nonzero = 0.0;
 
-          nonzero = ( 1.0 / entries[ pivotRow ][ pivotColumn ] );
-          scale( pivotRow,  nonzero );
+          nonzero = ( 1.0 / echelonForm.getEntry( pivotRow, pivotColumn ) );
+          echelonForm.scale( pivotRow,  nonzero );
           matrix.scale( pivotRow, nonzero );
 
           for( int i = pivotRow + 1; i < getRows(); i++ ){
-            if( entries[ i ][ pivotColumn ] != 0.0 ){
-              nonzero = entries[ i ][ pivotColumn ] * -1.0;
-              replace( i, pivotRow, nonzero );
+            if( echelonForm.getEntry( i, pivotColumn ) != 0.0 ){
+              nonzero = echelonForm.getEntry( i, pivotColumn ) * -1.0;
+              echelonForm.replace( i, pivotRow, nonzero );
               matrix.replace( i, pivotRow, nonzero );
             }
           }
 
           for( int j = pivotRow - 1; j >= 0; j--){
-            if( entries[ j ][ pivotColumn ] != 0.0 ){
-              nonzero = entries[ j ][ pivotColumn ] * -1.0;
-              replace( j, pivotRow, nonzero );
+            if( echelonForm.getEntry( j, pivotColumn ) != 0.0 ){
+              nonzero = echelonForm.getEntry( j, pivotColumn ) * -1.0;
+              echelonForm.replace( j, pivotRow, nonzero );
               matrix.replace( j, pivotRow, nonzero );
             }
           }
 
-          reducedRowEchelon( pivotRow + 1, pivotColumn + 1, matrix );
+          reducedRowEchelon( pivotRow + 1, pivotColumn + 1, echelonForm, matrix );
         }
     }
 
-    public void rowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
+    public Matrix rowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
         if( getRows() != matrix.getRows() ) throw new MatrixSizeMismatchException();
 
-        rowEchelon(0, 0, matrix );
+        Matrix echelonForm = duplicate();
+
+        rowEchelon( 0, 0, echelonForm, matrix );
+
+        return echelonForm;
     }
 
-    private void rowEchelon( int pivotRow, int pivotColumn, Matrix matrix){
+    private void rowEchelon( int pivotRow, int pivotColumn, Matrix echelonForm, Matrix matrix){
         if( ( pivotRow < 0 || pivotRow >= getRows() ) ||
             ( pivotColumn < 0 || pivotColumn >= getColumns() ) ) return;
 
         // Find index of max value in column vector starting from pivot row
         int max = pivotRow;
         for( int i = pivotRow + 1; i < getRows(); i++ )
-            if( Math.abs( entries[ i ][ pivotColumn ] ) > Math.abs( entries[ max ][ pivotColumn ] ) ) max = i;
+            if( Math.abs( echelonForm.getEntry(  i, pivotColumn ) ) > Math.abs( echelonForm.getEntry( max, pivotColumn ) ) ) max = i;
 
         if( max != pivotRow ){
-          switchRows( pivotRow, max );
+          echelonForm.switchRows( pivotRow, max );
           matrix.switchRows( pivotRow, max );
         }
 
-        if( entries[ pivotRow ][ pivotColumn ] == 0.0 ){
-          rowEchelon( pivotRow, pivotColumn + 1, matrix );
+        if( echelonForm.getEntry( pivotRow, pivotColumn ) == 0.0 ){
+          rowEchelon( pivotRow, pivotColumn + 1, echelonForm, matrix );
         } else {
           double nonzero = 0.0;
 
-          nonzero = ( 1.0 / entries[ pivotRow ][ pivotColumn ] );
-          scale( pivotRow,  nonzero );
+          nonzero = ( 1.0 / echelonForm.getEntry( pivotRow, pivotColumn ) );
+          echelonForm.scale( pivotRow,  nonzero );
           matrix.scale( pivotRow, nonzero );
 
 
           for( int i = pivotRow + 1; i < getRows(); i++ ){
-            if( entries[ i ][ pivotColumn ] != 0.0 ){
-              nonzero = entries[ i ][ pivotColumn ] * -1.0;
-              replace( i, pivotRow, nonzero );
+            if( echelonForm.getEntry( i, pivotColumn ) != 0.0 ){
+              nonzero = echelonForm.getEntry( i, pivotColumn ) * -1.0;
+              echelonForm.replace( i, pivotRow, nonzero );
               matrix.replace( i, pivotRow, nonzero );
             }
           }
 
-          rowEchelon( pivotRow + 1, pivotColumn + 1, matrix );
+          rowEchelon( pivotRow + 1, pivotColumn + 1, echelonForm, matrix );
         }
     }
 
