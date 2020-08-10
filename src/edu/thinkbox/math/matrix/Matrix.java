@@ -2,6 +2,7 @@ package edu.thinkbox.math.matrix;
 
 import java.util.Scanner;
 import java.util.Random;
+import java.util.Vector;
 import java.time.LocalTime;
 
 /**
@@ -11,6 +12,7 @@ import java.time.LocalTime;
 * @author Wilson S. Moreno
 */
 public class Matrix{
+    private Vector< String > rowLabels;
     private double entries[][];
 
     /**
@@ -20,6 +22,15 @@ public class Matrix{
     */
     public Matrix( int rows, int columns ){
       entries = new double[ rows ][ columns ];
+      rowLabels = new Vector< String >( rows );
+    }
+
+    public void setColumnLabels( String labels ){
+        Scanner input = new Scanner( labels ).useDelimiter( ";" );
+
+        while( input.hasNext() ){
+          rowLabels.add( input.next() );
+        }
     }
 
     /**
@@ -336,8 +347,8 @@ public class Matrix{
         String rectForm = new String();
 
         rectForm = "        ";
-        for( int s = 1; s <= getColumns(); s++ )
-            rectForm += String.format("%8s ", "x" + s );
+        for( int s = 0; s < getColumns(); s++ )
+            rectForm += String.format("%8s ", getColumnLabel( s ) );
 
         rectForm += "\n";
 
@@ -350,6 +361,11 @@ public class Matrix{
         }
 
         return rectForm;
+    }
+
+    private String getColumnLabel( int index ){
+        if( rowLabels.size() > 0 && index < rowLabels.size() ) return rowLabels.get( index );
+        else return "x" + ( index + 1 );
     }
 
     /**

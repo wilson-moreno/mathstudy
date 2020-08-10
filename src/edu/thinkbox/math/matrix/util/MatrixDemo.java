@@ -10,7 +10,6 @@ public class MatrixDemo{
         System.out.println( "Welcome to the Matrix driver program!" );
         System.out.println( "This program will demonstrate the elementary and advanced matrix operation implementation in Java." );
         System.out.println( "The primary class that represents a matrix is named Matrix.\n\n" );
-        System.out.println( "Create two matrix object named A and B. \n");
         /*
         Matrix a = Matrix.createSquareMatrix( 5 );
         Matrix b = Matrix.createSquareMatrix( 5 );
@@ -123,15 +122,30 @@ public class MatrixDemo{
         System.out.println( "Vitamin Brands and units of each vitamin per pill: \n\n" + coeffs );
         System.out.println( "Solution: \n\n" + constants );
         */
-        Matrix a = new Matrix( 3, 3 );
-        a.generateRandomEntries();
-        System.out.println( "Matrix: \n" + a );
-        System.out.println( "Negative matrix: \n" + a.negative() );
-        System.out.println( "Multiply: \n" + a.multiply( a ) );
-        System.out.println( "Third power of matrix: \n" + a.power( 3 ) ) ;
-        System.out.println( "Inverse of matrix: \n" + a.inverse() );
-        Matrix identity = Matrix.createIdentityMatrix( 3 );
-        System.out.println( "Echelon Form: \n" + a.reducedRowEchelon( identity ) );
-        System.out.println( identity );
+
+        PROBLEM_11_19();
+      }
+
+
+      private static void PROBLEM_11_19(){
+        String problemStatement = "19. Workmen John and Joe earn a total of $24.60 when John works 2 hours and Joe works 3 hours.\n" +
+                                  "    If John works 3 hours and Joe 2 hours, they get $23.90. Find their hourly rates.\n\n" +
+                                  "Solution: \n\n";
+
+        System.out.println( problemStatement );
+
+        Matrix coefficients = new Matrix( 2, 2 );
+        Matrix constants = new Matrix( 2, 1 );
+        coefficients.setRowEntries( 0, " 2  3 ");
+        coefficients.setRowEntries( 1, " 3  2 ");
+        coefficients.setColumnLabels( "John;Joe" );
+        constants.setColumnEntries( 0, " 24.60 23.90 " );
+        constants.setColumnLabels( "Earnings" );
+        System.out.println( "John & Joe working hours: \n\n" + coefficients );
+        System.out.println( "John & Joe earnings: \n\n" + constants );
+        Matrix rates = constants.duplicate();
+        rates.setColumnLabels( "Rates" );
+        coefficients.reducedRowEchelon( rates );
+        System.out.println( "John & Joe rates: \n\n" + rates );
       }
 }
