@@ -11,8 +11,8 @@ import java.time.LocalTime;
 * @author Wilson S. Moreno
 */
 public class Matrix{
-    private int rows;     // 0 - m
-    private int columns;  // 0 - n
+    //private int rows;     // 0 - m
+    //private int columns;  // 0 - n
     private double entries[][];
 
     /**
@@ -21,8 +21,8 @@ public class Matrix{
     * @param columns the number of columns of the matrix
     */
     public Matrix( int rows, int columns ){
-      this.rows = rows;
-      this.columns = columns;
+      //this.rows = rows;
+      //this.columns = columns;
       entries = new double[ rows ][ columns ];
     }
 
@@ -30,13 +30,13 @@ public class Matrix{
     * Gets the number of rows
     * @return the number of rows, in <code>integer</code>, of the matrix.
     */
-    public int getRows(){ return rows; }
+    public int getRows(){ return entries.length; }
 
     /**
     * Gets the number columns
     * @return the number of columns, in <code>integer</code>, of the matrix.
     */
-    public int getColumns(){ return columns; }
+    public int getColumns(){ return entries[0].length; }
 
     /**
     * Gets the value of the entry at the specified row and column index
@@ -71,7 +71,7 @@ public class Matrix{
         Scanner scanner = new Scanner( entries );
 
         int column = 0;
-        while( scanner.hasNext() && column < columns ){
+        while( scanner.hasNext() && column < getColumns() ){
           setEntry( row, column++, scanner.nextDouble() );
         }
     }
@@ -85,7 +85,7 @@ public class Matrix{
       Scanner scanner = new Scanner( entries );
 
       int row = 0;
-      while( scanner.hasNext() && column < columns ){
+      while( scanner.hasNext() && column < getColumns() ){
         setEntry( row++, column, scanner.nextDouble() );
       }
     }
@@ -134,17 +134,16 @@ public class Matrix{
     }
 
     public boolean removeRow( int row ){
-        if( this.rows > 1 ){
-          double[][] newEntries = new double[ this.rows - 1 ][ this.columns ];
+        if( getRows() > 1 ){
+          double[][] newEntries = new double[ getRows() - 1 ][ getColumns() ];
 
-          for( int i = 0, k = 0; i < this.rows; i++ ){
+          for( int i = 0, k = 0; i < getRows(); i++ ){
             if( row == i ) continue;
-            for( int j = 0; j < this.columns; j++ )
+            for( int j = 0; j < getColumns(); j++ )
               newEntries[ k ][ j ] = entries[ i ][ j ];
             k++;
           }
 
-          this.rows--;
           this.entries = newEntries;
           return true;
         }
@@ -152,17 +151,16 @@ public class Matrix{
     }
 
     public boolean removeColumn( int column ){
-        if( this.columns > 1 ){
-          double[][] newEntries = new double[ this.rows ][ this.columns - 1 ];
+        if( getColumns() > 1 ){
+          double[][] newEntries = new double[ getRows() ][ getColumns() - 1 ];
 
-          for( int i = 0; i < this.rows; i++ ){
-            for( int j = 0, k = 0; j < this.columns; j++ ){
+          for( int i = 0; i < getRows(); i++ ){
+            for( int j = 0, k = 0; j < getColumns(); j++ ){
               if( j == column ) continue;
               newEntries[ i ][ k++ ] = entries[ i ][ j ];
             }
           }
 
-          this.columns--;
           this.entries = newEntries;
           return true;
         }
@@ -172,7 +170,7 @@ public class Matrix{
 
     public Matrix inverse() throws NonInvertibleMatrixException {
         if( determinant() == 0.0 ) throw new NonInvertibleMatrixException();
-        
+
         Matrix result = adjugate();
         result.scalarProduct( 1.0 / determinant() );
         return result;
@@ -181,7 +179,7 @@ public class Matrix{
 
     public void reducedRowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
         if( getRows() == matrix.getRows() ){
-          reducedRowEchelon(0, 0, rows, columns, matrix );
+          reducedRowEchelon(0, 0, getRows(), getColumns(), matrix );
         } else
           throw new MatrixSizeMismatchException();
     }
@@ -231,18 +229,18 @@ public class Matrix{
 
     public void rowEchelon( Matrix matrix ) throws MatrixSizeMismatchException {
         if( getRows() == matrix.getRows() )
-          rowEchelon(0, 0, rows, columns, matrix );
+          rowEchelon(0, 0, matrix );
         else
           throw new MatrixSizeMismatchException();
     }
 
-    private void rowEchelon( int pivotRow, int pivotColumn, int rows, int columns, Matrix matrix){
-        if( ( pivotRow < 0 || pivotRow >= rows ) ||
-            ( pivotColumn < 0 || pivotColumn >= columns ) ) return;
+    private void rowEchelon( int pivotRow, int pivotColumn, Matrix matrix){
+        if( ( pivotRow < 0 || pivotRow >= getRows() ) ||
+            ( pivotColumn < 0 || pivotColumn >= getColumns() ) ) return;
 
         // Find index of max value in column vector starting from pivot row
         int max = pivotRow;
-        for( int i = pivotRow + 1; i < rows; i++ )
+        for( int i = pivotRow + 1; i < getRows(); i++ )
             if( Math.abs( entries[ i ][ pivotColumn ] ) > Math.abs( entries[ max ][ pivotColumn ] ) ) max = i;
 
         if( max != pivotRow ){
@@ -251,7 +249,7 @@ public class Matrix{
         }
 
         if( entries[ pivotRow ][ pivotColumn ] == 0.0 ){
-          rowEchelon( pivotRow, pivotColumn + 1, rows, columns, matrix );
+          rowEchelon( pivotRow, pivotColumn + 1, matrix );
         } else {
           double nonzero = 0.0;
 
@@ -260,7 +258,7 @@ public class Matrix{
           matrix.scale( pivotRow, nonzero );
 
 
-          for( int i = pivotRow + 1; i < rows; i++ ){
+          for( int i = pivotRow + 1; i < getRows(); i++ ){
             if( entries[ i ][ pivotColumn ] != 0.0 ){
               nonzero = entries[ i ][ pivotColumn ] * -1.0;
               replace( i, pivotRow, nonzero );
@@ -268,7 +266,7 @@ public class Matrix{
             }
           }
 
-          rowEchelon( pivotRow + 1, pivotColumn + 1, rows, columns, matrix );
+          rowEchelon( pivotRow + 1, pivotColumn + 1, matrix );
         }
     }
 
@@ -420,8 +418,8 @@ public class Matrix{
         // A is an m x n matrix
         // x is an n-vector
         // b is an m-vector
-        if( this.columns == matrix.getRows() ){
-            Matrix product = new Matrix( this.rows, matrix.getColumns() );
+        if( getColumns() == matrix.getRows() ){
+            Matrix product = new Matrix( getRows(), matrix.getColumns() );
             Matrix columnVector;
             for( int i = 0; i < matrix.columns; i++ ){
                 columnVector = vectorProduct( matrix.getColumnVector( i ) );
@@ -434,8 +432,8 @@ public class Matrix{
     }
 
     private Matrix vectorProduct( Matrix vector ) throws MatrixSizeMismatchException {
-      if( this.columns == vector.getRows() && vector.isVector() ){
-        Matrix product = new Matrix( this.rows, vector.getColumns() );
+      if( getColumns() == vector.getRows() && vector.isVector() ){
+        Matrix product = new Matrix( getRows(), vector.getColumns() );
         Matrix columnVector;
         for( int i = 0; i < getColumns(); i++ ){
           columnVector = getColumnVector( i );
@@ -449,12 +447,12 @@ public class Matrix{
     }
 
     public Matrix dotProduct( Matrix matrix ) throws MatrixSizeMismatchException {
-        if(  this.columns == matrix.getRows() ){
-          Matrix product = new Matrix( this.rows, matrix.getColumns() );
-          for( int i = 0; i < this.rows; i++ ){
+        if(  getColumns() == matrix.getRows() ){
+          Matrix product = new Matrix( getRows(), matrix.getColumns() );
+          for( int i = 0; i < getRows(); i++ ){
             for( int j = 0; j < matrix.getColumns(); j++ ){
               double sum = 0.0;
-              for( int k = 0; k < this.columns; k++ ){
+              for( int k = 0; k < getColumns(); k++ ){
                 sum += entries[ i ][ k ] * matrix.getEntry( k, j );
               }
               product.setEntry( i, j, sum );
@@ -551,8 +549,8 @@ public class Matrix{
     }
 
     private void setColumnVector( int column, Matrix vector ){
-        if( vector.isColumnVector() && this.rows == vector.getRows() ){
-          for( int i = 0; i < this.rows; i++ ){
+        if( vector.isColumnVector() && getRows() == vector.getRows() ){
+          for( int i = 0; i < getRows(); i++ ){
             entries[ i ][ column ] = vector.getEntry( i, 0 );
           }
         }
@@ -585,7 +583,7 @@ public class Matrix{
     * @return true if the matrix is a row vector, and false otherwise.
     */
     public boolean isRowVector(){
-        return this.rows == 1;
+        return getRows() == 1;
     }
 
     /**
@@ -593,7 +591,7 @@ public class Matrix{
     * @return true if the matrix is a column vector, and false otherwise.
     */
     public boolean isColumnVector(){
-        return this.columns ==  1;
+        return getColumns() ==  1;
     }
 
     /**
