@@ -9,7 +9,6 @@ public class MatrixDemo{
         System.out.println( "Welcome to the Matrix driver program!" );
         System.out.println( "This program will demonstrate the elementary and advanced matrix operation implementation in Java." );
         System.out.println( "The primary class that represents a matrix is named Matrix.\n\n" );
-        /*
         System.out.println( "Create two matrix object named A and B. \n");
         Matrix a = Matrix.createSquareMatrix( 5 );
         Matrix b = Matrix.createSquareMatrix( 5 );
@@ -97,8 +96,8 @@ public class MatrixDemo{
         System.out.println( "Identity matrix: \n" + h );
         System.out.println( " Dot product of I and x: \n" + h.dotProduct( g ) );
 
-        Matrix a = new Matrix( 3, 4 );
-        Matrix b = new Matrix( 4, 3 );
+        a = new Matrix( 3, 4 );
+        b = new Matrix( 4, 3 );
         a.setRowEntries( 0, " 2  -1  3  5 " );
         a.setRowEntries( 1, " 0   2 -3  1 " );
         a.setRowEntries( 2, "-3   4  1  2 " );
@@ -109,15 +108,5 @@ public class MatrixDemo{
         System.out.println( "Matrix B entries: \n" + b );
         System.out.println( "Multiply A by B: \n" + a.multiply( b ) );
         System.out.println( "A dot product B: \n" + a.dotProduct( b ) );
-        */
-
-        Matrix coeff = new Matrix( 20, 20 );
-	Matrix cons = new Matrix( 20, 1 );
-        coeff.generateRandomEntries();
- 	cons.generateRandomEntries();
-        System.out.println( "The coefficients matrix: \n" + coeff );
-        System.out.println( "The constants matrix: \n" + cons );
-	coeff.reducedRowEchelon( cons );
-	System.out.println( "The solution: \n" + cons );
       }
 }
