@@ -367,7 +367,7 @@ public class Matrix{
         String rectForm = new String();
         int columnMax = getColumnLabelMax();
 
-        rectForm = String.format("%" + columnMax + "s", " ");
+        rectForm = String.format("%" + (columnMax + 6) + "s", "" );
         for( int s = 0; s < getColumns(); s++ )
             rectForm += String.format("%8s ", getColumnLabel( s ) );
 
