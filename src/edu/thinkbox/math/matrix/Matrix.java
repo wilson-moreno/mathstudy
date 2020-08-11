@@ -413,7 +413,7 @@ public class Matrix{
             String space = "%" + rowMax + "s";
             rectForm += String.format( space + ": [ ", getRowLabel( i ) );
           for( int j = 0; j < getColumns(); j++ ){
-            rectForm += String.format("%" + columnLabelLength( j ) + ".4f ", entries[ i ][ j ] );
+            rectForm += String.format("%" + columnLabelLength( j ) + ".5f ", entries[ i ][ j ] );
           }
             rectForm += "]\n";
         }
