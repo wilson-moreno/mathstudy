@@ -8,6 +8,7 @@ public class MarkovChains{
         private static double ONE_FOURTH = 1.0 / 4.0;
         private static double TWO_THIRD = 2.0 / 3.0;
         private static double THREE_FOURTH = 3.0 / 4.0;
+        private static double ONE_FIFTH = 1.0 / 5.0;
 
         private Matrix initialState;
         private Matrix transitionMatrix;
@@ -59,11 +60,11 @@ public class MarkovChains{
             Matrix s0 = new Matrix( 5, 1 );
 
 
-            P.setRowEntries( 0, String.format( " 0  %f %f  0   %f ", ONE_HALF, ONE_FOURTH, ONE_HALF ) );
-            P.setRowEntries( 1, String.format( " %f 0  0   %f  0  ", ONE_THIRD, ONE_THIRD ) );
-            P.setRowEntries( 2, String.format( " %f 0  %f  %f  %f ", ONE_THIRD, ONE_FOURTH, ONE_THIRD, ONE_HALF ) );
-            P.setRowEntries( 3, String.format( " 0 %f %f  %f  0  ",  ONE_HALF, ONE_FOURTH, ONE_THIRD ) );
-            P.setRowEntries( 4, String.format( " %f  0  %f  0   0  ", ONE_THIRD, ONE_FOURTH ) );
+            P.setRowEntries( 0, String.format( " 0  %f  %f  0   %f ", ONE_HALF, ONE_FIFTH, ONE_HALF ) );
+            P.setRowEntries( 1, String.format( " %f  0  0   %f  0  ", ONE_THIRD, ONE_FOURTH ) );
+            P.setRowEntries( 2, String.format( " %f  0  %f  %f  %f ", ONE_THIRD, 2 * ONE_FIFTH, ONE_FOURTH, ONE_HALF ) );
+            P.setRowEntries( 3, String.format( " 0  %f  %f  %f  0  ", ONE_HALF, ONE_FIFTH, 2 * ONE_FOURTH ) );
+            P.setRowEntries( 4, String.format( " %f  0  %f  0   0  ", ONE_THIRD, ONE_FIFTH ) );
             s0.setColumnEntries( 0, " 1.0 " );
             P.setColumnLabels( "Compartment 1;Compartment 2;Compartment 3;Compartment 4;Compartment 5" );
             P.setRowLabels( "Compartment 1;Compartment 2;Compartment 3;Compartment 4;Compartment 5" );
@@ -73,7 +74,7 @@ public class MarkovChains{
             MarkovChains system = new MarkovChains( s0, P );
             System.out.println( "Mouse Maze\n" );
             System.out.println( "Transition matrix: \n\n" + P );
-            for( int s = 0; s < 10; s++ ){
+            for( int s = 0; s < 20; s++ ){
               System.out.printf( " State %d \n %s \n", s, system.getStateVector( s ) );
             }
         }
