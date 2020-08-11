@@ -27,12 +27,38 @@ public class Matrix{
       columnLabels = new Vector< String >( columns );
     }
 
+    public String getColumnLabels(){
+        String labels = new String();
+
+        for( String label : columnLabels )
+          labels += label + ";";
+
+        return labels;
+    }
+
+    public String getRowLabels(){
+        String labels = new String();
+
+        for( String label : rowLabels )
+          labels += label + ";";
+
+        return labels;
+    }
+
+
     public void setColumnLabels( String labels ){
         Scanner input = new Scanner( labels ).useDelimiter( ";" );
 
         while( input.hasNext() ){
           columnLabels.add( input.next() );
         }
+    }
+
+    public int columnLabelLength( int index ){
+        if( index < columnLabels.size() ){
+          int length = columnLabels.get( index ).length();
+          return  length < 8 ? 8 : length;
+        }else return 8;
     }
 
     public void setRowLabels( String labels ){
@@ -44,9 +70,18 @@ public class Matrix{
     }
 
     public int getColumnLabelMax(){
-        int max = 4;
+        int max = 8;
 
         for( String label : columnLabels )
+            if( label.length() > max ) max = label.length();
+
+        return max;
+    }
+
+    public int getRowLabelMax(){
+        int max = 4;
+
+        for( String label : rowLabels )
             if( label.length() > max ) max = label.length();
 
         return max;
@@ -366,20 +401,21 @@ public class Matrix{
     public String toString(){
         String rectForm = new String();
         int columnMax = getColumnLabelMax();
+        int rowMax = getRowLabelMax();
 
-        rectForm = String.format("%" + (columnMax + 6) + "s", "" );
+        rectForm = String.format("%" +  rowMax + "s    ", "" );
         for( int s = 0; s < getColumns(); s++ )
             rectForm += String.format("%8s ", getColumnLabel( s ) );
 
         rectForm += "\n";
 
         for( int i = 0; i < getRows(); i++){
-            String space = "%" + columnMax + "s";
+            String space = "%" + rowMax + "s";
             rectForm += String.format( space + ": [ ", getRowLabel( i ) );
           for( int j = 0; j < getColumns(); j++ ){
-            rectForm += String.format("%8.2f ", entries[ i ][ j ] );
+            rectForm += String.format("%" + columnLabelLength( j ) + ".4f ", entries[ i ][ j ] );
           }
-            rectForm += " ]\n";
+            rectForm += "]\n";
         }
 
         return rectForm;
@@ -392,7 +428,7 @@ public class Matrix{
 
     private String getRowLabel( int index ){
         if( rowLabels.size() > 0 && index < rowLabels.size() ) return rowLabels.get( index );
-        else return "x" + ( index + 1 );
+        else return String.valueOf( index + 1 );
     }
 
 

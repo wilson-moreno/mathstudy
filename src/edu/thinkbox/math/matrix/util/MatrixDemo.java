@@ -29,13 +29,12 @@ public class MatrixDemo{
         coefficients.setColumnLabels( "John;Joe" );
         coefficients.setRowLabels( "Work 1;Work 2" );
         constants.setColumnEntries( 0, " 24.60 23.90 " );
-        constants.setColumnLabels( "Earnings" );
+        constants.setColumnLabels( "Earnings ($)" );
         constants.setRowLabels( "Work 1;Work 2" );
         System.out.println( "John & Joe working hours: \n\n" + coefficients );
-
         System.out.println( "John & Joe earnings: \n\n" + constants );
         Matrix rates = constants.duplicate();
-        rates.setColumnLabels( "Rates" );
+        rates.setColumnLabels( "Rates ($)" );
         rates.setRowLabels("John;Joe");
         coefficients.reducedRowEchelon( rates );
         System.out.println( "John & Joe rates: \n\n" + rates );
