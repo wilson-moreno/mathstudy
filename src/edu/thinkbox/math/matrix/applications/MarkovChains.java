@@ -3,11 +3,9 @@ package edu.thinkbox.math.matrix.applications;
 import edu.thinkbox.math.matrix.Matrix;
 
 public class MarkovChains{
-        private static double ONE_THIRD = 1.0 / 3.0;
         private static double ONE_HALF = 1.0 / 2.0;
+        private static double ONE_THIRD = 1.0 / 3.0;
         private static double ONE_FOURTH = 1.0 / 4.0;
-        private static double TWO_THIRD = 2.0 / 3.0;
-        private static double THREE_FOURTH = 3.0 / 4.0;
         private static double ONE_FIFTH = 1.0 / 5.0;
 
         private Matrix initialState;
@@ -31,7 +29,7 @@ public class MarkovChains{
         }
 
         public static void main( String[] args ){
-            mouseMaze();
+            socialClasses();
         }
 
 
@@ -83,9 +81,9 @@ public class MarkovChains{
            Matrix P = new Matrix( 2, 2 );
            Matrix s0 = new Matrix( 2, 1 );
 
-           P.setRowEntries( 0, String.format( " %f %f ", ONE_HALF, TWO_THIRD ) );
+           P.setRowEntries( 0, String.format( " %f %f ", ONE_HALF, 2 * ONE_THIRD ) );
            P.setRowEntries( 1, String.format( " %f %f ", ONE_HALF, ONE_THIRD ) );
-           s0.setColumnEntries( 0, String.format( " %f %f ", ONE_FOURTH, THREE_FOURTH ) );
+           s0.setColumnEntries( 0, String.format( " %f %f ", ONE_FOURTH, 3 * ONE_FOURTH ) );
            P.setColumnLabels( "On Time;Late" );
            P.setRowLabels( "On Time;Late" );
            s0.setColumnLabels( "Probability (%)" );
@@ -97,5 +95,27 @@ public class MarkovChains{
            for( int s = 0; s < 10; s++ ){
              System.out.printf( " State %d \n %s \n", s, system.getStateVector( s ) );
            }
+        }
+
+        public static void socialClasses(){
+           Matrix P = new Matrix( 3, 3 );
+           Matrix s0 = new Matrix( 3, 1 );
+
+           P.setColumnEntries( 0, " 0.7 0.1 0.2 " );
+           P.setColumnEntries( 1, " 0.1 0.8 0.1 " );
+           P.setColumnEntries( 2, " 0.1 0.3 0.6 " );
+           P.setColumnLabels( "Upper;Middle;Lower" );
+           P.setRowLabels( "Upper;Middle;Lower" );
+
+           s0.setColumnLabels( "Probability (%)" );
+           s0.setRowLabels( "Upper;Middle;Lower" );
+           s0.setColumnEntries( 0, "0.0 0.0 1.0" );
+
+           MarkovChains system = new MarkovChains( s0, P );
+           System.out.println( "Social Classes: \n" + P );
+           System.out.println( "Lower Class Parents: \n" + s0 );
+           System.out.println( "First Generation: \n" + system.getStateVector( 1 ) );
+           System.out.println( "Second Generation: \n" + system.getStateVector( 2 ) );
+           System.out.println( "Long-term Breakdown: \n" + system.getStateVector( 200 ) );
         }
 }

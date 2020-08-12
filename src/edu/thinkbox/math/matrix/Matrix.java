@@ -403,7 +403,7 @@ public class Matrix{
         int columnMax = getColumnLabelMax();
         int rowMax = getRowLabelMax();
 
-        rectForm = String.format("%" +  rowMax + "s    ", "" );
+        rectForm = String.format( "%" + rowMax + "s    ", "" );
         for( int s = 0; s < getColumns(); s++ )
             rectForm += String.format("%8s ", getColumnLabel( s ) );
 
@@ -413,7 +413,7 @@ public class Matrix{
             String space = "%" + rowMax + "s";
             rectForm += String.format( space + ": [ ", getRowLabel( i ) );
           for( int j = 0; j < getColumns(); j++ ){
-            rectForm += String.format("%" + columnLabelLength( j ) + ".5f ", entries[ i ][ j ] );
+            rectForm += String.format("%" + columnLabelLength( j ) + ".4f ", entries[ i ][ j ] );
           }
             rectForm += "]\n";
         }

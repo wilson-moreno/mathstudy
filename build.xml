@@ -21,7 +21,7 @@
 
     <target name="jar">
         <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/MatrixStudy.jar" basedir="build/classes">
+        <jar destfile="build/jar/thinkbox_math.jar" basedir="build/classes">
             <manifest>
                 <attribute name="Main-Class" value="LinearEquationSystems"/>
             </manifest>
@@ -29,13 +29,13 @@
     </target>
 
     <target name="run">
-        <java jar="build/jar/MatrixStudy.jar" fork="true"/>
+        <java jar="build/jar/thinkbox_math.jar" fork="true"/>
     </target>
 
     <target name="matrixDemo.run">
         <java classname="edu.thinkbox.math.matrix.util.MatrixDemo">
           <classpath>
-              <pathelement location="build/jar/MatrixStudy.jar"/>
+              <pathelement location="build/jar/thinkbox_math.jar"/>
               <pathelement path="build/classes"/>
           </classpath>
         </java>
@@ -44,7 +44,7 @@
     <target name="markovchains">
         <java classname="edu.thinkbox.math.matrix.applications.MarkovChains">
           <classpath>
-              <pathelement location="build/jar/MatrixStudy.jar"/>
+              <pathelement location="build/jar/thinkbox_math.jar"/>
               <pathelement path="build/classes"/>
           </classpath>
         </java>
@@ -53,7 +53,7 @@
     <target name="cartesianPlane">
         <java classname="edu.thinkbox.math.util.CartesianPlane">
           <classpath>
-              <pathelement location="build/jar/MatrixStudy.jar"/>
+              <pathelement location="build/jar/thinkbox_math.jar"/>
               <pathelement path="build/classes"/>
               <fileset dir="C:\Program Files\Java\openjfx-14.0.2.1_windows-x64_bin-sdk\javafx-sdk-14.0.2.1\lib">
                   <include name="*.jar"/>
