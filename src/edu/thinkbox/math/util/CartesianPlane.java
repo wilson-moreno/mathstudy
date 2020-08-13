@@ -130,9 +130,6 @@ public class CartesianPlane extends Application{
         Line line = new Line( CenterX, CenterY,
                                 CenterX + ( vector.getEntry( 0, 0 ) * zoomFactor ),
                                 CenterY - ( vector.getEntry( 1, 0 ) * zoomFactor ) );
-
-
-        System.out.println( direction( vector ));
         line.setStrokeWidth( 2 );
         line.setStroke( Color.web( "509237" ) );
         return line;
