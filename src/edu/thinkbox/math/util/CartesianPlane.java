@@ -18,9 +18,10 @@ public class CartesianPlane extends Application{
       private static final int WIDTH = 600;
       private static final int HEIGHT = 600;
       private static final int PADDING = 5;
-      private double CenterX = WIDTH / 2;
-      private double CenterY = HEIGHT / 2;
+      private double centerX = WIDTH / 2;
+      private double centerY = HEIGHT / 2;
       private double zoomFactor = 20.0;
+      private Vector2D line;
 
       public static void main( String[] args ){
           launch( args );
@@ -30,126 +31,161 @@ public class CartesianPlane extends Application{
       public void start( Stage primaryStage ){
         primaryStage.setTitle( "Cartesian Plane" );
         Group root = new Group();
-        root.getChildren().add( getCartesianPlane() );
+        root.getChildren().add( createPlane() );
         root.getChildren().add( getVectors() );
         //root.getChildren().add( getPoints() );
         primaryStage.setScene( new Scene( root, WIDTH, HEIGHT ) );
         primaryStage.show();
       }
 
+      private Group createPlane(){
+        return new Plane( WIDTH, HEIGHT, centerX, centerY, zoomFactor );
+      }
+
       private Group getVectors(){
         Group vectors = new Group();
 
-        vectors.getChildren().add( createVectorLine(  5, 5 ) );
-        vectors.getChildren().add( createVectorLine( -2, 7 ) );
-        vectors.getChildren().add( createVectorLine( -8, -3 ) );
-        vectors.getChildren().add( createVectorLine( 5, -6 ) );
+        //vectors.getChildren().add( createVectorLine(  5, 5 ) );
+        //vectors.getChildren().add( createVectorLine( -2, 7 ) );
+        //vectors.getChildren().add( createVectorLine( -8, -3 ) );
+        //vectors.getChildren().add( createVectorLine( 5, -6 ) );
+        line = createVector( 5, 5 );
+        vectors.getChildren().add( line );
 
         return vectors;
       }
 
-      private Group createVectorLine( double x, double y ){
-        Group vectorLine = new Group();
+      private Vector2D createVector( double x, double y){
+          return new Vector2D( x, y, centerX, centerY, zoomFactor );
+      }
 
-        Matrix vector = Matrix.createColumnMatrix( 2 );
-        vector.setEntry( 0, 0, x );
-        vector.setEntry( 1, 0, y );
-        vectorLine.getChildren().add( plotVector( vector ) );
-        vectorLine.getChildren().add( triangle( vector, Color.web( "509237" ) ) );
-
-        return vectorLine;
+      private Group createPoint( double x, double y ){
+          return new Point2D( centerX, centerY, x, y, zoomFactor );
       }
 
       private Group getPoints(){
         Group points = new Group();
 
-        Matrix point = Matrix.createColumnMatrix( 2 );
-        point.setEntry( 0, 0, 0.0 );
-        point.setEntry( 1, 0, 5.0 );
-        points.getChildren().add( plotPoint( point ) );
-
         return points;
       }
 
-      private Group getCartesianPlane(){
-        Group cartesianPlane = new Group();
-        Text origin = new Text( CenterX + 5 , CenterY + 15 , "O" );
-        origin.setFont( new Font( 12 ) );
-
-        for( int i = 0; i <= ( HEIGHT / zoomFactor ); i++ ){
-            Line line = new Line( 0, i * zoomFactor, WIDTH, i * zoomFactor );
-            line.setStrokeWidth( 0.3 );
-            line.setStroke( Color.web( "4a688a" ) );
-            cartesianPlane.getChildren().add( line );
-        }
-
-        for( int j = 0; j <= ( WIDTH / zoomFactor ); j++ ){
-            Line line = new Line( j * zoomFactor, 0, j * zoomFactor, HEIGHT );
-            line.setStrokeWidth( 0.3 );
-            line.setStroke( Color.web( "4a688a" ) );
-            cartesianPlane.getChildren().add( line );
-        }
-
-        Line centerVerticalLine = new Line( CenterX, 5, CenterX, HEIGHT - 5 );
-        Line centerHorizontalLine = new Line( 5, CenterY, WIDTH - 5, CenterY );
-
-        centerVerticalLine.setStrokeWidth( 2.0 );
-        centerVerticalLine.setStroke( Color.web( "002f55" ) );
-        centerHorizontalLine.setStrokeWidth( 2.0 );
-        centerHorizontalLine.setStroke( Color.web( "002f55" ) );
-
-        cartesianPlane.getChildren().add( centerVerticalLine );
-        cartesianPlane.getChildren().add( centerHorizontalLine );
-
-        cartesianPlane.getChildren().add( origin );
-
-        Matrix arrow1 = Matrix.createColumnMatrix( 2 );
-        Matrix arrow2 = Matrix.createColumnMatrix( 2 );
-        Matrix arrow3 = Matrix.createColumnMatrix( 2 );
-        Matrix arrow4 = Matrix.createColumnMatrix( 2 );
 
 
-        arrow1.setEntry( 0, 0, 0.0 );
-        arrow1.setEntry( 1, 0, ( ( HEIGHT - 5 ) / zoomFactor) / 2 );
-        arrow2.setEntry( 0, 0, 0.0 );
-        arrow2.setEntry( 1, 0,  -1 * ( ( ( HEIGHT - 5 ) / zoomFactor) / 2 ) );
-        arrow3.setEntry( 0, 0, ( ( WIDTH - 5 ) / zoomFactor) / 2  );
-        arrow3.setEntry( 1, 0, 0.0 );
-        arrow4.setEntry( 0, 0, -1 * ( ( ( WIDTH - 5 ) / zoomFactor) / 2 ) );
-        arrow4.setEntry( 1, 0, 0.0 );
+}
 
-        cartesianPlane.getChildren().add( openTriangle( arrow1, Color.web( "002f55" ) ) );
-        cartesianPlane.getChildren().add( openTriangle( arrow2, Color.web( "002f55" ) ) );
-        cartesianPlane.getChildren().add( openTriangle( arrow3, Color.web( "002f55" ) ) );
-        cartesianPlane.getChildren().add( openTriangle( arrow4, Color.web( "002f55" ) ) );
+class Point2D extends Group{
+      private static final double RADIUS = 4.0;
+      private static final Color  POINT_COLOR = Color.web( "002f55" );
+      private double centerX;
+      private double centerY;
+      private double zoomFactor;
+      private Matrix vector = Matrix.createColumnMatrix( 2 );
 
-        return cartesianPlane;
+      public Point2D( double centerX, double centerY, double x, double y, double zoomFactor ){
+          this.centerX = centerX;
+          this.centerY = centerY;
+          this.zoomFactor = zoomFactor;
+          vector.setEntry( 0, 0, x );
+          vector.setEntry( 1, 0, y );
       }
 
-      private Line plotVector( Matrix vector ){
-        Line line = new Line( CenterX, CenterY,
-                                CenterX + ( vector.getEntry( 0, 0 ) * zoomFactor ),
-                                CenterY - ( vector.getEntry( 1, 0 ) * zoomFactor ) );
-        line.setStrokeWidth( 2 );
-        line.setStroke( Color.web( "509237" ) );
-        return line;
-      }
-
-      private Circle plotPoint( Matrix vector ){
-        double radius = 4.0;
-
-        Circle circle = new Circle( CenterX + ( vector.getEntry( 0, 0 ) * zoomFactor ),
-                                    CenterY - ( vector.getEntry( 1, 0 ) * zoomFactor ),
-                                    radius, Color.web( "002f55" ) );
-
+      private Circle point(){
+        Circle circle = new Circle( centerX + ( vector.getEntry( 0, 0 ) * zoomFactor ),
+                                    centerY - ( vector.getEntry( 1, 0 ) * zoomFactor ),
+                                    RADIUS, POINT_COLOR );
         return circle;
       }
 
-      private double slope( Matrix vector ){
-          return  vector.getEntry( 0, 0 ) / vector.getEntry( 1, 0 );
+}
+
+class Plane extends Group{
+      private static final Color GRID_COLOR = Color.web( "4a688a" );
+      private static double WIDTH;
+      private static double HEIGHT;
+      private double centerX;
+      private double centerY;
+      private double zoomFactor;
+
+      public Plane( double width, double height, double centerX, double centerY, double zoomFactor ){
+          this.WIDTH = width;
+          this.HEIGHT = height;
+          this.centerX = centerX;
+          this.centerY = centerY;
+          this.zoomFactor = zoomFactor;
+          getChildren().add( gridLines() );
+          getChildren().add( axes() );
       }
 
-      private Group openTriangle( Matrix vector, Color color ){
+
+      private Group gridLines(){
+          Group gridLines = new Group();
+          Text origin = new Text( centerX + 5 , centerY + 15 , "O" );
+          origin.setFont( new Font( 12 ) );
+
+          for( int i = 0; i <= ( HEIGHT / zoomFactor ); i++ ){
+              Line line = new Line( 0, i * zoomFactor, WIDTH, i * zoomFactor );
+              line.setStrokeWidth( 0.3 );
+              line.setStroke( GRID_COLOR );
+              gridLines.getChildren().add( line );
+          }
+
+          for( int j = 0; j <= ( WIDTH / zoomFactor ); j++ ){
+              Line line = new Line( j * zoomFactor, 0, j * zoomFactor, HEIGHT );
+              line.setStrokeWidth( 0.3 );
+              line.setStroke( GRID_COLOR );
+              gridLines.getChildren().add( line );
+          }
+
+          return gridLines;
+      }
+
+      private Group axes(){
+          Group axes = new Group();
+          Line centerVerticalLine = new Line( centerX, 5, centerX, HEIGHT - 5 );
+          Line centerHorizontalLine = new Line( 5, centerY, WIDTH - 5, centerY );
+          Text origin = new Text( centerX + 5 , centerY + 15 , "O" );
+          Text yAxis = new Text( centerX - 15, 15, "y");
+          Text xAxis = new Text( WIDTH - 20, centerY + 15, "x");
+
+          origin.setFont( new Font( 12 ) );
+          yAxis.setFont( new Font( 15 ) );
+          xAxis.setFont( new Font( 15 ) );
+
+          centerVerticalLine.setStrokeWidth( 2.0 );
+          centerVerticalLine.setStroke( Color.web( "002f55" ) );
+          centerHorizontalLine.setStrokeWidth( 2.0 );
+          centerHorizontalLine.setStroke( Color.web( "002f55" ) );
+
+          Matrix arrow1 = Matrix.createColumnMatrix( 2 );
+          Matrix arrow2 = Matrix.createColumnMatrix( 2 );
+          Matrix arrow3 = Matrix.createColumnMatrix( 2 );
+          Matrix arrow4 = Matrix.createColumnMatrix( 2 );
+
+          arrow1.setEntry( 0, 0, 0.0 );
+          arrow1.setEntry( 1, 0, ( ( HEIGHT - 5 ) / zoomFactor) / 2 );
+          arrow2.setEntry( 0, 0, 0.0 );
+          arrow2.setEntry( 1, 0,  -1 * ( ( ( HEIGHT - 5 ) / zoomFactor) / 2 ) );
+          arrow3.setEntry( 0, 0, ( ( WIDTH - 5 ) / zoomFactor) / 2  );
+          arrow3.setEntry( 1, 0, 0.0 );
+          arrow4.setEntry( 0, 0, -1 * ( ( ( WIDTH - 5 ) / zoomFactor) / 2 ) );
+          arrow4.setEntry( 1, 0, 0.0 );
+
+          axes.getChildren().add( arrow( arrow1, Color.web( "002f55" ) ) );
+          axes.getChildren().add( arrow( arrow2, Color.web( "002f55" ) ) );
+          axes.getChildren().add( arrow( arrow3, Color.web( "002f55" ) ) );
+          axes.getChildren().add( arrow( arrow4, Color.web( "002f55" ) ) );
+
+          axes.getChildren().add( centerVerticalLine );
+          axes.getChildren().add( centerHorizontalLine );
+
+          axes.getChildren().add( origin );
+          axes.getChildren().add( yAxis );
+          axes.getChildren().add( xAxis );
+
+          return axes;
+      }
+
+      private Group arrow( Matrix vector, Color color ){
           Group triangle = new Group();
           double direction = direction( vector );
           double size = 5.0;
@@ -157,8 +193,8 @@ public class CartesianPlane extends Application{
 
           double x = vector.getEntry( 0, 0 );
           double y = vector.getEntry( 1, 0 );
-          double tx = CenterX + ( x * zoomFactor );
-          double ty = CenterY - ( y * zoomFactor );
+          double tx = centerX + ( x * zoomFactor );
+          double ty = centerY - ( y * zoomFactor );
           double delta1 = direction - theta;
           double delta2 = direction + theta;
           double x2 = size * Math.cos( radians( delta1 ) );
@@ -177,34 +213,6 @@ public class CartesianPlane extends Application{
 
           return triangle;
       }
-
-      private Polygon triangle( Matrix vector, Color color ){
-          Polygon triangle = new Polygon();
-          double direction = direction( vector );
-          double size = 10.0;
-          double theta = 160;
-
-          double x = vector.getEntry( 0, 0 );
-          double y = vector.getEntry( 1, 0 );
-          double tx = CenterX + ( x * zoomFactor );
-          double ty = CenterY - ( y * zoomFactor );
-          double delta1 = direction - theta;
-          double delta2 = direction + theta;
-          double x2 = size * Math.cos( radians( delta1 ) );
-          double y2 = size * Math.sin( radians( delta1 ) );
-          double x3 = size * Math.cos( radians( delta2 ) );
-          double y3 = size * Math.sin( radians( delta2 ) );
-
-          //System.out.printf( "%4.2f %4.2f\n", delta1, delta2 );
-          //System.out.printf( "tx=%4.2f\nty=%4.2f\nx2=%4.2f\ny2=%4.2f\nx3=%4.2f\ny3=%4.2f\n", tx, ty, tx+x2, ty-y2, tx+x3, ty-y3 );
-
-
-          triangle.getPoints().addAll( new Double[] { tx, ty, tx+x2, ty-y2, tx+x3, ty-y3 } );
-          triangle.setStroke( color );
-          triangle.setFill( color );
-          return triangle;
-      }
-
 
       private double radians( double degree ){ return degree * ( Math.PI / 180 ); }
 
@@ -226,5 +234,90 @@ public class CartesianPlane extends Application{
           }
 
       }
+
+}
+
+class Vector2D extends Group{
+      private static final Color COLOR = Color.web( "509237" );
+      private static final double STROKE_WIDTH = 2.0;
+      private final Matrix vector = Matrix.createColumnMatrix( 2 );
+      private double centerX;
+      private double centerY;
+      private double zoomFactor;
+      private Line lineSegment;
+      private Polygon arrow;
+
+      public Vector2D( double x, double y, double centerX, double centerY, double zoomFactor ){
+          vector.setEntry( 0, 0, x );
+          vector.setEntry( 1, 0, y );
+          this.centerX = centerX;
+          this.centerY = centerY;
+          this.zoomFactor = zoomFactor;
+          lineSegment = lineSegment();
+          arrow = arrow();
+          getChildren().add( lineSegment );
+          getChildren().add( arrow );
+      }
+
+      public double direction(){
+          double x = vector.getEntry( 0, 0 );
+          double y = vector.getEntry( 1, 0 );
+
+          if( x > 0.0 && y == 0.0 )      return 0.0;              // Direction is 0 degree
+          else if( x == 0.0 && y > 0.0 ) return Math.PI / 2.0;    // Direction is 90 degrees
+          else if( x < 0.0 && y == 0.0 ) return Math.PI;          // Directions is 180 degrees
+          else if( x == 0.0 && y < 0.0 ) return Math.PI * ( 3.0 / 4.0 ); // Direction is 270 degrees
+          else {
+
+              double radians = Math.atan( y / x );
+
+              // Computes the true direction when the vector is in the 2nd Quadrant ( + , - ) or
+              // in the 3rd Quadrant ( - , - ). PI to the radians.
+              if( ( x < 0.0 && y > 0.0 ) || ( x < 0.0 && y < 0.0 ) ) radians = Math.PI + radians;
+
+              return radians;
+          }
+
+      }
+
+      private Polygon arrow(){
+          Polygon triangle = new Polygon();
+          double size = 10.0;
+          double theta = radians( 160.0 );
+
+          double delta1 = direction() - theta;
+          double delta2 = direction() + theta;
+          double x2 = size * Math.cos( delta1 );
+          double y2 = size * Math.sin( delta1 );
+          double x3 = size * Math.cos( delta2 );
+          double y3 = size * Math.sin( delta2 );
+
+          triangle.getPoints().addAll( new Double[] { tx(), ty(), tx()+x2, ty()-y2, tx()+x3, ty()-y3 } );
+          triangle.setStroke( COLOR );
+          triangle.setFill( COLOR );
+          return triangle;
+      }
+
+      private Line lineSegment() {
+        Line line = new Line( centerX, centerY, tx(), ty() );
+        line.setStrokeWidth( STROKE_WIDTH );
+        line.setStroke( COLOR );
+        return line;
+      }
+
+      private double radians( double degree ){ return degree * ( Math.PI / 180 ); }
+
+      public void reflect(){
+        Matrix matrix = Matrix.createSquareMatrix( 2 );
+        matrix.setRowEntries( 0, " 1  0 " );
+        matrix.setRowEntries( 1, " 0 -1 " );
+        vector.copyEntries( matrix.multiply( vector ) );
+        lineSegment.setEndX( tx() );
+        lineSegment.setEndY( ty() );
+        arrow = arrow();
+      }
+
+      private double tx(){ return centerX + ( vector.getEntry( 0, 0 ) * zoomFactor ); }
+      private double ty(){ return centerY - ( vector.getEntry( 1, 0 ) * zoomFactor ); }
 
 }
