@@ -189,9 +189,7 @@ public class Matrix{
             for( int i = 0; i < getRows(); i++ )
               determinant *= echelon.getEntry( i, i );
 
-            determinant *= Math.pow( -1.0, r );
-
-            System.out.println("Interchange: " + r );
+            determinant *= Math.pow( -1, r );
         }
 
         return  determinant;
@@ -336,16 +334,14 @@ public class Matrix{
 
         if( max != pivotRow ){
           echelonForm.switchRows( pivotRow, max );
-          interchange++;
+          //System.out.println( "interchange" );
+          interchange += 1;
         }
 
         if( echelonForm.getEntry( pivotRow, pivotColumn ) == 0.0 ){
           interchange += rowEchelon( pivotRow, pivotColumn + 1, echelonForm );
         } else {
           double nonzero = 0.0;
-
-          nonzero = Math.signum( echelonForm.getEntry( pivotRow, pivotColumn ) );
-          echelonForm.scale( pivotRow,  nonzero );
 
           for( int i = pivotRow + 1; i < getRows(); i++ ){
             if( echelonForm.getEntry( i, pivotColumn ) != 0.0 ){

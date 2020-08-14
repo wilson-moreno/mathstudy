@@ -12,12 +12,14 @@ public class MatrixDemo{
         System.out.println( "The primary class that represents a matrix is named Matrix.\n\n" );
 
 
-        Matrix matrix = Matrix.createSquareMatrix( 3 );
-        matrix.generateRandomEntries();
-        System.out.println( "Matrix: \n" + matrix );
-        System.out.println( "Row echelon: \n" + matrix.rowEchelon() );
-        System.out.println( "Determinant by cofactor expansion: \n" + matrix.determinant() );
-        System.out.println( "Determinant by row echelon: \n" + matrix.determinant2() );
+        Matrix matrix = Matrix.createSquareMatrix( 10 );
+
+        for( int i=0; i < 1000; i++ ){
+          matrix.generateRandomEntries();
+          System.out.printf("Determinants: %8.2f\n", matrix.determinant() );
+        }
+
+
       }
 
 
