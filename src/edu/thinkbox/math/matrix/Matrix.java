@@ -170,6 +170,33 @@ public class Matrix{
         return determinant;
     }
 
+    public double determinant2() throws NonSquareMatrixException {
+        if( !isSquare() ) throw new NonSquareMatrixException();
+        double determinant = 0.0;
+
+        if( getRows() == 1 )  {
+            determinant = entries[ 0 ][ 0 ];
+        } else if( getRows() == 2 ) {
+            determinant = ( entries[ 0 ][ 0 ] * entries[ 1 ][ 1 ] ) -
+                          ( entries[ 0 ][ 1 ] * entries[ 1 ][ 0 ] );
+        } else if( getRows() > 2 ){
+
+            Matrix echelon = duplicate();
+            int r = rowEchelon( 0, 0, echelon );
+
+            determinant = 1.0;
+
+            for( int i = 0; i < getRows(); i++ )
+              determinant *= echelon.getEntry( i, i );
+
+            determinant *= Math.pow( -1.0, r );
+
+            System.out.println("Interchange: " + r );
+        }
+
+        return  determinant;
+    }
+
     private double cofactor( int rowIndex, int columnIndex ) throws NonSquareMatrixException {
         if( !isSquare() ) throw new NonSquareMatrixException();
 
@@ -286,6 +313,51 @@ public class Matrix{
         rowEchelon( 0, 0, echelonForm, matrix );
 
         return echelonForm;
+    }
+
+    public Matrix rowEchelon(){
+        Matrix echelonForm = duplicate();
+
+        rowEchelon( 0, 0, echelonForm );
+
+        return echelonForm;
+    }
+
+    private int rowEchelon( int pivotRow, int pivotColumn, Matrix echelonForm ){
+        int interchange = 0;
+
+        if( ( pivotRow < 0 || pivotRow >= getRows() ) ||
+            ( pivotColumn < 0 || pivotColumn >= getColumns() ) ) return interchange;
+
+        // Find index of max value in column vector starting from pivot row
+        int max = pivotRow;
+        for( int i = pivotRow + 1; i < getRows(); i++ )
+            if( Math.abs( echelonForm.getEntry(  i, pivotColumn ) ) > Math.abs( echelonForm.getEntry( max, pivotColumn ) ) ) max = i;
+
+        if( max != pivotRow ){
+          echelonForm.switchRows( pivotRow, max );
+          interchange++;
+        }
+
+        if( echelonForm.getEntry( pivotRow, pivotColumn ) == 0.0 ){
+          interchange += rowEchelon( pivotRow, pivotColumn + 1, echelonForm );
+        } else {
+          double nonzero = 0.0;
+
+          nonzero = Math.signum( echelonForm.getEntry( pivotRow, pivotColumn ) );
+          echelonForm.scale( pivotRow,  nonzero );
+
+          for( int i = pivotRow + 1; i < getRows(); i++ ){
+            if( echelonForm.getEntry( i, pivotColumn ) != 0.0 ){
+              nonzero = ( echelonForm.getEntry( i, pivotColumn ) / echelonForm.getEntry( pivotRow, pivotColumn ) ) * -1.0;
+              echelonForm.replace( i, pivotRow, nonzero );
+            }
+          }
+
+          interchange += rowEchelon( pivotRow + 1, pivotColumn + 1, echelonForm );
+        }
+
+        return interchange;
     }
 
     private void rowEchelon( int pivotRow, int pivotColumn, Matrix echelonForm, Matrix matrix){
