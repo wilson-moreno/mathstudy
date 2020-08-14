@@ -34,6 +34,7 @@ public class CartesianPlane extends Application{
         root.getChildren().add( createPlane() );
         root.getChildren().add( getVectors() );
         //root.getChildren().add( getPoints() );
+        line.reflect();
         primaryStage.setScene( new Scene( root, WIDTH, HEIGHT ) );
         primaryStage.show();
       }
@@ -87,6 +88,7 @@ class Point2D extends Group{
           this.zoomFactor = zoomFactor;
           vector.setEntry( 0, 0, x );
           vector.setEntry( 1, 0, y );
+          getChildren().add( point() );
       }
 
       private Circle point(){
@@ -298,6 +300,20 @@ class Vector2D extends Group{
           return triangle;
       }
 
+      private Double[] arrowPoints(){
+        double size = 10.0;
+        double theta = radians( 160.0 );
+
+        double delta1 = direction() - theta;
+        double delta2 = direction() + theta;
+        double x2 = size * Math.cos( delta1 );
+        double y2 = size * Math.sin( delta1 );
+        double x3 = size * Math.cos( delta2 );
+        double y3 = size * Math.sin( delta2 );
+
+        return new Double[] { tx(), ty(), tx()+x2, ty()-y2, tx()+x3, ty()-y3 };
+      }
+
       private Line lineSegment() {
         Line line = new Line( centerX, centerY, tx(), ty() );
         line.setStrokeWidth( STROKE_WIDTH );
@@ -314,7 +330,8 @@ class Vector2D extends Group{
         vector.copyEntries( matrix.multiply( vector ) );
         lineSegment.setEndX( tx() );
         lineSegment.setEndY( ty() );
-        arrow = arrow();
+        arrow.getPoints().clear();
+        arrow.getPoints().addAll( arrowPoints() );
       }
 
       private double tx(){ return centerX + ( vector.getEntry( 0, 0 ) * zoomFactor ); }

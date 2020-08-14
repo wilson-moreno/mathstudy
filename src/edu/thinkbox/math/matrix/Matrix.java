@@ -199,7 +199,7 @@ public class Matrix{
         if( !isSquare() ) throw new NonSquareMatrixException();
 
         double sign = Math.pow( -1, rowIndex + columnIndex );
-        Matrix submatrix = duplicate();
+        Matrix submatrix = duplicate();        
         return sign * submatrix.removeRow( rowIndex ).removeColumn( columnIndex ).determinant();
     }
 
