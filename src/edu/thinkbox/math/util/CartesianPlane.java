@@ -268,7 +268,7 @@ class Vector2D extends Group{
           if( x > 0.0 && y == 0.0 )      return 0.0;              // Direction is 0 degree
           else if( x == 0.0 && y > 0.0 ) return Math.PI / 2.0;    // Direction is 90 degrees
           else if( x < 0.0 && y == 0.0 ) return Math.PI;          // Directions is 180 degrees
-          else if( x == 0.0 && y < 0.0 ) return Math.PI * ( 3.0 / 4.0 ); // Direction is 270 degrees
+          else if( x == 0.0 && y < 0.0 ) return Math.PI * ( 3.0 / 2.0 ); // Direction is 270 degrees
           else {
 
               double radians = Math.atan( y / x );
