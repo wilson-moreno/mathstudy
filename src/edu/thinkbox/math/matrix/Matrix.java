@@ -27,6 +27,10 @@ public class Matrix{
       columnLabels = new Vector< String >( columns );
     }
 
+    /**
+    * Gets as string of column labels separated by semicolons
+    * @return String of column labels
+    */
     public String getColumnLabels(){
         String labels = new String();
 
@@ -199,7 +203,7 @@ public class Matrix{
         if( !isSquare() ) throw new NonSquareMatrixException();
 
         double sign = Math.pow( -1, rowIndex + columnIndex );
-        Matrix submatrix = duplicate();        
+        Matrix submatrix = duplicate();
         return sign * submatrix.removeRow( rowIndex ).removeColumn( columnIndex ).determinant();
     }
 

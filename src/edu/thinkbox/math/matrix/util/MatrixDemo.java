@@ -12,7 +12,7 @@ public class MatrixDemo{
         System.out.println( "The primary class that represents a matrix is named Matrix.\n\n" );
 
 
-        Matrix matrix = Matrix.createSquareMatrix(  );
+        Matrix matrix = Matrix.createSquareMatrix( 2 );
 
         matrix.generateRandomEntries();
         System.out.printf("Determinants: %8.2f\n", matrix.determinant2() );

@@ -1,6 +1,7 @@
 package edu.thinkbox.math.matrix.applications;
 
 import edu.thinkbox.math.matrix.Matrix;
+import java.util.Scanner;
 
 public class MarkovChains{
         private static double ONE_HALF = 1.0 / 2.0;
@@ -29,7 +30,38 @@ public class MarkovChains{
         }
 
         public static void main( String[] args ){
-            socialClasses();
+
+            System.out.println( "Welcome to Marko Chains driver program!" );
+            Scanner input = new Scanner( System.in );
+            int choice = 0;
+            boolean exit = false;
+
+            do{
+              System.out.println( "\nPlease select a sample problem or choose quit.\n" );
+              System.out.println( "1. Where is he going to eat next?" );
+              System.out.println( "2. Where is that mouse?" );
+              System.out.println( "3. You are late again!" );
+              System.out.println( "4. Someday, I will be rich." );
+              System.out.println( "5. Quit.\n" );
+              System.out.print(   "Please enter your choice: " );
+              choice = input.nextInt();
+
+              switch( choice ){
+                case 1: restaurants(); break;
+                case 2: mouseMaze(); break;
+                case 3: workOnTime(); break;
+                case 4: socialClasses(); break;
+                case 5: System.out.println( "Thank you for using the program." );
+                        input.close();
+                        exit = true;
+                        break;
+                default: System.out.println( "Please try again." );
+              }
+
+            } while ( !exit );
+
+
+            System.exit( 0 );
         }
 
 
