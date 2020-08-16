@@ -50,8 +50,8 @@
         </java>
     </target>
 
-    <target name="cartesianPlane">
-        <java classname="edu.thinkbox.math.util.CartesianPlane">
+    <target name="lineartransformations">
+        <java classname="edu.thinkbox.math.matrix.applications.LinearTransformations">
           <classpath>
               <pathelement location="build/jar/thinkbox_math.jar"/>
               <pathelement path="build/classes"/>
