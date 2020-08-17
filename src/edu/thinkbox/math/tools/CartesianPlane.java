@@ -20,9 +20,10 @@ import javafx.stage.PopupWindow.AnchorLocation;
 import javafx.scene.Node;
 import edu.thinkbox.math.matrix.Transformation;
 
+
 public class CartesianPlane extends Group implements EventHandler< ContextMenuEvent > {
       private static final int    PADDING = 10;
-      private static final double GRID_WIDTH = 0.75;
+      private static final double GRID_WIDTH = 0.15;
       private static final double AXES_WIDTH = 2.0;
       private static final Color  GRID_COLOR = Color.web( "4a688a" );
       private static final Color  AXES_COLOR = Color.web( "002f55" );
@@ -41,7 +42,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       private double lastScreenX;
       private double lastScreenY;
       private Rectangle rectangle;
-      PlaneContextMenu contextMenu = new PlaneContextMenu();
+      private PlaneContextMenu contextMenu = new PlaneContextMenu();
+      private MouseGridSnapEventHandler mouseGridSnapEventHandler;
 
       public CartesianPlane( int width, int height, int moduleSize ){
           this.width = width;
@@ -71,6 +73,9 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
               }
           };
 
+          mouseGridSnapEventHandler = new MouseGridSnapEventHandler( this );
+
+          addEventFilter( MouseEvent.MOUSE_MOVED, mouseGridSnapEventHandler );
           addEventFilter( MouseEvent.MOUSE_CLICKED, rightMouseClick );
       }
 
@@ -253,6 +258,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
               }
           });
 
+          vector.addEventFilter( MouseEvent.ANY, new MouseOverVectorEventHandler() );
+
           vectors.getChildren().add( vector );
           return vector;
       }
@@ -263,7 +270,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
 
       public class Vector extends Group{
             private final Color COLOR = Color.web( "509237" );
-            private static final double STROKE_WIDTH = 2.0;
+            private static final double STROKE_WIDTH = 3.0;
+            private static final double WIDE_STROKE = 5.0;
             private final Matrix vector = Matrix.createColumnMatrix( 2 );
             private double centerX;
             private double centerY;
@@ -303,6 +311,16 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
                     return radians;
                 }
 
+            }
+
+            public void wideArrow(){
+                lineSegment.setStrokeWidth( WIDE_STROKE );
+                arrow.setStrokeWidth( WIDE_STROKE );
+            }
+
+            public void regularArrow(){
+                lineSegment.setStrokeWidth( STROKE_WIDTH );
+                arrow.setStrokeWidth( STROKE_WIDTH );
             }
 
             private Polygon arrow(){
@@ -443,4 +461,30 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
 
       }
 
+}
+
+
+class MouseGridSnapEventHandler implements EventHandler< MouseEvent >{
+    private CartesianPlane cartesianPlane;
+
+    public MouseGridSnapEventHandler( CartesianPlane cartesianPlane ){
+        this.cartesianPlane = cartesianPlane;
+    }
+
+    @Override
+    public void handle( MouseEvent e ){
+    }
+}
+
+class MouseOverVectorEventHandler implements EventHandler< MouseEvent >{
+
+    public MouseOverVectorEventHandler(){}
+
+    @Override
+    public void handle( MouseEvent e ){
+        CartesianPlane.Vector vector = ( CartesianPlane.Vector ) e.getSource();
+
+        if( e.getEventType() == MouseEvent.MOUSE_ENTERED ) vector.wideArrow();
+        else if( e.getEventType() == MouseEvent.MOUSE_EXITED ) vector.regularArrow();
+    }
 }
