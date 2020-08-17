@@ -20,7 +20,7 @@ import javafx.stage.PopupWindow.AnchorLocation;
 import javafx.scene.Node;
 import edu.thinkbox.math.matrix.Transformation;
 
-public class CartesianPlane extends Group implements EventHandler< ContextMenuEvent >{
+public class CartesianPlane extends Group implements EventHandler< ContextMenuEvent > {
       private static final int    PADDING = 10;
       private static final double GRID_WIDTH = 0.75;
       private static final double AXES_WIDTH = 2.0;
@@ -62,8 +62,6 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
           getChildren().add( axes );
           getChildren().add( ticks );
           getChildren().add( vectors );
-
-
 
           EventHandler< MouseEvent > rightMouseClick = new EventHandler< MouseEvent >(){
               @Override
@@ -244,17 +242,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
 
       }
 
-      EventHandler< MouseEvent > eventHandler = new EventHandler< MouseEvent >(){
-          @Override
-          public void handle( MouseEvent e ){
-              System.out.println( "Hello World" );
-          }
-      };
-
       public Vector addVector( double x, double y ){
           Vector vector = new Vector( x, y, getCenterX(), getCenterY(), getModuleSize() );
-          vector.addEventFilter( MouseEvent.MOUSE_CLICKED, eventHandler );
-
           vector.setOnContextMenuRequested( new EventHandler< ContextMenuEvent >(){
               private VectorContextMenu contextMenu = new VectorContextMenu( vector );
 
