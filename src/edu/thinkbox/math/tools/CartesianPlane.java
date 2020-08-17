@@ -270,6 +270,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
 
       public class Vector extends Group{
             private final Color COLOR = Color.web( "509237" );
+            private final Color WIDE_COLOR = Color.web( "ff1a00" );
             private static final double STROKE_WIDTH = 3.0;
             private static final double WIDE_STROKE = 5.0;
             private final Matrix vector = Matrix.createColumnMatrix( 2 );
@@ -316,11 +317,15 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
             public void wideArrow(){
                 lineSegment.setStrokeWidth( WIDE_STROKE );
                 arrow.setStrokeWidth( WIDE_STROKE );
+                lineSegment.setFill( WIDE_COLOR );
+                arrow.setFill( WIDE_COLOR );
             }
 
             public void regularArrow(){
                 lineSegment.setStrokeWidth( STROKE_WIDTH );
                 arrow.setStrokeWidth( STROKE_WIDTH );
+                lineSegment.setFill( COLOR );
+                arrow.setFill( COLOR );
             }
 
             private Polygon arrow(){
@@ -338,6 +343,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
                 triangle.getPoints().addAll( new Double[] { tx(), ty(), tx()+x2, ty()-y2, tx()+x3, ty()-y3 } );
                 triangle.setStroke( COLOR );
                 triangle.setFill( COLOR );
+                triangle.setStrokeWidth( STROKE_WIDTH );
                 return triangle;
             }
 
