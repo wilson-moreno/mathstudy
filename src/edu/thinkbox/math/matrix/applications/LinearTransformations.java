@@ -26,9 +26,7 @@ public class LinearTransformations extends Application{
             primaryStage.setTitle( "Linear Transformations" );
             Group root = new Group();
             root.getChildren().add( cartesianPlane );
-            primaryStage.setScene( new Scene( root, WIDTH, HEIGHT ) );
-
-            vectors.add( cartesianPlane.addVector( 2.0, 2.0 ).transform( Transformation.rotationMatrix( Math.PI ) ) );
+            primaryStage.setScene( new Scene( root, WIDTH, HEIGHT ) );            
             primaryStage.show();
         }
 
