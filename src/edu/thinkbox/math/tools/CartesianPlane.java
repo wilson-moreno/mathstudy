@@ -489,8 +489,7 @@ class MouseGridSnapEventHandler implements EventHandler< MouseEvent >{
     }
 
     @Override
-    public void handle( MouseEvent e ){
-    }
+    public void handle( MouseEvent e ){}
 }
 
 class MouseOverVectorEventHandler implements EventHandler< MouseEvent >{
