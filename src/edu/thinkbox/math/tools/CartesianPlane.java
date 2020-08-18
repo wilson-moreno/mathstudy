@@ -249,17 +249,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
 
       public Vector addVector( double x, double y ){
           Vector vector = new Vector( x, y, getCenterX(), getCenterY(), getModuleSize() );
-          vector.setOnContextMenuRequested( new EventHandler< ContextMenuEvent >(){
-              private VectorContextMenu contextMenu = new VectorContextMenu( vector );
-
-              @Override
-              public void handle( ContextMenuEvent event ){
-                contextMenu.show( vector, event.getScreenX(), event.getScreenY() );
-              }
-          });
-
+          vector.setOnContextMenuRequested( new VectorContextMenuEventHandler( vector ) );
           vector.addEventFilter( MouseEvent.ANY, new MouseOverVectorEventHandler() );
-
           vectors.getChildren().add( vector );
           return vector;
       }
@@ -318,14 +309,18 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
                 lineSegment.setStrokeWidth( WIDE_STROKE );
                 arrow.setStrokeWidth( WIDE_STROKE );
                 lineSegment.setFill( WIDE_COLOR );
+                lineSegment.setStroke( WIDE_COLOR );
                 arrow.setFill( WIDE_COLOR );
+                arrow.setStroke( WIDE_COLOR );
             }
 
             public void regularArrow(){
                 lineSegment.setStrokeWidth( STROKE_WIDTH );
                 arrow.setStrokeWidth( STROKE_WIDTH );
                 lineSegment.setFill( COLOR );
+                lineSegment.setStroke( COLOR );
                 arrow.setFill( COLOR );
+                arrow.setStroke( COLOR );
             }
 
             private Polygon arrow(){
@@ -395,7 +390,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       }
 
 
-      private class VectorContextMenu extends ContextMenu{
+      public static class VectorContextMenu extends ContextMenu{
             private Menu rotateMenu = new Menu( "Rotate" );
             private MenuItem rotate30 = new MenuItem( "30 degrees" );
             private MenuItem rotate45 = new MenuItem( "45 degrees" );
@@ -469,6 +464,22 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
 
 }
 
+
+class VectorContextMenuEventHandler implements EventHandler< ContextMenuEvent >{
+    private CartesianPlane.Vector vector;
+    private CartesianPlane.VectorContextMenu contextMenu;
+
+    public VectorContextMenuEventHandler( CartesianPlane.Vector vector ){
+        this.vector = vector;
+        this.contextMenu = new CartesianPlane.VectorContextMenu( vector );
+    }
+
+    @Override
+    public void handle( ContextMenuEvent e ){
+        contextMenu.show( vector, e.getScreenX(), e.getScreenY() );
+    }
+
+}
 
 class MouseGridSnapEventHandler implements EventHandler< MouseEvent >{
     private CartesianPlane cartesianPlane;
