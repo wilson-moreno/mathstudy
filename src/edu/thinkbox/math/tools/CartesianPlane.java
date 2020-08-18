@@ -86,8 +86,6 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
           contextMenu.show( this, event.getScreenX(), event.getScreenY() );
       }
 
-
-
       public int getWidth(){ return width; }
       public int getHeight(){ return height; }
       public int getModuleSize(){ return moduleSize; }
@@ -102,6 +100,13 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       private int getColumnCount(){ return width / moduleSize; }
       private int getRowCount(){ return height / moduleSize; }
 
+      public double toXCoordinate( double sceneX ){
+          return ( sceneX - getCenterX() ) / moduleSize;
+      }
+
+      public double toYCoordinate( double sceneY ){
+          return ( ( sceneY - getCenterY() ) / moduleSize ) * -1;
+      }
 
       private Group createGridLines(){
           Group gridLines = new Group();
@@ -196,8 +201,6 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
               ticks.getChildren().add( tick4 );
           }
 
-
-
           return ticks;
       }
 
@@ -237,11 +240,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
           else if( x < 0.0 && y == 0.0 ) return Math.PI;
           else if( x == 0.0 && y < 0.0 ) return Math.PI * ( 3.0 / 2.0 );
           else {
-
               double radians = Math.atan( y / x );
-
               if( ( x < 0.0 && y > 0.0 ) || ( x < 0.0 && y < 0.0 ) ) radians = Math.PI + radians;
-
               return radians;
           }
 
@@ -250,7 +250,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       public Vector addVector( double x, double y ){
           Vector vector = new Vector( x, y, getCenterX(), getCenterY(), getModuleSize() );
           vector.setOnContextMenuRequested( new VectorContextMenuEventHandler( vector ) );
-          vector.addEventFilter( MouseEvent.ANY, new MouseOverVectorEventHandler() );
+          vector.addEventFilter( MouseEvent.ANY, new MouseOverVectorEventHandler( this ) );
           vectors.getChildren().add( vector );
           return vector;
       }
@@ -375,6 +375,15 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
                 return this;
             }
 
+            public void setCoordinates( double x, double y ){
+                vector.setEntry( 0, 0, x );
+                vector.setEntry( 1, 0, y );
+                lineSegment.setEndX( tx() );
+                lineSegment.setEndY( ty() );
+                arrow.getPoints().clear();
+                arrow.getPoints().addAll( arrowPoints() );
+            }
+
 
             private double tx(){ return centerX + ( vector.getEntry( 0, 0 ) * zoomFactor ); }
             private double ty(){ return centerY - ( vector.getEntry( 1, 0 ) * zoomFactor ); }
@@ -483,24 +492,41 @@ class VectorContextMenuEventHandler implements EventHandler< ContextMenuEvent >{
 
 class MouseGridSnapEventHandler implements EventHandler< MouseEvent >{
     private CartesianPlane cartesianPlane;
+    private Text coordinates = new Text( 0.0, 0.0, String.format("[%2.2f, %2.2f]", 0.0, 0.0) );
 
     public MouseGridSnapEventHandler( CartesianPlane cartesianPlane ){
         this.cartesianPlane = cartesianPlane;
+        this.cartesianPlane.getChildren().add( coordinates );
     }
 
     @Override
-    public void handle( MouseEvent e ){}
+    public void handle( MouseEvent e ){
+        coordinates.setX( e.getSceneX() );
+        coordinates.setY( e.getSceneY() - 10 );
+        coordinates.setText( String.format("[%2.2f, %2.2f]", cartesianPlane.toXCoordinate( e.getSceneX() ), cartesianPlane.toYCoordinate( e.getSceneY() ) ) );
+    }
 }
 
 class MouseOverVectorEventHandler implements EventHandler< MouseEvent >{
+    private CartesianPlane cartesianPlane;
 
-    public MouseOverVectorEventHandler(){}
+    public MouseOverVectorEventHandler( CartesianPlane cartesianPlane ){
+        this.cartesianPlane = cartesianPlane;
+    }
 
     @Override
     public void handle( MouseEvent e ){
         CartesianPlane.Vector vector = ( CartesianPlane.Vector ) e.getSource();
 
-        if( e.getEventType() == MouseEvent.MOUSE_ENTERED ) vector.wideArrow();
-        else if( e.getEventType() == MouseEvent.MOUSE_EXITED ) vector.regularArrow();
+        if( e.getEventType() == MouseEvent.MOUSE_DRAGGED ){
+          vector.wideArrow();
+          vector.setCoordinates( cartesianPlane.toXCoordinate( e.getSceneX() ), cartesianPlane.toYCoordinate( e.getSceneY() ) );
+        } else if( e.getEventType() == MouseEvent.MOUSE_RELEASED ){
+          vector.regularArrow();
+        } else {
+          if( e.getEventType() == MouseEvent.MOUSE_ENTERED ) vector.wideArrow();
+          else if( e.getEventType() == MouseEvent.MOUSE_EXITED ) vector.regularArrow();
+        }
+
     }
 }
