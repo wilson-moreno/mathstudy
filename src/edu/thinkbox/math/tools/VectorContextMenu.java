@@ -33,6 +33,7 @@ public class VectorContextMenu extends ContextMenu{
       private CheckMenuItem showCoordinatesMenu = new CheckMenuItem( "Show Coordinates" );
       private CheckMenuItem showMagnitudeMenu = new CheckMenuItem( "Show Magnitude" );
       private CheckMenuItem showRiseRunMenu = new CheckMenuItem( "Show Rise/Run" );
+      private CheckMenuItem showPointMenu = new CheckMenuItem( "Show Point" );
       private SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
       private Vector vector;
 
@@ -45,12 +46,20 @@ public class VectorContextMenu extends ContextMenu{
           showCoordinatesMenu.setOnAction( new ShowCoordinatesEvent() );
           showMagnitudeMenu.setOnAction( new ShowMagnitudeEvent() );
           showRiseRunMenu.setOnAction( new ShowRiseRunEvent() );
+          showPointMenu.setOnAction( new ShowPointEvent() );
           rotateMenu.getItems().addAll( rotate30 );
           rotateMenu.getItems().addAll( rotate45 );
           rotateMenu.getItems().addAll( rotate60 );
           rotateMenu.getItems().addAll( rotate90 );
-          getItems().addAll( rotateMenu, separatorMenuItem1, showMagnitudeMenu, showRiseRunMenu, showCoordinatesMenu );
+          getItems().addAll( rotateMenu, separatorMenuItem1, showMagnitudeMenu, showRiseRunMenu, showCoordinatesMenu, showPointMenu );
       }
+
+      private class ShowPointEvent implements EventHandler<ActionEvent>{
+          public void handle( ActionEvent e ){
+              vector.setPointVisible( showPointMenu.isSelected() );
+          }
+      }
+
 
       private class ShowRiseRunEvent implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){

@@ -36,6 +36,7 @@ public class Vector extends Group{
       private Text yLabel = new Text();
       private Text magnitudeLabel = new Text();
       private RiseRun riseRun;
+      private Point point;
       private CartesianPlane plane;
 
       public Vector( double x, double y, CartesianPlane plane){
@@ -44,6 +45,7 @@ public class Vector extends Group{
           vector.setEntry( 1, 0, y );
           lineSegment = lineSegment();
           arrow = arrow();
+          point = new Point( x, y, plane );
           xLabel.setFont( Font.font( 12.0 ) );
           yLabel.setFont( Font.font( 12.0 ) );
           magnitudeLabel.setFont( Font.font( 12.0 ) );
@@ -52,6 +54,7 @@ public class Vector extends Group{
           setCoordinatesVisible( false );
           setMagnitudeVisible( false );
           setRiseRunVisible( false );
+          setPointVisible( false );
           setXLabel( xLabel );
           setYLabel( yLabel );
           setMagnitudeLabel( magnitudeLabel );
@@ -61,6 +64,11 @@ public class Vector extends Group{
           getChildren().add( yLabel );
           getChildren().add( magnitudeLabel );
           getChildren().add( riseRun );
+          getChildren().add( point );
+      }
+
+      public void setPointVisible( boolean visible ){
+          point.setVisible( visible );
       }
 
       public void setMagnitudeVisible( boolean visible ){
@@ -99,6 +107,7 @@ public class Vector extends Group{
           lineSegment.setStroke( WIDE_COLOR );
           arrow.setFill( WIDE_COLOR );
           arrow.setStroke( WIDE_COLOR );
+          point.bigPoint();
       }
 
       public void regularArrow(){
@@ -108,6 +117,7 @@ public class Vector extends Group{
           lineSegment.setStroke( COLOR );
           arrow.setFill( COLOR );
           arrow.setStroke( COLOR );
+          point.regularPoint();
       }
 
       private Polygon arrow(){
@@ -155,11 +165,12 @@ public class Vector extends Group{
 
       public Vector transform( Matrix transformation ){
           vector.copyEntries( transformation.multiply( vector ) );
-          lineSegment.setEndX( tx() );
-          lineSegment.setEndY( ty() );
-          arrow.getPoints().clear();
-          arrow.getPoints().addAll( arrowPoints() );
+          setVector( vector );
           return this;
+      }
+
+      private void setVector( Matrix vector ){
+          setCoordinates( vector.getEntry( 0, 0 ), vector.getEntry( 1, 0 ) );
       }
 
       public void setCoordinates( double x, double y ){
@@ -173,6 +184,7 @@ public class Vector extends Group{
           arrow.getPoints().clear();
           arrow.getPoints().addAll( arrowPoints() );
           riseRun.setVector( vector );
+          point.setVector( vector );
       }
 
 

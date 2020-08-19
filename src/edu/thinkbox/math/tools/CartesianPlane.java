@@ -48,7 +48,6 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       private double lastScreenY;
       private Rectangle rectangle;
       private PlaneContextMenu contextMenu;
-      private MouseGridSnapEventHandler mouseGridSnapEventHandler;
       private boolean showMouseCoordinates;
 
       public CartesianPlane( int width, int height, int moduleSize ){
@@ -76,9 +75,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
           getChildren().add( points );
 
 
-          mouseGridSnapEventHandler = new MouseGridSnapEventHandler( this );
-
-          addEventFilter( MouseEvent.ANY, mouseGridSnapEventHandler );
+          addEventFilter( MouseEvent.ANY, new MouseGridSnapEventHandler( this ) );
           addEventFilter( MouseEvent.MOUSE_CLICKED, this.contextMenu );
       }
 
@@ -301,7 +298,9 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       }
 
       public Point addPoint( double x, double y ){
-          Point point = new Point( getCenterX(), getCenterY(), x, y, getModuleSize() );
+          Point point = new Point( x, y, this );
+          point.setOnContextMenuRequested( new PointContextMenuEventHandler( point ) );
+          point.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( this) );
           points.getChildren().add( point );
           return point;
       }
