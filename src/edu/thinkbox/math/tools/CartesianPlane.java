@@ -7,6 +7,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 import edu.thinkbox.math.matrix.Matrix;
 import javafx.event.EventHandler;
@@ -15,6 +16,8 @@ import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Menu;
 import javafx.stage.Window;
 import javafx.stage.PopupWindow.AnchorLocation;
@@ -40,11 +43,13 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       private Group axes;
       private Group ticks;
       private Group vectors;
+      private Group points;
       private double lastScreenX;
       private double lastScreenY;
       private Rectangle rectangle;
-      private PlaneContextMenu contextMenu = new PlaneContextMenu();
+      private PlaneContextMenu contextMenu;
       private MouseGridSnapEventHandler mouseGridSnapEventHandler;
+      private boolean showMouseCoordinates;
 
       public CartesianPlane( int width, int height, int moduleSize ){
           this.width = width;
@@ -54,30 +59,27 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
           this.axes = createAxes();
           this.ticks = createTicks();
           this.vectors = new Group();
+          this.points = new Group();
           this.rectangle = new Rectangle( 0, 0, width, height );
           this.rectangle.setFill( Color.WHITE );
           this.rectangle.setOnContextMenuRequested( this );
           this.gridLines.setOnContextMenuRequested( this );
           this.axes.setOnContextMenuRequested( this );
           this.ticks.setOnContextMenuRequested( this );
+          this.showMouseCoordinates = false;
+          this.contextMenu = new PlaneContextMenu( this );
           getChildren().add( rectangle );
           getChildren().add( gridLines );
           getChildren().add( axes );
           getChildren().add( ticks );
           getChildren().add( vectors );
+          getChildren().add( points );
 
-          EventHandler< MouseEvent > rightMouseClick = new EventHandler< MouseEvent >(){
-              @Override
-              public void handle( MouseEvent e ){
-                  lastScreenX = e.getSceneX();
-                  lastScreenY = e.getSceneY();
-              }
-          };
 
           mouseGridSnapEventHandler = new MouseGridSnapEventHandler( this );
 
           addEventFilter( MouseEvent.ANY, mouseGridSnapEventHandler );
-          addEventFilter( MouseEvent.MOUSE_CLICKED, rightMouseClick );
+          addEventFilter( MouseEvent.MOUSE_CLICKED, this.contextMenu );
       }
 
 
@@ -101,12 +103,41 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       private int getColumnCount(){ return width / moduleSize; }
       private int getRowCount(){ return height / moduleSize; }
 
-      public double toXCoordinate( double sceneX ){
+      public void setMouseCoordinatesVisible( boolean visible ){
+          this.showMouseCoordinates = visible;
+      }
+
+      public void setGridlinesVisible( boolean visible ){
+          gridLines.setVisible( visible );
+      }
+
+      public void setAxesVisible( boolean visible ){
+          axes.setVisible( visible );
+      }
+
+      public void setTicksVisible( boolean visible ){
+          ticks.setVisible( visible );
+      }
+
+      public boolean isMouseCoordinateVisible(){
+          return this.showMouseCoordinates;
+      }
+
+
+      public double toCoordinateX( double sceneX ){
           return ( sceneX - getCenterX() ) / moduleSize;
       }
 
-      public double toYCoordinate( double sceneY ){
+      public double toCoordinateY( double sceneY ){
           return ( ( sceneY - getCenterY() ) / moduleSize ) * -1;
+      }
+
+      public double toSceneX( double xCoordinate ){
+          return getCenterX() + ( xCoordinate * moduleSize );
+      }
+
+      public double toSceneY( double yCoordinate ){
+          return getCenterY() - ( yCoordinate * moduleSize );
       }
 
       private Group createGridLines(){
@@ -175,6 +206,19 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
         axes.getChildren().add( xAxis );
 
         return axes;
+      }
+
+      public int getQuadrant( Matrix vector ){
+          double x = vector.getEntry( 0, 0 );
+          double y = vector.getEntry( 1, 0 );
+          int quadrant = 0;
+
+          if( x > 0.0 && y > 0.0 ) quadrant = 1;
+          else if( x < 0.0 && y > 0.0 ) quadrant = 2;
+          else if( x < 0.0 && y < 0.0 ) quadrant = 3;
+          else if( x > 0.0 && y < 0.0 ) quadrant = 4;
+
+          return quadrant;
       }
 
       private Group createTicks(){
@@ -249,208 +293,27 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       }
 
       public Vector addVector( double x, double y ){
-          Vector vector = new Vector( x, y, getCenterX(), getCenterY(), getModuleSize() );
+          Vector vector = new Vector( x, y, this );
           vector.setOnContextMenuRequested( new VectorContextMenuEventHandler( vector ) );
           vector.addEventFilter( MouseEvent.ANY, new MouseOverVectorEventHandler( this ) );
           vectors.getChildren().add( vector );
           return vector;
       }
 
+      public Point addPoint( double x, double y ){
+          Point point = new Point( getCenterX(), getCenterY(), x, y, getModuleSize() );
+          points.getChildren().add( point );
+          return point;
+      }
+
       public void clearVectors(){
           vectors.getChildren().clear();
       }
 
-      public class Vector extends Group{
-            private final Color COLOR = Color.web( "509237" );
-            private final Color WIDE_COLOR = Color.web( "ff1a00" );
-            private static final double STROKE_WIDTH = 3.0;
-            private static final double WIDE_STROKE = 5.0;
-            private final Matrix vector = Matrix.createColumnMatrix( 2 );
-            private double centerX;
-            private double centerY;
-            private double zoomFactor;
-            private Line lineSegment;
-            private Polygon arrow;
-            private Text xLabel = new Text();
-            private Text yLabel = new Text();
-
-            public Vector( double x, double y, double centerX, double centerY, double zoomFactor ){
-                vector.setEntry( 0, 0, x );
-                vector.setEntry( 1, 0, y );
-                this.centerX = centerX;
-                this.centerY = centerY;
-                this.zoomFactor = zoomFactor;
-                lineSegment = lineSegment();
-                arrow = arrow();
-                xLabel.setFont( Font.font( 12.0 ) );
-                yLabel.setFont( Font.font( 12.0 ) );
-                //xLabel.setStroke( AXES_COLOR );
-                //yLabel.setStroke( AXES_COLOR );
-                //xLabel.setFill( AXES_COLOR );
-                //yLabel.setFill( AXES_COLOR );
-                setXLabel( xLabel );
-                setYLabel( yLabel );
-                getChildren().add( lineSegment );
-                getChildren().add( arrow );
-                getChildren().add( xLabel );
-                getChildren().add( yLabel );
-            }
-
-            public double direction(){
-                double x = vector.getEntry( 0, 0 );
-                double y = vector.getEntry( 1, 0 );
-
-                if( x > 0.0 && y == 0.0 )      return 0.0;              // Direction is 0 degree
-                else if( x == 0.0 && y > 0.0 ) return Math.PI / 2.0;    // Direction is 90 degrees
-                else if( x < 0.0 && y == 0.0 ) return Math.PI;          // Directions is 180 degrees
-                else if( x == 0.0 && y < 0.0 ) return Math.PI * ( 3.0 / 2.0 ); // Direction is 270 degrees
-                else {
-
-                    double radians = Math.atan( y / x );
-
-                    // Computes the true direction when the vector is in the 2nd Quadrant ( + , - ) or
-                    // in the 3rd Quadrant ( - , - ). PI to the radians.
-                    if( ( x < 0.0 && y > 0.0 ) || ( x < 0.0 && y < 0.0 ) ) radians = Math.PI + radians;
-
-                    return radians;
-                }
-
-            }
-
-            public void wideArrow(){
-                lineSegment.setStrokeWidth( WIDE_STROKE );
-                arrow.setStrokeWidth( WIDE_STROKE );
-                lineSegment.setFill( WIDE_COLOR );
-                lineSegment.setStroke( WIDE_COLOR );
-                arrow.setFill( WIDE_COLOR );
-                arrow.setStroke( WIDE_COLOR );
-            }
-
-            public void regularArrow(){
-                lineSegment.setStrokeWidth( STROKE_WIDTH );
-                arrow.setStrokeWidth( STROKE_WIDTH );
-                lineSegment.setFill( COLOR );
-                lineSegment.setStroke( COLOR );
-                arrow.setFill( COLOR );
-                arrow.setStroke( COLOR );
-            }
-
-            private Polygon arrow(){
-                Polygon triangle = new Polygon();
-                double size = 10.0;
-                double theta = radians( 160.0 );
-
-                double delta1 = direction() - theta;
-                double delta2 = direction() + theta;
-                double x2 = size * Math.cos( delta1 );
-                double y2 = size * Math.sin( delta1 );
-                double x3 = size * Math.cos( delta2 );
-                double y3 = size * Math.sin( delta2 );
-
-                triangle.getPoints().addAll( new Double[] { tx(), ty(), tx()+x2, ty()-y2, tx()+x3, ty()-y3 } );
-                triangle.setStroke( COLOR );
-                triangle.setFill( COLOR );
-                triangle.setStrokeWidth( STROKE_WIDTH );
-                return triangle;
-            }
-
-            private Double[] arrowPoints(){
-              double size = 10.0;
-              double theta = radians( 160.0 );
-
-              double delta1 = direction() - theta;
-              double delta2 = direction() + theta;
-              double x2 = size * Math.cos( delta1 );
-              double y2 = size * Math.sin( delta1 );
-              double x3 = size * Math.cos( delta2 );
-              double y3 = size * Math.sin( delta2 );
-
-              return new Double[] { tx(), ty(), tx()+x2, ty()-y2, tx()+x3, ty()-y3 };
-            }
-
-            private Line lineSegment() {
-              Line line = new Line( centerX, centerY, tx(), ty() );
-              line.setStrokeWidth( STROKE_WIDTH );
-              line.setStroke( COLOR );
-              return line;
-            }
-
-            private double radians( double degree ){ return degree * ( Math.PI / 180 ); }
-
-
-            public Vector transform( Matrix transformation ){
-                vector.copyEntries( transformation.multiply( vector ) );
-                lineSegment.setEndX( tx() );
-                lineSegment.setEndY( ty() );
-                arrow.getPoints().clear();
-                arrow.getPoints().addAll( arrowPoints() );
-                return this;
-            }
-
-            public void setCoordinates( double x, double y ){
-                vector.setEntry( 0, 0, x );
-                vector.setEntry( 1, 0, y );
-                lineSegment.setEndX( tx() );
-                lineSegment.setEndY( ty() );
-                setXLabel( xLabel );
-                setYLabel( yLabel );
-                arrow.getPoints().clear();
-                arrow.getPoints().addAll( arrowPoints() );
-            }
-
-
-            private double tx(){ return centerX + ( vector.getEntry( 0, 0 ) * zoomFactor ); }
-            private double ty(){ return centerY - ( vector.getEntry( 1, 0 ) * zoomFactor ); }
-
-            private void setXLabel( Text label ){
-              double x;
-              double y;
-
-              if( ( vector.getEntry( 0, 0 ) > 0.0 && vector.getEntry( 1, 0 ) > 0.0 ) ) {
-                  x = tx() + 10;
-                  y = ty() - 10;
-              } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
-                  x = tx() - 50;
-                  y = ty() - 10;
-              } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) < 0.0  ) {
-                  x = tx() - 50;
-                  y = ty() + 20;
-              } else {
-                  x = tx() + 10;
-                  y = ty() + 20;
-              }
-
-              label.setX( x );
-              label.setY( y );
-              label.setText( String.format( "[ %02.2f ]", vector.getEntry( 0, 0 ) ) );
-            }
-
-            private void setYLabel( Text label ){
-              double x;
-              double y;
-
-              if( ( vector.getEntry( 0, 0 ) > 0.0 && vector.getEntry( 1, 0 ) > 0.0 ) ) {
-                  x = tx() + 10;
-                  y = ty() + 5;
-              } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
-                  x = tx() - 50;
-                  y = ty() + 5;
-              } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) < 0.0  ) {
-                  x = tx() - 50;
-                  y = ty() + 35;
-              } else {
-                  x = tx() + 10;
-                  y = ty() + 35;
-              }
-
-              label.setX( x );
-              label.setY( y );
-              label.setText( String.format( "[ %02.2f ]", vector.getEntry( 1, 0 ) ) );
-            }
-
-
-
+      public void clearPoints(){
+          points.getChildren().clear();
       }
+
 
       private double translateX( double screenX ){
           return ( screenX - getCenterX() ) / moduleSize;
@@ -460,140 +323,14 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
           return -1 * ( ( screenY - getCenterY() ) / moduleSize );
       }
 
+      public static class PointContextMenu extends ContextMenu{
+            private Point point;
 
-      public static class VectorContextMenu extends ContextMenu{
-            private Menu rotateMenu = new Menu( "Rotate" );
-            private MenuItem rotate30 = new MenuItem( "30 degrees" );
-            private MenuItem rotate45 = new MenuItem( "45 degrees" );
-            private MenuItem rotate60 = new MenuItem( "60 degrees" );
-            private MenuItem rotate90 = new MenuItem( "90 degrees" );
-            private Vector vector;
-
-            public VectorContextMenu( Vector vector){
-                this.vector = vector;
-                rotate30.setOnAction( new Rotate30Event() );
-                rotate45.setOnAction( new Rotate45Event() );
-                rotate60.setOnAction( new Rotate60Event() );
-                rotate90.setOnAction( new Rotate90Event() );
-                rotateMenu.getItems().addAll( rotate30 );
-                rotateMenu.getItems().addAll( rotate45 );
-                rotateMenu.getItems().addAll( rotate60 );
-                rotateMenu.getItems().addAll( rotate90 );
-                getItems().addAll( rotateMenu );
-            }
-
-            private class Rotate30Event implements EventHandler<ActionEvent>{
-                public void handle( ActionEvent e ){
-                    vector.transform( Transformation.rotationMatrix( Math.PI / 6.0 ) );
-                }
-            }
-
-            private class Rotate45Event implements EventHandler<ActionEvent>{
-                public void handle( ActionEvent e ){
-                    vector.transform( Transformation.rotationMatrix( Math.PI / 4.0 ) );
-                }
-            }
-
-            private class Rotate60Event implements EventHandler<ActionEvent>{
-                public void handle( ActionEvent e ){
-                    vector.transform( Transformation.rotationMatrix( Math.PI / 3.0 ) );
-                }
-            }
-
-            private class Rotate90Event implements EventHandler<ActionEvent>{
-                public void handle( ActionEvent e ){
-                    vector.transform( Transformation.rotationMatrix( Math.PI / 2.0 ) );
-                }
+            public PointContextMenu( Point point ){
+                this.point = point;
             }
       }
 
 
-      private class PlaneContextMenu extends ContextMenu{
-            private MenuItem addVectorMenu = new MenuItem( "Add Vector" );
-            private MenuItem clearVectorsMenu = new MenuItem( "Clear Vectors" );
-            private CartesianPlane plane;
 
-            public PlaneContextMenu(){
-                addVectorMenu.setOnAction( new AddVectorEvent() );
-                clearVectorsMenu.setOnAction( new ClearVectorsEvent() );
-                getItems().addAll( addVectorMenu, clearVectorsMenu );
-            }
-
-            private class AddVectorEvent implements EventHandler<ActionEvent>{
-                public void handle( ActionEvent e ){
-                    addVector( translateX( lastScreenX ), translateY( lastScreenY ) );
-                }
-            }
-
-            private class ClearVectorsEvent implements EventHandler<ActionEvent>{
-                public void handle( ActionEvent e ){
-                    clearVectors();
-                }
-            }
-
-      }
-
-}
-
-
-class VectorContextMenuEventHandler implements EventHandler< ContextMenuEvent >{
-    private CartesianPlane.Vector vector;
-    private CartesianPlane.VectorContextMenu contextMenu;
-
-    public VectorContextMenuEventHandler( CartesianPlane.Vector vector ){
-        this.vector = vector;
-        this.contextMenu = new CartesianPlane.VectorContextMenu( vector );
-    }
-
-    @Override
-    public void handle( ContextMenuEvent e ){
-        contextMenu.show( vector, e.getScreenX(), e.getScreenY() );
-    }
-
-}
-
-class MouseGridSnapEventHandler implements EventHandler< MouseEvent >{
-    private CartesianPlane cartesianPlane;
-    private Text coordinates = new Text( 0.0, 0.0, String.format("[%2.2f, %2.2f]", 0.0, 0.0) );
-
-    public MouseGridSnapEventHandler( CartesianPlane cartesianPlane ){
-        this.cartesianPlane = cartesianPlane;
-        this.cartesianPlane.getChildren().add( coordinates );
-    }
-
-    @Override
-    public void handle( MouseEvent e ){
-        if( e.getEventType() == MouseEvent.MOUSE_MOVED ){
-          coordinates.setX( e.getSceneX() );
-          coordinates.setY( e.getSceneY() - 10 );
-          coordinates.setText( String.format("( %4.2f, %4.2f )", cartesianPlane.toXCoordinate( e.getSceneX() ), cartesianPlane.toYCoordinate( e.getSceneY() ) ) );
-          coordinates.setVisible( true );
-        } else {
-          coordinates.setVisible( false );
-        }
-    }
-}
-
-class MouseOverVectorEventHandler implements EventHandler< MouseEvent >{
-    private CartesianPlane cartesianPlane;
-
-    public MouseOverVectorEventHandler( CartesianPlane cartesianPlane ){
-        this.cartesianPlane = cartesianPlane;
-    }
-
-    @Override
-    public void handle( MouseEvent e ){
-        CartesianPlane.Vector vector = ( CartesianPlane.Vector ) e.getSource();
-
-        if( e.getEventType() == MouseEvent.MOUSE_DRAGGED ){
-          vector.wideArrow();
-          vector.setCoordinates( cartesianPlane.toXCoordinate( e.getSceneX() ), cartesianPlane.toYCoordinate( e.getSceneY() ) );
-        } else if( e.getEventType() == MouseEvent.MOUSE_RELEASED ){
-          vector.regularArrow();
-        } else {
-          if( e.getEventType() == MouseEvent.MOUSE_ENTERED ) vector.wideArrow();
-          else if( e.getEventType() == MouseEvent.MOUSE_EXITED ) vector.regularArrow();
-        }
-
-    }
 }
