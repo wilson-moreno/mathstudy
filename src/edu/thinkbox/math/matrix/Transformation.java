@@ -14,4 +14,23 @@ public final class Transformation{
               return transformation;
         }
 
+        public static Matrix yProjectionMatrix(){
+              Matrix transformation = Matrix.createSquareMatrix( 2 );
+
+              transformation.setRowEntries( 0, " 0  0 " );
+              transformation.setRowEntries( 1, " 0  1 " );
+
+          return transformation;
+        }
+
+        public static Matrix xProjectionMatrix(){
+              Matrix transformation = Matrix.createSquareMatrix( 2 );
+
+              transformation.setRowEntries( 0, " 1  0 " );
+              transformation.setRowEntries( 1, " 0  0 " );
+
+          return transformation;
+        }
+
+
 }

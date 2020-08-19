@@ -273,7 +273,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
           return arrow;
       }
 
-      private double direction( Matrix vector ){
+      public double direction( Matrix vector ){
           double x = vector.getEntry( 0, 0 );
           double y = vector.getEntry( 1, 0 );
 
@@ -283,10 +283,15 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
           else if( x == 0.0 && y < 0.0 ) return Math.PI * ( 3.0 / 2.0 );
           else {
               double radians = Math.atan( y / x );
-              if( ( x < 0.0 && y > 0.0 ) || ( x < 0.0 && y < 0.0 ) ) radians = Math.PI + radians;
+              if( ( x < 0.0 && y > 0.0 ) || ( x < 0.0 && y < 0.0 ) ) radians += Math.PI;
+              else if( ( x > 0.0 && y < 0.0 ) ) radians += 2 * Math.PI;
               return radians;
           }
 
+      }
+
+      public double toDegree( double radians ){
+          return radians * ( 180.0 / Math.PI );
       }
 
       public Vector addVector( double x, double y ){

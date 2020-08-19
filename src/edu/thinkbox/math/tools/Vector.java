@@ -37,6 +37,7 @@ public class Vector extends Group{
       private Text magnitudeLabel = new Text();
       private RiseRun riseRun;
       private Point point;
+      private Angle angle;
       private CartesianPlane plane;
 
       public Vector( double x, double y, CartesianPlane plane){
@@ -50,11 +51,14 @@ public class Vector extends Group{
           yLabel.setFont( Font.font( 12.0 ) );
           magnitudeLabel.setFont( Font.font( 12.0 ) );
           riseRun = new RiseRun( plane );
+          angle = new Angle( plane );
           riseRun.setVector( vector );
+          angle.setVector( vector );
           setCoordinatesVisible( false );
           setMagnitudeVisible( false );
           setRiseRunVisible( false );
           setPointVisible( false );
+          setAngleVisible( false );
           setXLabel( xLabel );
           setYLabel( yLabel );
           setMagnitudeLabel( magnitudeLabel );
@@ -65,6 +69,7 @@ public class Vector extends Group{
           getChildren().add( magnitudeLabel );
           getChildren().add( riseRun );
           getChildren().add( point );
+          getChildren().add( angle );
       }
 
       public void setPointVisible( boolean visible ){
@@ -73,6 +78,10 @@ public class Vector extends Group{
 
       public void setMagnitudeVisible( boolean visible ){
           magnitudeLabel.setVisible( visible );
+      }
+
+      public void setAngleVisible( boolean visible ){
+          angle.setVisible( visible );
       }
 
       public double direction(){
@@ -108,6 +117,7 @@ public class Vector extends Group{
           arrow.setFill( WIDE_COLOR );
           arrow.setStroke( WIDE_COLOR );
           point.bigPoint();
+          angle.wideStroke();
       }
 
       public void regularArrow(){
@@ -118,6 +128,7 @@ public class Vector extends Group{
           arrow.setFill( COLOR );
           arrow.setStroke( COLOR );
           point.regularPoint();
+          angle.regularStroke();
       }
 
       private Polygon arrow(){
@@ -185,6 +196,7 @@ public class Vector extends Group{
           arrow.getPoints().addAll( arrowPoints() );
           riseRun.setVector( vector );
           point.setVector( vector );
+          angle.setVector( vector );
       }
 
 

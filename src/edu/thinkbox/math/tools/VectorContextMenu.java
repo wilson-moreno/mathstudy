@@ -30,8 +30,11 @@ public class VectorContextMenu extends ContextMenu{
       private MenuItem rotate45 = new MenuItem( "45 degrees" );
       private MenuItem rotate60 = new MenuItem( "60 degrees" );
       private MenuItem rotate90 = new MenuItem( "90 degrees" );
+      private MenuItem xProjectionMenu = new MenuItem( "Project Onto X-Axis" );
+      private MenuItem yProjectionMenu = new MenuItem( "Project Onto Y-Axis" );
       private CheckMenuItem showCoordinatesMenu = new CheckMenuItem( "Show Coordinates" );
       private CheckMenuItem showMagnitudeMenu = new CheckMenuItem( "Show Magnitude" );
+      private CheckMenuItem showAngleMenu = new CheckMenuItem( "Show Angle" );
       private CheckMenuItem showRiseRunMenu = new CheckMenuItem( "Show Rise/Run" );
       private CheckMenuItem showPointMenu = new CheckMenuItem( "Show Point" );
       private SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
@@ -43,15 +46,46 @@ public class VectorContextMenu extends ContextMenu{
           rotate45.setOnAction( new Rotate45Event() );
           rotate60.setOnAction( new Rotate60Event() );
           rotate90.setOnAction( new Rotate90Event() );
+          xProjectionMenu.setOnAction( new ProjectOntoXAxisEvent() );
+          yProjectionMenu.setOnAction( new ProjectOntoYAxisEvent() );
           showCoordinatesMenu.setOnAction( new ShowCoordinatesEvent() );
           showMagnitudeMenu.setOnAction( new ShowMagnitudeEvent() );
+          showAngleMenu.setOnAction( new ShowAngleEvent() );
           showRiseRunMenu.setOnAction( new ShowRiseRunEvent() );
           showPointMenu.setOnAction( new ShowPointEvent() );
           rotateMenu.getItems().addAll( rotate30 );
           rotateMenu.getItems().addAll( rotate45 );
           rotateMenu.getItems().addAll( rotate60 );
           rotateMenu.getItems().addAll( rotate90 );
-          getItems().addAll( rotateMenu, separatorMenuItem1, showMagnitudeMenu, showRiseRunMenu, showCoordinatesMenu, showPointMenu );
+          getItems().addAll( rotateMenu,
+                             xProjectionMenu,
+                             yProjectionMenu,
+                             separatorMenuItem1,
+                             showMagnitudeMenu,
+                             showAngleMenu,
+                             showRiseRunMenu,
+                             showCoordinatesMenu,
+                             showPointMenu );
+      }
+
+      private class ShowAngleEvent implements EventHandler<ActionEvent>{
+          public void handle( ActionEvent e ){
+              vector.setAngleVisible( showAngleMenu.isSelected() );
+          }
+      }
+
+
+      private class ProjectOntoXAxisEvent implements EventHandler<ActionEvent>{
+          public void handle( ActionEvent e ){
+              vector.transform( Transformation.xProjectionMatrix() );
+          }
+      }
+
+
+      private class ProjectOntoYAxisEvent implements EventHandler<ActionEvent>{
+          public void handle( ActionEvent e ){
+              vector.transform( Transformation.yProjectionMatrix() );
+          }
       }
 
       private class ShowPointEvent implements EventHandler<ActionEvent>{
