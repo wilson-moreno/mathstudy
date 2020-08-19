@@ -4,6 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
@@ -75,7 +76,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
 
           mouseGridSnapEventHandler = new MouseGridSnapEventHandler( this );
 
-          addEventFilter( MouseEvent.MOUSE_MOVED, mouseGridSnapEventHandler );
+          addEventFilter( MouseEvent.ANY, mouseGridSnapEventHandler );
           addEventFilter( MouseEvent.MOUSE_CLICKED, rightMouseClick );
       }
 
@@ -270,8 +271,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
             private double zoomFactor;
             private Line lineSegment;
             private Polygon arrow;
-            private Text xLabel;
-            private Text yLabel;
+            private Text xLabel = new Text();
+            private Text yLabel = new Text();
 
             public Vector( double x, double y, double centerX, double centerY, double zoomFactor ){
                 vector.setEntry( 0, 0, x );
@@ -281,8 +282,14 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
                 this.zoomFactor = zoomFactor;
                 lineSegment = lineSegment();
                 arrow = arrow();
-                xLabel = xLabel();
-                yLabel = yLabel();
+                xLabel.setFont( Font.font( 12.0 ) );
+                yLabel.setFont( Font.font( 12.0 ) );
+                //xLabel.setStroke( AXES_COLOR );
+                //yLabel.setStroke( AXES_COLOR );
+                //xLabel.setFill( AXES_COLOR );
+                //yLabel.setFill( AXES_COLOR );
+                setXLabel( xLabel );
+                setYLabel( yLabel );
                 getChildren().add( lineSegment );
                 getChildren().add( arrow );
                 getChildren().add( xLabel );
@@ -386,6 +393,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
                 lineSegment.setEndX( tx() );
                 lineSegment.setEndY( ty() );
                 setXLabel( xLabel );
+                setYLabel( yLabel );
                 arrow.getPoints().clear();
                 arrow.getPoints().addAll( arrowPoints() );
             }
@@ -404,51 +412,43 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
               } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
                   x = tx() - 50;
                   y = ty() - 10;
+              } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) < 0.0  ) {
+                  x = tx() - 50;
+                  y = ty() + 20;
               } else {
-                  x = tx();
+                  x = tx() + 10;
                   y = ty() + 20;
               }
 
               label.setX( x );
               label.setY( y );
-              label.setText( String.format( "[ %2.2f ]", vector.getEntry( 0, 0 ) ) );
+              label.setText( String.format( "[ %02.2f ]", vector.getEntry( 0, 0 ) ) );
             }
 
-            private Text xLabel(){
-                double x;
-                double y;
+            private void setYLabel( Text label ){
+              double x;
+              double y;
 
-                if( ( vector.getEntry( 0, 0 ) > 0.0 && vector.getEntry( 1, 0 ) > 0.0 ) ) {
-                    x = tx() + 10;
-                    y = ty() - 10;
-                } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
-                    x = tx() - 50;
-                    y = ty() - 10;
-                } else {
-                    x = tx();
-                    y = ty() + 20;
-                }
+              if( ( vector.getEntry( 0, 0 ) > 0.0 && vector.getEntry( 1, 0 ) > 0.0 ) ) {
+                  x = tx() + 10;
+                  y = ty() + 5;
+              } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
+                  x = tx() - 50;
+                  y = ty() + 5;
+              } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) < 0.0  ) {
+                  x = tx() - 50;
+                  y = ty() + 35;
+              } else {
+                  x = tx() + 10;
+                  y = ty() + 35;
+              }
 
-                return new Text( x, y, String.format( "[ %2.2f ]", vector.getEntry( 0, 0 ) ) );
+              label.setX( x );
+              label.setY( y );
+              label.setText( String.format( "[ %02.2f ]", vector.getEntry( 1, 0 ) ) );
             }
 
-            private Text yLabel(){
-                double x;
-                double y;
 
-                if( ( vector.getEntry( 0, 0 ) > 0.0 && vector.getEntry( 1, 0 ) > 0.0 ) ) {
-                    x = tx() + 10;
-                    y = ty() + 50;
-                } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
-                    x = tx() - 50;
-                    y = ty() + 50;
-                } else {
-                    x = tx();
-                    y = ty() + 50;
-                }
-
-                return new Text( x, y, String.format( "[ %2.2f ]", vector.getEntry( 1, 0 ) ) );
-            }
 
       }
 
@@ -563,9 +563,14 @@ class MouseGridSnapEventHandler implements EventHandler< MouseEvent >{
 
     @Override
     public void handle( MouseEvent e ){
-        coordinates.setX( e.getSceneX() );
-        coordinates.setY( e.getSceneY() - 10 );
-        coordinates.setText( String.format("[%2.2f, %2.2f]", cartesianPlane.toXCoordinate( e.getSceneX() ), cartesianPlane.toYCoordinate( e.getSceneY() ) ) );
+        if( e.getEventType() == MouseEvent.MOUSE_MOVED ){
+          coordinates.setX( e.getSceneX() );
+          coordinates.setY( e.getSceneY() - 10 );
+          coordinates.setText( String.format("( %4.2f, %4.2f )", cartesianPlane.toXCoordinate( e.getSceneX() ), cartesianPlane.toYCoordinate( e.getSceneY() ) ) );
+          coordinates.setVisible( true );
+        } else {
+          coordinates.setVisible( false );
+        }
     }
 }
 
