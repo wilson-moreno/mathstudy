@@ -270,7 +270,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
             private double zoomFactor;
             private Line lineSegment;
             private Polygon arrow;
-
+            private Text xLabel;
+            private Text yLabel;
 
             public Vector( double x, double y, double centerX, double centerY, double zoomFactor ){
                 vector.setEntry( 0, 0, x );
@@ -280,8 +281,12 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
                 this.zoomFactor = zoomFactor;
                 lineSegment = lineSegment();
                 arrow = arrow();
+                xLabel = xLabel();
+                yLabel = yLabel();
                 getChildren().add( lineSegment );
                 getChildren().add( arrow );
+                getChildren().add( xLabel );
+                getChildren().add( yLabel );
             }
 
             public double direction(){
@@ -380,6 +385,7 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
                 vector.setEntry( 1, 0, y );
                 lineSegment.setEndX( tx() );
                 lineSegment.setEndY( ty() );
+                setXLabel( xLabel );
                 arrow.getPoints().clear();
                 arrow.getPoints().addAll( arrowPoints() );
             }
@@ -387,6 +393,62 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
 
             private double tx(){ return centerX + ( vector.getEntry( 0, 0 ) * zoomFactor ); }
             private double ty(){ return centerY - ( vector.getEntry( 1, 0 ) * zoomFactor ); }
+
+            private void setXLabel( Text label ){
+              double x;
+              double y;
+
+              if( ( vector.getEntry( 0, 0 ) > 0.0 && vector.getEntry( 1, 0 ) > 0.0 ) ) {
+                  x = tx() + 10;
+                  y = ty() - 10;
+              } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
+                  x = tx() - 50;
+                  y = ty() - 10;
+              } else {
+                  x = tx();
+                  y = ty() + 20;
+              }
+
+              label.setX( x );
+              label.setY( y );
+              label.setText( String.format( "[ %2.2f ]", vector.getEntry( 0, 0 ) ) );
+            }
+
+            private Text xLabel(){
+                double x;
+                double y;
+
+                if( ( vector.getEntry( 0, 0 ) > 0.0 && vector.getEntry( 1, 0 ) > 0.0 ) ) {
+                    x = tx() + 10;
+                    y = ty() - 10;
+                } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
+                    x = tx() - 50;
+                    y = ty() - 10;
+                } else {
+                    x = tx();
+                    y = ty() + 20;
+                }
+
+                return new Text( x, y, String.format( "[ %2.2f ]", vector.getEntry( 0, 0 ) ) );
+            }
+
+            private Text yLabel(){
+                double x;
+                double y;
+
+                if( ( vector.getEntry( 0, 0 ) > 0.0 && vector.getEntry( 1, 0 ) > 0.0 ) ) {
+                    x = tx() + 10;
+                    y = ty() + 50;
+                } else if ( vector.getEntry( 0, 0 ) < 0.0 && vector.getEntry( 1, 0 ) > 0.0  ) {
+                    x = tx() - 50;
+                    y = ty() + 50;
+                } else {
+                    x = tx();
+                    y = ty() + 50;
+                }
+
+                return new Text( x, y, String.format( "[ %2.2f ]", vector.getEntry( 1, 0 ) ) );
+            }
 
       }
 
