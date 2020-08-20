@@ -10,12 +10,18 @@ public abstract class XYObject extends Group{
        protected double size = 2.0;
        protected double highlightSize = 3.0;
        protected Matrix coordinates = Matrix.createColumnMatrix( 2 );
-       protected XYPlane xyPlane;
+       protected XYPlane plane;
 
        public XYObject( XYPlane xyPlane ){
-          this.xyPlane = xyPlane;
+          this.plane = xyPlane;
        }
 
        public abstract void hightlight();
        public abstract void unhighlight();
+       public abstract void setPlaneCoordinates( double x, double y );
+       protected void setScreenCoordinates( double x, double y ){
+          coordinates.setEntry( 0, 0, plane.toCoordinateX( x ) );
+          coordinates.setEntry( 1, 0, plane.toCoordinateY( y ) );
+       }
+
 }
