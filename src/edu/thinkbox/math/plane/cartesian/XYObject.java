@@ -6,9 +6,9 @@ import edu.thinkbox.math.matrix.Matrix;
 
 public abstract class XYObject extends Group{
        protected Color  color = Color.BLACK;
-       protected Color  highlightColor = Color.BLUE;
+       protected Color  highlightColor = Color.web( "ff1a00" );
        protected double size = 2.0;
-       protected double hightlightSize = 3.0;
+       protected double highlightSize = 3.0;
        protected Matrix coordinates = Matrix.createColumnMatrix( 2 );
        protected XYPlane xyPlane;
 
@@ -16,5 +16,6 @@ public abstract class XYObject extends Group{
           this.xyPlane = xyPlane;
        }
 
-       
+       public abstract void hightlight();
+       public abstract void unhighlight();
 }
