@@ -39,9 +39,11 @@ public class Vector extends Group{
       private Point point;
       private Angle angle;
       private CartesianPlane plane;
+      private boolean wholeNumberVectors;
 
       public Vector( double x, double y, CartesianPlane plane){
           this.plane = plane;
+          wholeNumberVectors = false;
           vector.setEntry( 0, 0, x );
           vector.setEntry( 1, 0, y );
           lineSegment = lineSegment();
@@ -70,6 +72,10 @@ public class Vector extends Group{
           getChildren().add( riseRun );
           getChildren().add( point );
           getChildren().add( angle );
+      }
+
+      public void setWholeNumberVectors( boolean wholeNumberVectors ){
+          this.wholeNumberVectors = wholeNumberVectors;
       }
 
       public void setPointVisible( boolean visible ){
@@ -185,6 +191,10 @@ public class Vector extends Group{
       }
 
       public void setCoordinates( double x, double y ){
+          if( wholeNumberVectors ){
+              x = Math.round( x );
+              y = Math.round( y );
+          }
           vector.setEntry( 0, 0, x );
           vector.setEntry( 1, 0, y );
           lineSegment.setEndX( tx() );

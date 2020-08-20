@@ -97,6 +97,8 @@ public class CartesianPlane extends Group implements EventHandler< ContextMenuEv
       public void showGridLines( boolean show ){ gridLines.setVisible( show ); }
       public void showAxes( boolean show ){ axes.setVisible( show ); }
 
+      public double getXBound(){ return ( width / 2.0 ) / moduleSize; }
+
       private int getColumnCount(){ return width / moduleSize; }
       private int getRowCount(){ return height / moduleSize; }
 

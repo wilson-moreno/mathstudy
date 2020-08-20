@@ -37,7 +37,8 @@ public class MouseOverVectorEventHandler implements EventHandler< MouseEvent >{
 
         if( e.getEventType() == MouseEvent.MOUSE_DRAGGED ){
           vector.wideArrow();
-          vector.setCoordinates( cartesianPlane.toCoordinateX( e.getSceneX() ), cartesianPlane.toCoordinateY( e.getSceneY() ) );
+          vector.setCoordinates( cartesianPlane.toCoordinateX( e.getSceneX() ),
+                                 cartesianPlane.toCoordinateY( e.getSceneY() ) );
         } else if( e.getEventType() == MouseEvent.MOUSE_RELEASED ){
           vector.regularArrow();
         } else {

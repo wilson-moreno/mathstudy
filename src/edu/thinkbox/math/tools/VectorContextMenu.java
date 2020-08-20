@@ -1,15 +1,5 @@
 package edu.thinkbox.math.tools;
 
-import javafx.scene.Group;
-import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Circle;
-import javafx.scene.paint.Color;
-import edu.thinkbox.math.matrix.Matrix;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.scene.input.ContextMenuEvent;
@@ -19,9 +9,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Menu;
-import javafx.stage.Window;
-import javafx.stage.PopupWindow.AnchorLocation;
-import javafx.scene.Node;
 import edu.thinkbox.math.matrix.Transformation;
 
 public class VectorContextMenu extends ContextMenu{
@@ -37,6 +24,7 @@ public class VectorContextMenu extends ContextMenu{
       private CheckMenuItem showAngleMenu = new CheckMenuItem( "Show Angle" );
       private CheckMenuItem showRiseRunMenu = new CheckMenuItem( "Show Rise/Run" );
       private CheckMenuItem showPointMenu = new CheckMenuItem( "Show Point" );
+      private CheckMenuItem wholeNumberXYMenu = new CheckMenuItem( "Whole Number [ x, y ]" );
       private SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
       private Vector vector;
 
@@ -53,6 +41,7 @@ public class VectorContextMenu extends ContextMenu{
           showAngleMenu.setOnAction( new ShowAngleEvent() );
           showRiseRunMenu.setOnAction( new ShowRiseRunEvent() );
           showPointMenu.setOnAction( new ShowPointEvent() );
+          wholeNumberXYMenu.setOnAction( new WholeNumberXYEvent() );
           rotateMenu.getItems().addAll( rotate30 );
           rotateMenu.getItems().addAll( rotate45 );
           rotateMenu.getItems().addAll( rotate60 );
@@ -65,7 +54,14 @@ public class VectorContextMenu extends ContextMenu{
                              showAngleMenu,
                              showRiseRunMenu,
                              showCoordinatesMenu,
-                             showPointMenu );
+                             showPointMenu,
+                             wholeNumberXYMenu );
+      }
+
+      private class WholeNumberXYEvent implements EventHandler< ActionEvent >{
+          public void handle( ActionEvent e ){
+              vector.setWholeNumberVectors( wholeNumberXYMenu.isSelected() );
+          }
       }
 
       private class ShowAngleEvent implements EventHandler<ActionEvent>{

@@ -35,9 +35,11 @@ public class Point extends Group{
       private Circle point;
       private RiseRun riseRun;
       private Text coordinatesLabel;
+      private boolean wholeNumberCoordinates;
 
       public Point( double x, double y, CartesianPlane plane ){
           this.plane = plane;
+          wholeNumberCoordinates = false;
           riseRun = new RiseRun( plane );
           coordinatesLabel = new Text();
           vector.setEntry( 0, 0, x );
@@ -49,6 +51,10 @@ public class Point extends Group{
           getChildren().add( this.point = point() );
           getChildren().add( riseRun );
           getChildren().add( coordinatesLabel );
+      }
+
+      public void setCoordinatesAsWholeNumbers( boolean wholeNumberCoordinates ){
+             this.wholeNumberCoordinates = wholeNumberCoordinates;
       }
 
       private void setCoordinatesLabel( Text label ){
@@ -66,6 +72,9 @@ public class Point extends Group{
           } else if( plane.getQuadrant( vector ) == 4 ){
              label.setX( plane.toSceneX( vector.getEntry( 0, 0 ) ) - 30 );
              label.setY( plane.toSceneY( vector.getEntry( 1, 0 ) ) + 30 );
+          } else {
+                label.setX( plane.toSceneX( vector.getEntry( 0, 0 ) ) - 30 );
+                label.setY( plane.toSceneY( vector.getEntry( 1, 0 ) ) - 20 );
           }
 
       }
@@ -86,6 +95,10 @@ public class Point extends Group{
       }
 
       public void setCoordinates( double x, double y ){
+          if( wholeNumberCoordinates ){
+              x = Math.round( x );
+              y = Math.round( y );
+          }
           vector.setEntry( 0, 0, x );
           vector.setEntry( 1, 0, y );
           point.setCenterX( plane.toSceneX( x ) );
