@@ -28,4 +28,7 @@ public abstract class XYObject extends Group{
           coordinates.setEntry( 0, 0, x );
           coordinates.setEntry( 1, 0, y );
        }
+
+       protected double getX(){ return coordinates.getEntry( 0, 0 ); }
+       protected double getY(){ return coordinates.getEntry( 1, 0 ); }
 }

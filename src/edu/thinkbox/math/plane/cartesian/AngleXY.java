@@ -10,8 +10,8 @@ public class AngleXY extends XYObject{
         private Arc  angle;
         private Text angleValue;
 
-        public AngleXY( XYPlane xyPlane ){
-           super( xyPlane );
+        public AngleXY( XYPlane plane ){
+           super( plane );
            color = Color.web( "509237" );
            highlightColor =  Color.web( "ff1a00" );
            size = 3.0;
@@ -29,24 +29,24 @@ public class AngleXY extends XYObject{
         }
 
         private void setAngleValue( Text angleValue ){
-             Double x = 40 * Math.cos( xyPlane.getDirection( coordinates ) / 2.0 );
-             Double y = 40 * Math.sin( xyPlane.getDirection( coordinates ) / 2.0 );
+             Double x = 40 * Math.cos( plane.getDirection( coordinates ) / 2.0 );
+             Double y = 40 * Math.sin( plane.getDirection( coordinates ) / 2.0 );
 
-             if( xyPlane.getQuadrant( coordinates ) == 1 ){
-                   angleValue.setX( xyPlane.getCenterX() + ( x - 10 ) );
-                   angleValue.setY( xyPlane.getCenterY() - y );
-             } else if( xyPlane.getQuadrant( coordinates ) == 2 ){
-                   angleValue.setX( xyPlane.getCenterX() + ( x - 20 ) );
-                   angleValue.setY( xyPlane.getCenterY() - y );
-             } else if( xyPlane.getQuadrant( coordinates ) == 3 ){
-                   angleValue.setX( xyPlane.getCenterX() + ( x - 25 ) );
-                   angleValue.setY( xyPlane.getCenterY() - y );
-             } else if( xyPlane.getQuadrant( coordinates ) == 4 ){
-                   angleValue.setX( xyPlane.getCenterX() + ( x - 30 ) );
-                   angleValue.setY( xyPlane.getCenterY() - y );
+             if( plane.getQuadrant( coordinates ) == 1 ){
+                   angleValue.setX( plane.getCenterX() + ( x - 10 ) );
+                   angleValue.setY( plane.getCenterY() - y );
+             } else if( plane.getQuadrant( coordinates ) == 2 ){
+                   angleValue.setX( plane.getCenterX() + ( x - 20 ) );
+                   angleValue.setY( plane.getCenterY() - y );
+             } else if( plane.getQuadrant( coordinates ) == 3 ){
+                   angleValue.setX( plane.getCenterX() + ( x - 25 ) );
+                   angleValue.setY( plane.getCenterY() - y );
+             } else if( plane.getQuadrant( coordinates ) == 4 ){
+                   angleValue.setX( plane.getCenterX() + ( x - 30 ) );
+                   angleValue.setY( plane.getCenterY() - y );
              }
 
-             angleValue.setText( String.format( "%2.2f", xyPlane.toDegree( xyPlane.getDirection( coordinates ) ) ) );
+             angleValue.setText( String.format( "%2.2f", plane.toDegree( plane.getDirection( coordinates ) ) ) );
         }
 
         public void setPlaneCoordinates( double x, double y){

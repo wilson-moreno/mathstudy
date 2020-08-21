@@ -27,8 +27,8 @@ public class AxesXY extends XYObject{
        private void createArrowHeads(){
            northArrowHead = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
            southArrowHead = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
-           eastArrowHead = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
-           westArrowHead = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
+           eastArrowHead  = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
+           westArrowHead  = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
 
            northArrowHead.setPlaneCoordinates( 0, plane.getYBound() - 0.25 );
            southArrowHead.setPlaneCoordinates( 0, -1 * ( plane.getYBound() - 0.25 ) );

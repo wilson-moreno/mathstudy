@@ -8,7 +8,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 
-public class XYPlane extends Group  implements EventHandler< ContextMenuEvent >{
+public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
         private double            width;
         private double            height;
         private double            moduleSize;
@@ -17,6 +17,10 @@ public class XYPlane extends Group  implements EventHandler< ContextMenuEvent >{
         private AxesXY            axes;
         private TicksXY           ticks;
         private PlaneContextMenu  contextMenu;
+        private Group             vectors;
+        private Group             points;
+        private Group             arrowHeads;
+        private boolean           mouseCoordinateVisible;
 
 
         public XYPlane( double width, double height, double moduleSize ){
@@ -29,12 +33,22 @@ public class XYPlane extends Group  implements EventHandler< ContextMenuEvent >{
             this.axes = new AxesXY( this );
             this.ticks = new TicksXY( this );
             this.contextMenu = new PlaneContextMenu( this );
+            this.plane.setOnContextMenuRequested( this );
+            this.vectors = new Group();
+            this.points = new Group();
+            this.arrowHeads = new Group();
+            this.mouseCoordinateVisible = false;
+
             getChildren().add( plane );
             getChildren().add( gridlines );
             getChildren().add( axes );
             getChildren().add( ticks );
+            getChildren().add( vectors );
+            getChildren().add( points );
+            getChildren().add( arrowHeads );
 
-            addEventFilter( MouseEvent.MOUSE_CLICKED, this.contextMenu );
+            addEventFilter( MouseEvent.ANY, new MouseMovementEventHandler( this ) );
+            plane.addEventFilter( MouseEvent.MOUSE_CLICKED, this.contextMenu );
         }
 
         @Override
@@ -42,10 +56,22 @@ public class XYPlane extends Group  implements EventHandler< ContextMenuEvent >{
             contextMenu.show( this, event.getScreenX(), event.getScreenY() );
         }
 
+
+        public ArrowHeadXY addArrowHead( double x, double y ){
+            ArrowHeadXY arrowHead = new ArrowHeadXY( x, y, this, ArrowHeadType.TRIANGLE );
+            //point.setOnContextMenuRequested( new PointContextMenuEventHandler( point ) );
+            //point.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( this) );
+            arrowHeads.getChildren().add( arrowHead );
+            return arrowHead;
+        }
+        public void clearVectors(){ vectors.getChildren().clear(); }
+        public void clearPoints(){ points.getChildren().clear(); }
+        public void clearArrowHeads(){ arrowHeads.getChildren().clear(); }
+        public boolean isMouseCoordinateVisible(){ return mouseCoordinateVisible; }
+        public void setMouseCoordinatesVisible( boolean visible ){ this.mouseCoordinateVisible = visible; }
         public void setGridlinesVisible( boolean visible ){ gridlines.setVisible( visible ); }
         public void setAxesVisible( boolean visible ){ axes.setVisible( visible ); }
         public void setTicksVisible( boolean visible ){ ticks.setVisible( visible ); }
-        public void setMouseCoordinatesVisible( boolean visible ){}
         public double getHeight(){ return height; }
         public double getWidth(){ return width; }
         public double getModuleSize(){ return moduleSize; }
@@ -55,10 +81,10 @@ public class XYPlane extends Group  implements EventHandler< ContextMenuEvent >{
         public int getYBound(){ return getRowCount() / 2; }
         public double getCenterX(){ return width / 2.0; }
         public double getCenterY(){ return height / 2.0; }
-        public double toScreenX( double xCoordinate ){
+        public double toSceneX( double xCoordinate ){
                return getCenterX() + ( xCoordinate * moduleSize );
         }
-        public double toScreenY( double yCoordinate ){
+        public double toSceneY( double yCoordinate ){
                return getCenterY() - ( yCoordinate * moduleSize );
         }
         public double toCoordinateX( double screenX ){

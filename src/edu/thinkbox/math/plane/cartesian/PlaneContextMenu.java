@@ -17,8 +17,10 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
       private MenuItem addVectorMenu = new MenuItem( "Add Vector" );
       private MenuItem addPointMenu = new MenuItem( "Add Point" );
       private MenuItem addLineMenu = new MenuItem( "Add Line" );
+      private MenuItem addArrowHeadMenu = new MenuItem( "Add Arrow Head" );
       private MenuItem clearVectorsMenu = new MenuItem( "Clear Vectors" );
       private MenuItem clearPointsMenu = new MenuItem( "Clear Points" );
+      private MenuItem clearArrowHeadsMenu = new MenuItem( "Clear Arrow Heads" );
       private CheckMenuItem showGridlinesMenu = new CheckMenuItem( "Show Gridlines" );
       private CheckMenuItem showAxesMenu = new CheckMenuItem( "Show Axes" );
       private CheckMenuItem showTicksMenu = new CheckMenuItem( "Show Ticks" );
@@ -34,8 +36,10 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
           addVectorMenu.setOnAction( new AddVectorEvent() );
           addPointMenu.setOnAction( new AddPointEvent() );
           addLineMenu.setOnAction( new AddLineEvent() );
+          addArrowHeadMenu.setOnAction( new AddArrowHeadEvent() );
           clearVectorsMenu.setOnAction( new ClearVectorsEvent() );
           clearPointsMenu.setOnAction( new ClearPointsEvent() );
+          clearArrowHeadsMenu.setOnAction( new ClearArrowHeadsEvent() );
           showGridlinesMenu.setOnAction( new ShowGridlinesEvent() );
           showAxesMenu.setOnAction( new ShowAxesEvent() );
           showTicksMenu.setOnAction( new ShowTicksEvent() );
@@ -46,9 +50,11 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
           showMouseCoordinatesMenu.setSelected( false );
           getItems().addAll(  addVectorMenu,
                               addPointMenu,
+                              addArrowHeadMenu,
                               separatorMenuItem1,
                               clearVectorsMenu,
                               clearPointsMenu,
+                              clearArrowHeadsMenu,
                               separatorMenuItem2,
                               showGridlinesMenu,
                               showAxesMenu,
@@ -84,15 +90,30 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
           }
       }
 
-      private class ClearVectorsEvent implements EventHandler<ActionEvent>{
+      private class AddArrowHeadEvent implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //plane.clearVectors();
+              double coordinateX = plane.toCoordinateX( lastSceneX );
+              double coordinateY = plane.toCoordinateY( lastSceneY );
+              plane.addArrowHead( coordinateX, coordinateY );
           }
       }
 
+      private class ClearVectorsEvent implements EventHandler<ActionEvent>{
+          public void handle( ActionEvent e ){
+              plane.clearVectors();
+          }
+      }
+
+      private class ClearArrowHeadsEvent implements EventHandler<ActionEvent>{
+          public void handle( ActionEvent e ){
+              plane.clearArrowHeads();
+          }
+      }
+
+
       private class ClearPointsEvent implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //plane.clearPoints();
+              plane.clearPoints();
           }
       }
 
