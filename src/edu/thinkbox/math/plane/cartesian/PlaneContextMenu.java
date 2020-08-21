@@ -24,6 +24,7 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
       private CheckMenuItem showGridlinesMenu = new CheckMenuItem( "Show Gridlines" );
       private CheckMenuItem showAxesMenu = new CheckMenuItem( "Show Axes" );
       private CheckMenuItem showTicksMenu = new CheckMenuItem( "Show Ticks" );
+      private CheckMenuItem showQuadrantsMenu = new CheckMenuItem( "Show Quadrants" );
       private CheckMenuItem showMouseCoordinatesMenu = new CheckMenuItem( "Show Mouse Coordinates" );
       private SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
       private SeparatorMenuItem separatorMenuItem2 = new SeparatorMenuItem();
@@ -43,10 +44,12 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
           showGridlinesMenu.setOnAction( new ShowGridlinesEvent() );
           showAxesMenu.setOnAction( new ShowAxesEvent() );
           showTicksMenu.setOnAction( new ShowTicksEvent() );
+          showQuadrantsMenu.setOnAction( new ShowQuadrantsEvent() );
           showMouseCoordinatesMenu.setOnAction( new ShowMouseCoordinatesEvent() );
           showGridlinesMenu.setSelected( true );
           showAxesMenu.setSelected( true );
           showTicksMenu.setSelected( true );
+          showQuadrantsMenu.setSelected( false );
           showMouseCoordinatesMenu.setSelected( false );
           getItems().addAll(  addVectorMenu,
                               addPointMenu,
@@ -59,6 +62,7 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
                               showGridlinesMenu,
                               showAxesMenu,
                               showTicksMenu,
+                              showQuadrantsMenu,
                               showMouseCoordinatesMenu );
       }
 
@@ -134,6 +138,13 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
               plane.setTicksVisible( showTicksMenu.isSelected() );
           }
       }
+
+      private class ShowQuadrantsEvent implements EventHandler<ActionEvent>{
+          public void handle( ActionEvent e ){
+              plane.setQuadrantsVisible( showQuadrantsMenu.isSelected() );
+          }
+      }
+
 
       private class ShowMouseCoordinatesEvent implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){

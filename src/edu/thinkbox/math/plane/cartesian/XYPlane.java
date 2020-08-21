@@ -16,6 +16,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
         private GridlinesXY       gridlines;
         private AxesXY            axes;
         private TicksXY           ticks;
+        private QuadrantsXY       quadrants;
         private PlaneContextMenu  contextMenu;
         private Group             vectors;
         private Group             points;
@@ -32,15 +33,18 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             this.gridlines = new GridlinesXY( this );
             this.axes = new AxesXY( this );
             this.ticks = new TicksXY( this );
+            this.quadrants = new QuadrantsXY( this );
             this.contextMenu = new PlaneContextMenu( this );
             this.plane.setOnContextMenuRequested( this );
             this.vectors = new Group();
             this.points = new Group();
             this.arrowHeads = new Group();
             this.mouseCoordinateVisible = false;
+            this.quadrants.setVisible( false );
 
             getChildren().add( plane );
             getChildren().add( gridlines );
+            getChildren().add( quadrants );
             getChildren().add( axes );
             getChildren().add( ticks );
             getChildren().add( vectors );
@@ -67,6 +71,8 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
 
         public VectorXY addVector( double x, double y){
             VectorXY vector = new VectorXY( x, y, this );
+            vector.setOnContextMenuRequested( new VectorContextMenuEventHandler( vector ) );
+            vector.addEventFilter( MouseEvent.ANY, new MouseOverVectorEventHandler( this ) );
             vectors.getChildren().add( vector );
             return vector;
         }
@@ -79,6 +85,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
         public void setGridlinesVisible( boolean visible ){ gridlines.setVisible( visible ); }
         public void setAxesVisible( boolean visible ){ axes.setVisible( visible ); }
         public void setTicksVisible( boolean visible ){ ticks.setVisible( visible ); }
+        public void setQuadrantsVisible( boolean visible ){ quadrants.setVisible( visible ); }
         public double getHeight(){ return height; }
         public double getWidth(){ return width; }
         public double getModuleSize(){ return moduleSize; }

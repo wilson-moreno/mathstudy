@@ -31,7 +31,7 @@ public class ArrowHeadXY extends XYObject{
            setPlaneCoordinates( x, y );
         }
 
-        public void hightlight(){
+        public void highlight(){
           line1.setStroke( highlightColor );
           line2.setStroke( highlightColor );
           triangle.setStroke( highlightColor );
@@ -50,7 +50,6 @@ public class ArrowHeadXY extends XYObject{
             triangle.setFill( color );
             triangle.setStrokeWidth( size );
         }
-
 
         public void setSceneCoordinates( double x, double y ){
             super.setSceneCoordinates( x, y );
@@ -91,6 +90,7 @@ public class ArrowHeadXY extends XYObject{
         }
 
         public void setColor( Color color ){
+             this.color = color;
              line1.setStroke( color );
              line2.setStroke( color );
              triangle.setStroke( color );

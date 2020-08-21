@@ -16,7 +16,7 @@ public class TicksXY extends XYObject{
           createTicks();
        }
 
-       public void hightlight(){}
+       public void highlight(){}
        public void unhighlight(){}
        public void setPlaneCoordinates( double x, double y ){}
 

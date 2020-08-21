@@ -20,7 +20,7 @@ public class AxesXY extends XYObject{
           createArrowHeads();
        }
 
-       public void hightlight(){}
+       public void highlight(){}
        public void unhighlight(){}
        public void setPlaneCoordinates( double x, double y ){}
 

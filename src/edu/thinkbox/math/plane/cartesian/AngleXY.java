@@ -12,23 +12,31 @@ public class AngleXY extends XYObject{
 
         public AngleXY( XYPlane plane ){
            super( plane );
-           color = Color.web( "509237" );
-           highlightColor =  Color.web( "ff1a00" );
-           size = 3.0;
-           highlightSize = 5.0;
+           angle = new Arc();
+           angleValue = new Text();
+           //size = 3.0;
+           //highlightSize = 5.0;
+           createAngle();
         }
 
-        public void hightlight(){
-            angle.setStroke( highlightColor );
+        public AngleXY( double x, double y, XYPlane plane ){
+           this( plane );
+           setPlaneCoordinates( x, y );
+        }
+
+        public void setColor( Color color ){}
+
+        public void highlight(){
+            angle.setStroke( RED );
             angle.setStrokeWidth( highlightSize );
         }
 
         public void unhighlight(){
-            angle.setStroke( color );
+            angle.setStroke( GREEN );
             angle.setStrokeWidth( size );
         }
 
-        private void setAngleValue( Text angleValue ){
+        private void updateAngleValue(){
              Double x = 40 * Math.cos( plane.getDirection( coordinates ) / 2.0 );
              Double y = 40 * Math.sin( plane.getDirection( coordinates ) / 2.0 );
 
@@ -50,7 +58,27 @@ public class AngleXY extends XYObject{
         }
 
         public void setPlaneCoordinates( double x, double y){
-
+             super.setPlaneCoordinates( x, y );
+             updateAngle();
         }
 
+        public void updateAngle(){
+            angle.setLength( plane.toDegree( plane.getDirection( coordinates ) ) );
+            updateAngleValue();
+        }
+
+        public void createAngle(){
+            angle.setCenterX( plane.getCenterX() );
+            angle.setCenterY( plane.getCenterY() );
+            angle.setRadiusX( 25.0f );
+            angle.setRadiusY( 25.0f );
+            angle.setStartAngle( 0.0f);
+            angle.setType( ArcType.ROUND );
+            angle.setFill( null );
+            angle.setStroke( GREEN );
+            angle.setStrokeWidth( size );
+            updateAngle();
+            getChildren().add( angle );
+            getChildren().add( angleValue );
+        }
 }

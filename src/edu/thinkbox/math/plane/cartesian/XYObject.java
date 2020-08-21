@@ -31,8 +31,9 @@ public abstract class XYObject extends Group{
           getChildren().add( coordinatesXY );
        }
 
-       public abstract void hightlight();
+       public abstract void highlight();
        public abstract void unhighlight();
+       public abstract void setColor( Color color );
 
        public void setRiseRunVisible( boolean visible ){
           riseRun.setVisible( visible );
