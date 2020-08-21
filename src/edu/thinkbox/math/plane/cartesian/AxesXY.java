@@ -59,6 +59,9 @@ public class AxesXY extends XYObject{
 
            getChildren().add( centerVerticalLine );
            getChildren().add( centerHorizontalLine );
+           getChildren().add( origin );
+           getChildren().add( xAxis );
+           getChildren().add( yAxis );
         }
 
 

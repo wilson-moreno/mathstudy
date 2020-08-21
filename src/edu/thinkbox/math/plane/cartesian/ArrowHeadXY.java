@@ -14,7 +14,7 @@ public class ArrowHeadXY extends XYObject{
         private Line line1;
         private Line line2;
         private Polygon triangle;
-        private RiseRunXY riseRun;
+            
 
         public ArrowHeadXY( XYPlane plane, ArrowHeadType type ){
            super( plane );
@@ -23,8 +23,6 @@ public class ArrowHeadXY extends XYObject{
            this.line2 = new Line();
            this.triangle = new Polygon();
            this.type = type;
-           this.riseRun = new RiseRunXY( getX(), getY(), plane );
-           this.riseRun.setVisible( false );
            createArrowHead();
         }
 
@@ -33,9 +31,31 @@ public class ArrowHeadXY extends XYObject{
            setPlaneCoordinates( x, y );
         }
 
-        public void hightlight(){}
-        public void unhighlight(){}
+        public void hightlight(){
+          line1.setStroke( highlightColor );
+          line2.setStroke( highlightColor );
+          triangle.setStroke( highlightColor );
+          triangle.setFill( highlightColor );
+          line1.setStrokeWidth( highlightSize );
+          line2.setStrokeWidth( highlightSize );
+          triangle.setStrokeWidth( highlightSize );
+        }
 
+        public void unhighlight(){
+            line1.setStrokeWidth( size );
+            line1.setStroke( color );
+            line2.setStrokeWidth( size );
+            line2.setStroke( color );
+            triangle.setStroke( color );
+            triangle.setFill( color );
+            triangle.setStrokeWidth( size );
+        }
+
+
+        public void setSceneCoordinates( double x, double y ){
+            super.setSceneCoordinates( x, y );
+            updateArrowHead();
+        }
         public void setPlaneCoordinates( double x, double y ){
             super.setPlaneCoordinates( x, y );
             updateArrowHead();
@@ -68,7 +88,6 @@ public class ArrowHeadXY extends XYObject{
                 triangle.getPoints().addAll( new Double[] { tx, ty, tx+x2, ty-y2, tx+x3, ty-y3 } );
             }
 
-            riseRun.setPlaneCoordinates( getX(), getY() );
         }
 
         private void createArrowHead(){
@@ -88,6 +107,5 @@ public class ArrowHeadXY extends XYObject{
               getChildren().add( triangle );
            }
 
-           getChildren().add( riseRun );
         }
 }

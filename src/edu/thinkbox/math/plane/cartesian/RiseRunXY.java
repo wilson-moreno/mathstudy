@@ -5,14 +5,16 @@ import javafx.scene.text.Text;
 import javafx.scene.shape.Line;
 import edu.thinkbox.math.matrix.Matrix;
 
-public class RiseRunXY extends XYObject{
+public class RiseRunXY extends Group{
       private Line rise;
       private Line run;
       private Text riseValue;
       private Text runValue;
+      private XYPlane plane;
+      private Matrix coordinates = Matrix.createColumnMatrix( 2 );
 
       public RiseRunXY( XYPlane plane ){
-          super( plane );
+          this.plane  = plane;
           this.rise   = new Line();
           this.run    = new Line();
           this.rise.getStrokeDashArray().addAll(2d);
@@ -25,21 +27,26 @@ public class RiseRunXY extends XYObject{
           getChildren().add( runValue );
       }
 
+
       public RiseRunXY( double x, double y, XYPlane plane ){
           this( plane );
           setPlaneCoordinates( x, y );
       }
 
-
-      public void hightlight(){}
-      public void unhighlight(){}
-
-      public void setPlaneCoordinates( double x, double y ){
-          super.setPlaneCoordinates( x, y );
-          updateRiseRun();
+      public void setSceneCoordinates( double x, double y ){
+         setPlaneCoordinates( plane.toCoordinateX( x ),
+                              plane.toCoordinateY( y ) );
       }
 
+      public void setPlaneCoordinates( double x, double y ){
+         coordinates.setEntry( 0, 0, x );
+         coordinates.setEntry( 1, 0, y );
+         updateRiseRun();
+      }
+
+
       public void updateRiseRun(){
+
           rise.setStartX( plane.toSceneX( getX() ) );
           rise.setStartY( plane.toSceneY( 0 ) );
           rise.setEndX( plane.toSceneX( getX() ) );
@@ -74,5 +81,8 @@ public class RiseRunXY extends XYObject{
               riseValue.setX( riseValue.getX() + 10 );
           }
       }
+
+      private double getX(){ return coordinates.getEntry( 0, 0 ); }
+      private double getY(){ return coordinates.getEntry( 1, 0 ); }
 
 }

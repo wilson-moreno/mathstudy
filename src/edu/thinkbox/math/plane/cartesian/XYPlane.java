@@ -59,8 +59,8 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
 
         public ArrowHeadXY addArrowHead( double x, double y ){
             ArrowHeadXY arrowHead = new ArrowHeadXY( x, y, this, ArrowHeadType.TRIANGLE );
-            //point.setOnContextMenuRequested( new PointContextMenuEventHandler( point ) );
-            //point.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( this) );
+            arrowHead.setOnContextMenuRequested( new ArrowHeadContextMenuEventHandler( arrowHead ) );
+            arrowHead.addEventFilter( MouseEvent.ANY, new MouseOverArrowHeadEventHandler( this ) );
             arrowHeads.getChildren().add( arrowHead );
             return arrowHead;
         }
