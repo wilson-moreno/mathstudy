@@ -78,7 +78,7 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
           public void handle( ActionEvent e ){
               double coordinateX = plane.toCoordinateX( lastSceneX );
               double coordinateY = plane.toCoordinateY( lastSceneY );
-              //plane.addVector( coordinateX, coordinateY );
+              plane.addVector( coordinateX, coordinateY );
           }
       }
 

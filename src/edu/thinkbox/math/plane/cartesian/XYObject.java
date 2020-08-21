@@ -5,8 +5,11 @@ import javafx.scene.paint.Color;
 import edu.thinkbox.math.matrix.Matrix;
 
 public abstract class XYObject extends Group{
-       protected Color  color = Color.BLACK;
-       protected Color  highlightColor = Color.web( "ff1a00" );
+       protected static final Color RED = Color.web( "ff1a00" );
+       protected static final Color GREEN = Color.web( "509237" );
+       protected static final Color BLUE = Color.web( "002f55" );
+       protected Color  color = GREEN;
+       protected Color  highlightColor = RED;
        protected double size = 2.0;
        protected double highlightSize = 3.0;
        protected Matrix coordinates = Matrix.createColumnMatrix( 2 );

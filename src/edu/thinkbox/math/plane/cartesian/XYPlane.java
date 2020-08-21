@@ -64,6 +64,13 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             arrowHeads.getChildren().add( arrowHead );
             return arrowHead;
         }
+
+        public VectorXY addVector( double x, double y){
+            VectorXY vector = new VectorXY( x, y, this );
+            vectors.getChildren().add( vector );
+            return vector;
+        }
+
         public void clearVectors(){ vectors.getChildren().clear(); }
         public void clearPoints(){ points.getChildren().clear(); }
         public void clearArrowHeads(){ arrowHeads.getChildren().clear(); }

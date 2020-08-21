@@ -14,7 +14,7 @@ public class ArrowHeadXY extends XYObject{
         private Line line1;
         private Line line2;
         private Polygon triangle;
-            
+
 
         public ArrowHeadXY( XYPlane plane, ArrowHeadType type ){
            super( plane );
@@ -88,6 +88,13 @@ public class ArrowHeadXY extends XYObject{
                 triangle.getPoints().addAll( new Double[] { tx, ty, tx+x2, ty-y2, tx+x3, ty-y3 } );
             }
 
+        }
+
+        public void setColor( Color color ){
+             line1.setStroke( color );
+             line2.setStroke( color );
+             triangle.setStroke( color );
+             triangle.setFill( color );
         }
 
         private void createArrowHead(){
