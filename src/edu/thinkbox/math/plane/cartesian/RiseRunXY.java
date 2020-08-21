@@ -65,7 +65,7 @@ public class RiseRunXY extends Group{
           riseValue.setText( String.format( "%4.2f", getY() ) );
           runValue.setX( plane.toSceneX( getX()  / 2.0  ) );
           runValue.setY( plane.toSceneY( getY() ) );
-          runValue.setText( String.format( "%4.2f", getY() ) );
+          runValue.setText( String.format( "%4.2f", getX() ) );
 
           if( plane.getQuadrant( coordinates ) == 1 ){
               runValue.setY( runValue.getY() - 10 );
