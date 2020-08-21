@@ -4,15 +4,20 @@ import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import edu.thinkbox.math.matrix.Matrix;
+import javafx.event.EventHandler;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.MouseEvent;
 
-public class XYPlane extends Group{
-        private double        width;
-        private double        height;
-        private double        moduleSize;
-        private Rectangle     plane;
-        private GridlinesXY   gridlines;
-        private AxesXY        axes;
-        private TicksXY       ticks;
+public class XYPlane extends Group  implements EventHandler< ContextMenuEvent >{
+        private double            width;
+        private double            height;
+        private double            moduleSize;
+        private Rectangle         plane;
+        private GridlinesXY       gridlines;
+        private AxesXY            axes;
+        private TicksXY           ticks;
+        private PlaneContextMenu  contextMenu;
+
 
         public XYPlane( double width, double height, double moduleSize ){
             this.width = width;
@@ -23,17 +28,31 @@ public class XYPlane extends Group{
             this.gridlines = new GridlinesXY( this );
             this.axes = new AxesXY( this );
             this.ticks = new TicksXY( this );
+            this.contextMenu = new PlaneContextMenu( this );
             getChildren().add( plane );
             getChildren().add( gridlines );
             getChildren().add( axes );
             getChildren().add( ticks );
+
+            addEventFilter( MouseEvent.MOUSE_CLICKED, this.contextMenu );
         }
 
+        @Override
+        public void handle( ContextMenuEvent event ){
+            contextMenu.show( this, event.getScreenX(), event.getScreenY() );
+        }
+
+        public void setGridlinesVisible( boolean visible ){ gridlines.setVisible( visible ); }
+        public void setAxesVisible( boolean visible ){ axes.setVisible( visible ); }
+        public void setTicksVisible( boolean visible ){ ticks.setVisible( visible ); }
+        public void setMouseCoordinatesVisible( boolean visible ){}
         public double getHeight(){ return height; }
         public double getWidth(){ return width; }
         public double getModuleSize(){ return moduleSize; }
         public int getRowCount(){ return (int) ( height / moduleSize ); }
         public int getColumnCount(){ return  (int) ( width / moduleSize ); }
+        public int getXBound(){ return getColumnCount() / 2; }
+        public int getYBound(){ return getRowCount() / 2; }
         public double getCenterX(){ return width / 2.0; }
         public double getCenterY(){ return height / 2.0; }
         public double toScreenX( double xCoordinate ){

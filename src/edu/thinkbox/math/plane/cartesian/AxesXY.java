@@ -7,17 +7,39 @@ import javafx.scene.text.Font;
 
 
 public class AxesXY extends XYObject{
+       private ArrowHeadXY northArrowHead;
+       private ArrowHeadXY southArrowHead;
+       private ArrowHeadXY eastArrowHead;
+       private ArrowHeadXY westArrowHead;
 
        public AxesXY( XYPlane plane ){
           super( plane );
           color = Color.web( "002f55" );
           size = 2.0;
           createAxes();
+          createArrowHeads();
        }
 
        public void hightlight(){}
        public void unhighlight(){}
        public void setPlaneCoordinates( double x, double y ){}
+
+       private void createArrowHeads(){
+           northArrowHead = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
+           southArrowHead = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
+           eastArrowHead = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
+           westArrowHead = new ArrowHeadXY( plane, ArrowHeadType.OPEN_BASE );
+
+           northArrowHead.setPlaneCoordinates( 0, plane.getYBound() - 0.25 );
+           southArrowHead.setPlaneCoordinates( 0, -1 * ( plane.getYBound() - 0.25 ) );
+           eastArrowHead.setPlaneCoordinates( plane.getXBound() - 0.25, 0 );
+           westArrowHead.setPlaneCoordinates( ( plane.getXBound() - 0.25 ) * -1, 0 );
+
+           getChildren().add( northArrowHead );
+           getChildren().add( southArrowHead );
+           getChildren().add( eastArrowHead );
+           getChildren().add( westArrowHead );
+       }
 
        private void createAxes(){
            Line centerVerticalLine = new Line( plane.getCenterX(), 5, plane.getCenterX(), plane.getHeight() - 5 );
@@ -37,7 +59,7 @@ public class AxesXY extends XYObject{
 
            getChildren().add( centerVerticalLine );
            getChildren().add( centerHorizontalLine );
-         }
+        }
 
 
 }

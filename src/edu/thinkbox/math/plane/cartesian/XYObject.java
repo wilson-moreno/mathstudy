@@ -18,10 +18,14 @@ public abstract class XYObject extends Group{
 
        public abstract void hightlight();
        public abstract void unhighlight();
-       public abstract void setPlaneCoordinates( double x, double y );
+
        protected void setScreenCoordinates( double x, double y ){
           coordinates.setEntry( 0, 0, plane.toCoordinateX( x ) );
           coordinates.setEntry( 1, 0, plane.toCoordinateY( y ) );
        }
 
+       protected void setPlaneCoordinates( double x, double y ){
+          coordinates.setEntry( 0, 0, x );
+          coordinates.setEntry( 1, 0, y );
+       }
 }
