@@ -61,7 +61,7 @@ public class ArrowHeadXY extends XYObject{
         }
 
         private void updateArrowHead(){
-            double direction = plane.getDirection( coordinates );
+            double direction = plane.getDirection( getCoordinates() );
 
             double tx = plane.toSceneX( getX() );
             double ty = plane.toSceneY( getY() );

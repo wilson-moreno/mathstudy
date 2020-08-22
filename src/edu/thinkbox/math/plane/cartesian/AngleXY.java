@@ -9,6 +9,7 @@ import edu.thinkbox.math.matrix.Matrix;
 public class AngleXY extends XYObject{
         private Arc  angle;
         private Text angleValue;
+        private Matrix previous = Matrix.createColumnMatrix( 2 );
 
         public AngleXY( XYPlane plane ){
            super( plane );
@@ -35,33 +36,35 @@ public class AngleXY extends XYObject{
         }
 
         private void updateAngleValue(){
-             Double x = 40 * Math.cos( plane.getDirection( coordinates ) / 2.0 );
-             Double y = 40 * Math.sin( plane.getDirection( coordinates ) / 2.0 );
+             Double x = 40 * Math.cos( plane.getDirection( getCoordinates() ) / 2.0 );
+             Double y = 40 * Math.sin( plane.getDirection( getCoordinates() ) / 2.0 );
 
-             if( plane.getQuadrant( coordinates ) == 1 ){
+             if( plane.getQuadrant( getCoordinates() ) == 1 ){
                    angleValue.setX( plane.getCenterX() + ( x - 10 ) );
                    angleValue.setY( plane.getCenterY() - y );
-             } else if( plane.getQuadrant( coordinates ) == 2 ){
+             } else if( plane.getQuadrant( getCoordinates() ) == 2 ){
                    angleValue.setX( plane.getCenterX() + ( x - 20 ) );
                    angleValue.setY( plane.getCenterY() - y );
-             } else if( plane.getQuadrant( coordinates ) == 3 ){
+             } else if( plane.getQuadrant( getCoordinates() ) == 3 ){
                    angleValue.setX( plane.getCenterX() + ( x - 25 ) );
                    angleValue.setY( plane.getCenterY() - y );
-             } else if( plane.getQuadrant( coordinates ) == 4 ){
+             } else if( plane.getQuadrant( getCoordinates() ) == 4 ){
                    angleValue.setX( plane.getCenterX() + ( x - 30 ) );
                    angleValue.setY( plane.getCenterY() - y );
              }
 
-             angleValue.setText( String.format( "%2.2f", plane.toDegree( plane.getDirection( coordinates ) ) ) );
+             angleValue.setText( String.format( "%2.2f", plane.toDegree( plane.getDirection( getCoordinates() ) ) ) );
         }
 
         public void setPlaneCoordinates( double x, double y){
+             previous.copyEntries( getCoordinates() );
              super.setPlaneCoordinates( x, y );
              updateAngle();
         }
 
         public void updateAngle(){
-            angle.setLength( plane.toDegree( plane.getDirection( coordinates ) ) );
+            double updatedAngle = plane.toDegree( plane.getDirection( getCoordinates() ) );
+            angle.setLength( updatedAngle );
             updateAngleValue();
         }
 

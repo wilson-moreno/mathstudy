@@ -12,7 +12,7 @@ public abstract class XYObject extends Group{
        private Color  highlightColor = RED;
        private double size = 2.0;
        private double highlightSize = 3.0;
-       protected Matrix coordinates = Matrix.createColumnMatrix( 2 );
+       private Matrix coordinates = Matrix.createColumnMatrix( 2 );
        protected XYPlane plane;
        protected boolean wholeNumberCoordinates;
        protected boolean coordinatesVisible;
@@ -64,6 +64,7 @@ public abstract class XYObject extends Group{
           coordinatesXY.setPlaneCoordinates( x, y );
        }
 
+       public Matrix getCoordinates(){ return coordinates; }
        public void setSize( double size ){ this.size = size; }
        public void setHighlightSize( double size ){ this.highlightSize = size; }
        public void setHighlightColor( Color color ){ this.highlightColor = color; }
