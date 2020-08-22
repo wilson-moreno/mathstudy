@@ -10,9 +10,13 @@ public class AngleXY extends XYObject{
         private Arc  angle;
         private Text angleValue;
         private Matrix previous = Matrix.createColumnMatrix( 2 );
+        private double updatedAngle;
+        private double previousAngle;
+        private double radius;
 
         public AngleXY( XYPlane plane ){
            super( plane );
+           radius = 20.0;
            angle = new Arc();
            angleValue = new Text();
            createAngle();
@@ -53,17 +57,18 @@ public class AngleXY extends XYObject{
                    angleValue.setY( plane.getCenterY() - y );
              }
 
-             angleValue.setText( String.format( "%2.2f", plane.toDegree( plane.getDirection( getCoordinates() ) ) ) );
+             angleValue.setText( String.format( "%2.2f", updatedAngle ) );
         }
 
+
         public void setPlaneCoordinates( double x, double y){
-             previous.copyEntries( getCoordinates() );
              super.setPlaneCoordinates( x, y );
              updateAngle();
         }
 
         public void updateAngle(){
-            double updatedAngle = plane.toDegree( plane.getDirection( getCoordinates() ) );
+            previousAngle = plane.toDegree( plane.getDirection( previous ) );
+            updatedAngle  = plane.toDegree( plane.getDirection( getCoordinates() ) );
             angle.setLength( updatedAngle );
             updateAngleValue();
         }
@@ -71,8 +76,8 @@ public class AngleXY extends XYObject{
         public void createAngle(){
             angle.setCenterX( plane.getCenterX() );
             angle.setCenterY( plane.getCenterY() );
-            angle.setRadiusX( 25.0f );
-            angle.setRadiusY( 25.0f );
+            angle.setRadiusX( radius );
+            angle.setRadiusY( radius );
             angle.setStartAngle( 0.0f);
             angle.setType( ArcType.ROUND );
             angle.setFill( null );

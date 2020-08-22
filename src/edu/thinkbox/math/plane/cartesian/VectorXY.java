@@ -11,6 +11,7 @@ public class VectorXY extends XYObject{
        private AngleXY angle;
        private Text magnitude;
        private PointXY point;
+       private double shrink;
 
        public VectorXY( XYPlane plane){
            super( plane );
@@ -53,9 +54,11 @@ public class VectorXY extends XYObject{
        }
 
        private void update(){
-           line.setEndX( plane.toSceneX( getX() ) );
-           line.setEndY( plane.toSceneY( getY() ) );
-           arrowHead.setPlaneCoordinates( getX(), getY() );
+           shrink = 1.0;
+           if( point.isVisible() ) shrink = 1.0 - ( 0.40 / getMagnitude() );
+           line.setEndX( plane.toSceneX( getX() * shrink ) );
+           line.setEndY( plane.toSceneY( getY() * shrink ) );
+           arrowHead.setPlaneCoordinates( getX() * shrink, getY() * shrink );
            angle.setPlaneCoordinates( getX(), getY() );
            point.setPlaneCoordinates( getX(), getY() );
            updateMagnitude();
