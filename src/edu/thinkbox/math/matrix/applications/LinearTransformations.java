@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import edu.thinkbox.math.tools.CartesianPlane;
 import edu.thinkbox.math.plane.cartesian.XYPlane;
 import java.util.ArrayList;
 import edu.thinkbox.math.matrix.Transformation;
