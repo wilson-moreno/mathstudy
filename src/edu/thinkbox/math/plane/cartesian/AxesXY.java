@@ -14,8 +14,8 @@ public class AxesXY extends XYObject{
 
        public AxesXY( XYPlane plane ){
           super( plane );
-          color = Color.web( "002f55" );
-          size = 2.0;
+          setColor( Color.web( "002f55" ) );
+          setSize( 2.0 );
           createAxes();
           createArrowHeads();
        }
@@ -52,10 +52,10 @@ public class AxesXY extends XYObject{
            yAxis.setFont( new Font( 15 ) );
            xAxis.setFont( new Font( 15 ) );
 
-           centerVerticalLine.setStrokeWidth( size );
-           centerVerticalLine.setStroke( color );
-           centerHorizontalLine.setStrokeWidth( size );
-           centerHorizontalLine.setStroke( color );
+           centerVerticalLine.setStrokeWidth( getSize() );
+           centerVerticalLine.setStroke( getColor() );
+           centerHorizontalLine.setStrokeWidth( getSize() );
+           centerHorizontalLine.setStroke( getColor() );
 
            getChildren().add( centerVerticalLine );
            getChildren().add( centerHorizontalLine );

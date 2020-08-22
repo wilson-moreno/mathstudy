@@ -69,6 +69,15 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             return arrowHead;
         }
 
+        public PointXY addPoint( double x, double y ){
+            PointXY point = new PointXY( x, y, this );
+            point.setOnContextMenuRequested( new PointContextMenuEventHandler( point ) );
+            point.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( this ) );
+            points.getChildren().add( point );
+            return point;
+        }
+
+
         public VectorXY addVector( double x, double y){
             VectorXY vector = new VectorXY( x, y, this );
             vector.setOnContextMenuRequested( new VectorContextMenuEventHandler( vector ) );
@@ -93,8 +102,8 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
         public int getColumnCount(){ return  (int) ( width / moduleSize ); }
         public int getXBound(){ return getColumnCount() / 2; }
         public int getYBound(){ return getRowCount() / 2; }
-        public double getCenterX(){ return width / 2.0; }
-        public double getCenterY(){ return height / 2.0; }
+        public double getCenterX(){ return Math.round( width / 2.0 ); }
+        public double getCenterY(){ return Math.round( height / 2.0 ); }
         public double toSceneX( double xCoordinate ){
                return getCenterX() + ( xCoordinate * moduleSize );
         }
@@ -119,6 +128,9 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
               else if( x < 0.0 && y > 0.0 ) quadrant = 2;
               else if( x < 0.0 && y < 0.0 ) quadrant = 3;
               else if( x > 0.0 && y < 0.0 ) quadrant = 4;
+              else if( x == 0.0 && y > 0.0 ) quadrant = 90;
+              else if( x < 0.0 && y == 0.0 ) quadrant = 180;
+              else if( x == 0.0 && y < 0.0 ) quadrant = 270;
 
               return quadrant;
         }

@@ -3,13 +3,14 @@ package edu.thinkbox.math.plane.cartesian;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-
+import edu.thinkbox.math.matrix.Matrix;
 
 public class VectorXY extends XYObject{
        private Line line;
        private ArrowHeadXY arrowHead;
        private AngleXY angle;
        private Text magnitude;
+       private PointXY point;
 
        public VectorXY( XYPlane plane){
            super( plane );
@@ -17,9 +18,11 @@ public class VectorXY extends XYObject{
            this.magnitude = new Text();
            this.arrowHead = new ArrowHeadXY( plane, ArrowHeadType.TRIANGLE );
            this.angle = new AngleXY( plane );
+           this.point = new PointXY( plane );
            this.angle.setVisible( false );
            this.magnitude.setVisible( false );
-           createVector();
+           this.point.setVisible( false );
+           create();
        }
 
        public VectorXY( double x, double y, XYPlane plane ){
@@ -31,9 +34,10 @@ public class VectorXY extends XYObject{
 
        public void highlight(){
            line.setStroke( RED );
-           line.setStrokeWidth( highlightSize );
+           line.setStrokeWidth( getHighlightSize() );
            arrowHead.highlight();
            angle.highlight();
+           point.highlight();
        }
 
        public void setMagnitudeVisible( boolean visible ){
@@ -42,16 +46,18 @@ public class VectorXY extends XYObject{
 
        public void unhighlight(){
            line.setStroke( GREEN );
-           line.setStrokeWidth( size );
+           line.setStrokeWidth( getSize() );
            arrowHead.unhighlight();
            angle.unhighlight();
+           point.unhighlight();
        }
 
-       private void updateVector(){
+       private void update(){
            line.setEndX( plane.toSceneX( getX() ) );
            line.setEndY( plane.toSceneY( getY() ) );
            arrowHead.setPlaneCoordinates( getX(), getY() );
            angle.setPlaneCoordinates( getX(), getY() );
+           point.setPlaneCoordinates( getX(), getY() );
            updateMagnitude();
        }
 
@@ -62,25 +68,31 @@ public class VectorXY extends XYObject{
 
        public void setPlaneCoordinates( double x, double y ){
           super.setPlaneCoordinates( x, y );
-          updateVector();
+          update();
        }
 
        public void setAngleVisible( boolean visible ){
           angle.setVisible( visible );
        }
 
-       private void createVector(){
-          updateVector();
+       public void setPointVisible( boolean visible ){
+          point.setVisible( visible );
+          update();
+       }
+
+       private void create(){
+          update();
 
           line.setStartX( plane.getCenterX() );
           line.setStartY( plane.getCenterY() );
           line.setStroke( GREEN );
-          line.setStrokeWidth( size );
+          line.setStrokeWidth( getSize() );
           arrowHead.setColor( GREEN );
           getChildren().add( line );
           getChildren().add( arrowHead );
           getChildren().add( angle );
           getChildren().add( magnitude );
+          getChildren().add( point );
        }
 
        public double getMagnitude(){
@@ -94,6 +106,19 @@ public class VectorXY extends XYObject{
            magnitude.setX( plane.toSceneX( midX ) );
            magnitude.setY( plane.toSceneY( midY ) );
            magnitude.setText( String.format( "%2.2f", getMagnitude() ) );
+       }
+
+
+       public XYObject transform( Matrix transformationMatrix ){
+           XYObject object = super.transform( transformationMatrix );
+           update();
+           return object;
+       }
+
+       public XYObject scale( double scalar ){
+           XYObject object = super.scale( scalar );
+           update();
+           return object;
        }
 
 }

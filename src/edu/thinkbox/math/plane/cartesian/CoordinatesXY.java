@@ -43,6 +43,10 @@ public class CoordinatesXY extends Group{
           } else if( plane.getQuadrant( coordinates ) == 4 ){
              text.setX( plane.toSceneX( getX() ) - 30 );
              text.setY( plane.toSceneY( getY() ) + 30 );
+          } else if( plane.getQuadrant( coordinates ) == 90.0 ||
+                     plane.getQuadrant( coordinates ) == 270.0 ){
+                     text.setX( plane.toSceneX( getX() ) + 20 );
+                     text.setY( plane.toSceneY( getY() ) );
           } else {
                 text.setX( plane.toSceneX( getX() ) - 30 );
                 text.setY( plane.toSceneY( getY() ) - 20 );

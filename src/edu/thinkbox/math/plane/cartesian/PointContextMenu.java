@@ -1,4 +1,4 @@
-package edu.thinkbox.math.tools;
+package edu.thinkbox.math.plane.cartesian;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -10,22 +10,22 @@ import javafx.event.ActionEvent;
 public class PointContextMenu extends ContextMenu{
       private CheckMenuItem showRiseRunMenu = new CheckMenuItem( "Show Rise/Run" );
       private CheckMenuItem showCoordinatesMenu = new CheckMenuItem( "Show Coordinates" );
-      private CheckMenuItem coordinatesAsWholeNumberMenu = new CheckMenuItem( "Whole Numbers [ x, y ]" );
-      private Point point;
+      private CheckMenuItem wholeNumberCoordinatesMenu = new CheckMenuItem( "Whole Numbers [ x, y ]" );
+      private PointXY point;
 
-      public PointContextMenu( Point point){
+      public PointContextMenu( PointXY point ){
           this.point = point;
           showRiseRunMenu.setOnAction( new ShowRiseRunEvent() );
           showCoordinatesMenu.setOnAction( new ShowCoordinatesEvent() );
-          coordinatesAsWholeNumberMenu.setOnAction( new CoordinatesAsWholeNumberEvent() );
+          wholeNumberCoordinatesMenu.setOnAction( new WholeNumberCoordinatesEvent() );
           getItems().addAll( showRiseRunMenu,
                              showCoordinatesMenu,
-                             coordinatesAsWholeNumberMenu );
+                             wholeNumberCoordinatesMenu );
       }
 
-      private class CoordinatesAsWholeNumberEvent implements EventHandler< ActionEvent >{
+      private class WholeNumberCoordinatesEvent implements EventHandler< ActionEvent >{
         public void handle( ActionEvent e ){
-            point.setCoordinatesAsWholeNumbers( coordinatesAsWholeNumberMenu.isSelected() );
+              point.setWholeNumberCoordinates( wholeNumberCoordinatesMenu.isSelected() );
         }
       }
 

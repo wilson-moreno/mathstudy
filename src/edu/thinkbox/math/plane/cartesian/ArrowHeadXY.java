@@ -17,12 +17,12 @@ public class ArrowHeadXY extends XYObject{
 
 
         public ArrowHeadXY( XYPlane plane, ArrowHeadType type ){
-           super( plane );
-           this.color = Color.web( "002f55" );
+           super( plane );           
            this.line1 = new Line();
            this.line2 = new Line();
            this.triangle = new Polygon();
            this.type = type;
+           setColor( Color.web( "002f55" ) );
            createArrowHead();
         }
 
@@ -32,23 +32,23 @@ public class ArrowHeadXY extends XYObject{
         }
 
         public void highlight(){
-          line1.setStroke( highlightColor );
-          line2.setStroke( highlightColor );
-          triangle.setStroke( highlightColor );
-          triangle.setFill( highlightColor );
-          line1.setStrokeWidth( highlightSize );
-          line2.setStrokeWidth( highlightSize );
-          triangle.setStrokeWidth( highlightSize );
+          line1.setStroke( getHighlightColor() );
+          line2.setStroke( getHighlightColor() );
+          triangle.setStroke( getHighlightColor() );
+          triangle.setFill( getHighlightColor() );
+          line1.setStrokeWidth( getHighlightSize() );
+          line2.setStrokeWidth( getHighlightSize() );
+          triangle.setStrokeWidth( getHighlightSize() );
         }
 
         public void unhighlight(){
-            line1.setStrokeWidth( size );
-            line1.setStroke( color );
-            line2.setStrokeWidth( size );
-            line2.setStroke( color );
-            triangle.setStroke( color );
-            triangle.setFill( color );
-            triangle.setStrokeWidth( size );
+            line1.setStrokeWidth( getSize() );
+            line1.setStroke( getColor() );
+            line2.setStrokeWidth( getSize() );
+            line2.setStroke( getColor() );
+            triangle.setStroke( getColor() );
+            triangle.setFill( getColor() );
+            triangle.setStrokeWidth( getSize() );
         }
 
         public void setSceneCoordinates( double x, double y ){
@@ -90,27 +90,27 @@ public class ArrowHeadXY extends XYObject{
         }
 
         public void setColor( Color color ){
-             this.color = color;
-             line1.setStroke( color );
-             line2.setStroke( color );
-             triangle.setStroke( color );
-             triangle.setFill( color );
+             super.setColor( color );
+             line1.setStroke( getColor() );
+             line2.setStroke( getColor() );
+             triangle.setStroke( getColor() );
+             triangle.setFill( getColor() );
         }
 
         private void createArrowHead(){
            updateArrowHead();
 
            if( type == ArrowHeadType.OPEN_BASE ){
-              line1.setStrokeWidth( size );
-              line1.setStroke( color );
-              line2.setStrokeWidth( size );
-              line2.setStroke( color );
+              line1.setStrokeWidth( getSize() );
+              line1.setStroke( getColor() );
+              line2.setStrokeWidth( getSize() );
+              line2.setStroke( getColor() );
               getChildren().add( line1 );
               getChildren().add( line2 );
            }else if( type == ArrowHeadType.TRIANGLE ){
-              triangle.setStroke( color );
-              triangle.setFill( color );
-              triangle.setStrokeWidth( size );
+              triangle.setStroke( getColor() );
+              triangle.setFill( getColor() );
+              triangle.setStrokeWidth( getSize() );
               getChildren().add( triangle );
            }
 

@@ -9,8 +9,8 @@ public class GridlinesXY extends XYObject{
 
         public GridlinesXY( XYPlane plane ){
             super( plane );
-            color = Color.web( "4a688a" );
-            size  = 0.15;
+            setColor( Color.web( "4a688a" ) );
+            setSize( 0.15 );
             createGridLines();
         }
 
@@ -20,15 +20,15 @@ public class GridlinesXY extends XYObject{
 
             for( int i = 0; i <= plane.getRowCount(); i++ ){
                 Line line = new Line( 0, i * plane.getModuleSize(), plane.getWidth(), i * plane.getModuleSize() );
-                line.setStrokeWidth( size );
-                line.setStroke( color );
+                line.setStrokeWidth( getSize() );
+                line.setStroke( getColor() );
                 getChildren().add( line );
             }
 
             for( int j = 0; j <= plane.getColumnCount(); j++ ){
                 Line line = new Line( j * plane.getModuleSize(), 0, j * plane.getModuleSize(), plane.getHeight() );
-                line.setStrokeWidth( size );
-                line.setStroke( color );
+                line.setStrokeWidth( getSize() );
+                line.setStroke( getColor() );
                 getChildren().add( line );
             }
 

@@ -10,9 +10,9 @@ public class TicksXY extends XYObject{
 
        public TicksXY( XYPlane plane ){
           super( plane );
-          color = Color.web( "002f55" );
-          size  = 1.0;
           tickLength = 3.0;
+          setColor( Color.web( "002f55" ) );
+          setSize( 1.0 );
           createTicks();
        }
 
@@ -25,10 +25,10 @@ public class TicksXY extends XYObject{
              for( int i = 0; i < plane.getRowCount() / 2; i++ ){
                  Line tick1 = new Line( plane.getCenterX() - tickLength , ( i * plane.getModuleSize() ) + plane.getCenterY(), plane.getCenterX() + tickLength, ( i * plane.getModuleSize() )  + plane.getCenterY() );
                  Line tick2 = new Line( plane.getCenterX() - tickLength , ( -1 * i * plane.getModuleSize() ) + plane.getCenterY(), plane.getCenterX() + tickLength, ( -1 * i * plane.getModuleSize() )  + plane.getCenterY() );
-                 tick1.setStrokeWidth( size );
-                 tick1.setStroke( color );
-                 tick2.setStrokeWidth( size );
-                 tick2.setStroke( color );
+                 tick1.setStrokeWidth( getSize() );
+                 tick1.setStroke( getColor() );
+                 tick2.setStrokeWidth( getSize() );
+                 tick2.setStroke( getColor() );
                  getChildren().add( tick1 );
                  getChildren().add( tick2 );
              }
@@ -36,10 +36,10 @@ public class TicksXY extends XYObject{
              for( int j = 0; j < plane.getColumnCount() / 2; j++ ){
                  Line tick3 = new Line( ( j * plane.getModuleSize() ) + plane.getCenterX(), plane.getCenterY() + tickLength, ( j * plane.getModuleSize() ) + plane.getCenterX(), plane.getCenterY() - tickLength );
                  Line tick4 = new Line( ( -1 * j * plane.getModuleSize() ) + plane.getCenterX(), plane.getCenterY() + tickLength, ( -1 * j * plane.getModuleSize() ) + plane.getCenterX(), plane.getCenterY() - tickLength );
-                 tick3.setStrokeWidth( size );
-                 tick3.setStroke( color );
-                 tick4.setStrokeWidth( size );
-                 tick4.setStroke( color );
+                 tick3.setStrokeWidth( getSize() );
+                 tick3.setStroke( getColor() );
+                 tick4.setStrokeWidth( getSize() );
+                 tick4.setStroke( getColor() );
                  getChildren().add( tick3 );
                  getChildren().add( tick4 );
              }

@@ -73,20 +73,20 @@ public class VectorContextMenu extends ContextMenu{
 
       private class ProjectOntoXAxisEvent implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //vector.transform( Transformation.xProjectionMatrix() );
+              vector.transform( Transformation.xProjectionMatrix() );
           }
       }
 
 
       private class ProjectOntoYAxisEvent implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //vector.transform( Transformation.yProjectionMatrix() );
+              vector.transform( Transformation.yProjectionMatrix() );
           }
       }
 
       private class ShowPointEvent implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //vector.setPointVisible( showPointMenu.isSelected() );
+              vector.setPointVisible( showPointMenu.isSelected() );              
           }
       }
 
@@ -111,25 +111,25 @@ public class VectorContextMenu extends ContextMenu{
 
       private class Rotate30Event implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //vector.transform( Transformation.rotationMatrix( Math.PI / 6.0 ) );
+              vector.transform( Transformation.rotationMatrix( Math.PI / 6.0 ) );
           }
       }
 
       private class Rotate45Event implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //vector.transform( Transformation.rotationMatrix( Math.PI / 4.0 ) );
+              vector.transform( Transformation.rotationMatrix( Math.PI / 4.0 ) );
           }
       }
 
       private class Rotate60Event implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //vector.transform( Transformation.rotationMatrix( Math.PI / 3.0 ) );
+              vector.transform( Transformation.rotationMatrix( Math.PI / 3.0 ) );
           }
       }
 
       private class Rotate90Event implements EventHandler<ActionEvent>{
           public void handle( ActionEvent e ){
-              //vector.transform( Transformation.rotationMatrix( Math.PI / 2.0 ) );
+              vector.transform( Transformation.rotationMatrix( Math.PI / 2.0 ) );
           }
       }
 }

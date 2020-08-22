@@ -16,11 +16,14 @@ public class QuadrantsXY extends XYObject{
 
        public QuadrantsXY( XYPlane plane ){
            super( plane );
-           color = Color.web( "rgba( 0, 0, 0, 0.1 )" );
+           setColor( Color.web( "rgba( 0, 0, 0, 0.1 )" ) );
            createQuadrants();
        }
 
-       public void setColor( Color color ){}
+       @Override
+       public void setColor( Color color ){
+           super.setColor( color );
+       }
        public void highlight(){}
        public void unhighlight(){}
 
@@ -38,10 +41,10 @@ public class QuadrantsXY extends XYObject{
             quadrant3.setFont( new Font( fontSize ) );
             quadrant4.setFont( new Font( fontSize ) );
 
-            quadrant1.setFill( color );
-            quadrant2.setFill( color );
-            quadrant3.setFill( color );
-            quadrant4.setFill( color );
+            quadrant1.setFill( getColor() );
+            quadrant2.setFill( getColor() );
+            quadrant3.setFill( getColor() );
+            quadrant4.setFill( getColor() );
 
             getChildren().add( quadrant1 );
             getChildren().add( quadrant2 );

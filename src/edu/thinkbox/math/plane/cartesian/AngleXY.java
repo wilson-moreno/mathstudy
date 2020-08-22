@@ -14,8 +14,6 @@ public class AngleXY extends XYObject{
            super( plane );
            angle = new Arc();
            angleValue = new Text();
-           //size = 3.0;
-           //highlightSize = 5.0;
            createAngle();
         }
 
@@ -28,12 +26,12 @@ public class AngleXY extends XYObject{
 
         public void highlight(){
             angle.setStroke( RED );
-            angle.setStrokeWidth( highlightSize );
+            angle.setStrokeWidth( getHighlightSize() );
         }
 
         public void unhighlight(){
             angle.setStroke( GREEN );
-            angle.setStrokeWidth( size );
+            angle.setStrokeWidth( getSize() );
         }
 
         private void updateAngleValue(){
@@ -76,7 +74,7 @@ public class AngleXY extends XYObject{
             angle.setType( ArcType.ROUND );
             angle.setFill( null );
             angle.setStroke( GREEN );
-            angle.setStrokeWidth( size );
+            angle.setStrokeWidth( getSize() );
             updateAngle();
             getChildren().add( angle );
             getChildren().add( angleValue );

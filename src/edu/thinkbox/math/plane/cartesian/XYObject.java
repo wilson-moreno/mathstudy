@@ -8,10 +8,10 @@ public abstract class XYObject extends Group{
        protected static final Color RED = Color.web( "ff1a00" );
        protected static final Color GREEN = Color.web( "509237" );
        protected static final Color BLUE = Color.web( "002f55" );
-       protected Color  color = GREEN;
-       protected Color  highlightColor = RED;
-       protected double size = 2.0;
-       protected double highlightSize = 3.0;
+       private Color  color = GREEN;
+       private Color  highlightColor = RED;
+       private double size = 2.0;
+       private double highlightSize = 3.0;
        protected Matrix coordinates = Matrix.createColumnMatrix( 2 );
        protected XYPlane plane;
        protected boolean wholeNumberCoordinates;
@@ -33,7 +33,9 @@ public abstract class XYObject extends Group{
 
        public abstract void highlight();
        public abstract void unhighlight();
-       public abstract void setColor( Color color );
+       public void setColor( Color color ){
+           this.color = color;
+       }
 
        public void setRiseRunVisible( boolean visible ){
           riseRun.setVisible( visible );
@@ -62,6 +64,22 @@ public abstract class XYObject extends Group{
           coordinatesXY.setPlaneCoordinates( x, y );
        }
 
+       public void setSize( double size ){ this.size = size; }
+       public void setHighlightSize( double size ){ this.highlightSize = size; }
+       public void setHighlightColor( Color color ){ this.highlightColor = color; }
+       public double getSize(){ return this.size; }
+       public Color getColor(){ return this.color; }
+       public double getHighlightSize(){ return highlightSize; }
+       public Color getHighlightColor(){ return highlightColor; }
        protected double getX(){ return coordinates.getEntry( 0, 0 ); }
        protected double getY(){ return coordinates.getEntry( 1, 0 ); }
+       public XYObject transform( Matrix transformation ){
+           coordinates.copyEntries( transformation.multiply( coordinates ) );
+           return this;
+       }
+       public XYObject scale( double scalar ){
+           coordinates.copyEntries( coordinates.scalarProduct( scalar ) );
+           return this;
+       }
+
 }
