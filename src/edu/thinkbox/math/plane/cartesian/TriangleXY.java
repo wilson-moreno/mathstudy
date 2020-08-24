@@ -83,6 +83,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           theta1 = direction( vertex1, vertex2 );
           theta2 = direction( vertex1, vertex3 );
           degree1 = plane.toDegree( theta2 - theta1 );
+          System.out.println( String.format("Angel 1 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle1.setStartAngle( plane.toDegree( theta1 ) );
           vertexAngle1.setLength( degree1 );
           //System.out.println( String.format("Angel 1 = %2.2f", plane.toDegree( theta2 - theta1 ) ) );
@@ -91,6 +92,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           theta1 = direction( vertex2, vertex3 );
           theta2 = direction( vertex2, vertex1 );
           degree2 = plane.toDegree( theta2 - theta1 );
+          System.out.println( String.format("Angel 2 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle2.setStartAngle( plane.toDegree( theta1 ) );
           vertexAngle2.setLength( degree2 );
           //System.out.println( String.format("Angel 2 = %2.2f", plane.toDegree( theta2 - theta1 ) ) );
@@ -99,6 +101,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           theta1 = direction( vertex3, vertex2 );
           theta2 = direction( vertex3, vertex1 );
           degree3 = plane.toDegree( theta2 - theta1 );
+          System.out.println( String.format("Angel 3 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f\n\n", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle3.setStartAngle( plane.toDegree( theta1 ) );
           vertexAngle3.setLength( plane.toDegree( theta2 - theta1 ) );
           //System.out.println( String.format("Angel 3 = %2.2f\n\n", plane.toDegree( theta2 - theta1 ) ) );
@@ -132,12 +135,6 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
          double slope = ( p2.getY() - p1.getY() ) / ( p2.getX() - p1.getX() );
          double x = p2.getX() - p1.getX();
          double y = p2.getY() - p1.getY();
-
-         if( plane.getQuadrant( x, y ) == 1 ) slope *= +1;
-         else if( plane.getQuadrant( x, y ) == 2 ) slope *= +1;
-         else if( plane.getQuadrant( x, y ) == 3 ) slope *= +1;
-         else if( plane.getQuadrant( x, y ) == 4 ) slope *= +1;
-
          return slope;
       }
 
