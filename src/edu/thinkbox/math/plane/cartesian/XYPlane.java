@@ -21,6 +21,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
         private Group             vectors;
         private Group             points;
         private Group             arrowHeads;
+        private Group             triangles;
         private boolean           mouseCoordinateVisible;
 
 
@@ -39,6 +40,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             this.vectors = new Group();
             this.points = new Group();
             this.arrowHeads = new Group();
+            this.triangles = new Group();
             this.mouseCoordinateVisible = false;
             this.quadrants.setVisible( false );
 
@@ -50,6 +52,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             getChildren().add( vectors );
             getChildren().add( points );
             getChildren().add( arrowHeads );
+            getChildren().add( triangles );
 
             addEventFilter( MouseEvent.ANY, new MouseMovementEventHandler( this ) );
             plane.addEventFilter( MouseEvent.MOUSE_CLICKED, this.contextMenu );
@@ -60,6 +63,11 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             contextMenu.show( this, event.getScreenX(), event.getScreenY() );
         }
 
+        public TriangleXY addTriangle( double x, double y ){
+            TriangleXY triangle = new TriangleXY( this );
+            triangles.getChildren().add( triangle );
+            return triangle;
+        }
 
         public ArrowHeadXY addArrowHead( double x, double y ){
             ArrowHeadXY arrowHead = new ArrowHeadXY( x, y, this, ArrowHeadType.TRIANGLE );
@@ -89,6 +97,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
         public void clearVectors(){ vectors.getChildren().clear(); }
         public void clearPoints(){ points.getChildren().clear(); }
         public void clearArrowHeads(){ arrowHeads.getChildren().clear(); }
+        public void clearTriangles(){ triangles.getChildren().clear(); }
         public boolean isMouseCoordinateVisible(){ return mouseCoordinateVisible; }
         public void setMouseCoordinatesVisible( boolean visible ){ this.mouseCoordinateVisible = visible; }
         public void setGridlinesVisible( boolean visible ){ gridlines.setVisible( visible ); }
@@ -104,24 +113,28 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
         public int getYBound(){ return getRowCount() / 2; }
         public double getCenterX(){ return Math.round( width / 2.0 ); }
         public double getCenterY(){ return Math.round( height / 2.0 ); }
-        public double toSceneX( double xCoordinate ){
-               return getCenterX() + ( xCoordinate * moduleSize );
-        }
-        public double toSceneY( double yCoordinate ){
-               return getCenterY() - ( yCoordinate * moduleSize );
-        }
-        public double toCoordinateX( double screenX ){
-               return ( screenX - getCenterX() ) / moduleSize;
-        }
-        public double toCoordinateY( double screenY ){
-               return ( getCenterY() - screenY ) / moduleSize;
-        }
-        public void setColor( Color color ){
-               plane.setFill( color );
-        }
+        public double toSceneX( double xCoordinate ){ return getCenterX() + ( xCoordinate * moduleSize ); }
+        public double toSceneY( double yCoordinate ){ return getCenterY() - ( yCoordinate * moduleSize ); }
+        public double toCoordinateX( double screenX ){ return ( screenX - getCenterX() ) / moduleSize; }
+        public double toCoordinateY( double screenY ){ return ( getCenterY() - screenY ) / moduleSize; }
+        public void setColor( Color color ){ plane.setFill( color ); }
         public double getQuadrant( Matrix coordinates ){
               double x = coordinates.getEntry( 0, 0 );
               double y = coordinates.getEntry( 1, 0 );
+              int quadrant = 0;
+
+              if( x > 0.0 && y > 0.0 ) quadrant = 1;
+              else if( x < 0.0 && y > 0.0 ) quadrant = 2;
+              else if( x < 0.0 && y < 0.0 ) quadrant = 3;
+              else if( x > 0.0 && y < 0.0 ) quadrant = 4;
+              else if( x == 0.0 && y > 0.0 ) quadrant = 90;
+              else if( x < 0.0 && y == 0.0 ) quadrant = 180;
+              else if( x == 0.0 && y < 0.0 ) quadrant = 270;
+
+              return quadrant;
+        }
+
+        public double getQuadrant( double x, double y ){
               int quadrant = 0;
 
               if( x > 0.0 && y > 0.0 ) quadrant = 1;
@@ -151,6 +164,20 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             }
 
         }
+
+        public double getDirection( double x, double y ){
+            if( x > 0.0 && y == 0.0 ) return 0.0;
+            else if( x == 0.0 && y > 0.0 ) return Math.PI / 2.0;
+            else if( x < 0.0 && y == 0.0 ) return Math.PI;
+            else if( x == 0.0 && y < 0.0 ) return Math.PI * ( 3.0 / 2.0 );
+            else {
+                double radians = Math.atan( y / x );
+                if( ( x < 0.0 && y > 0.0 ) || ( x < 0.0 && y < 0.0 ) ) radians += Math.PI;
+                else if( ( x > 0.0 && y < 0.0 ) ) radians += 2 * Math.PI;
+                return radians;
+            }
+        }
+
         public double toDegree( double radians ){
             return radians * ( 180.0 / Math.PI );
         }

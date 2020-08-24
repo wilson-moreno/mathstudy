@@ -3,6 +3,7 @@ package edu.thinkbox.math.plane.cartesian;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import edu.thinkbox.math.matrix.Matrix;
+import java.util.ArrayList;
 
 public abstract class XYObject extends Group{
        protected static final Color RED = Color.web( "ff1a00" );
@@ -18,6 +19,7 @@ public abstract class XYObject extends Group{
        protected boolean coordinatesVisible;
        private RiseRunXY riseRun;
        private CoordinatesXY coordinatesXY;
+       private ArrayList< CoordinatesListener > listeners;
 
        public XYObject( XYPlane plane ){
           this.plane = plane;
@@ -25,10 +27,21 @@ public abstract class XYObject extends Group{
           this.coordinatesVisible = false;
           this.riseRun = new RiseRunXY( plane );
           this.coordinatesXY = new CoordinatesXY( plane );
+          this.listeners = new ArrayList< CoordinatesListener >();
           setRiseRunVisible( false );
           setCoordinatesVisible( false );
           getChildren().add( riseRun );
           getChildren().add( coordinatesXY );
+       }
+
+       public void addCoordinatesListener( CoordinatesListener listener ){
+          listeners.add( listener );
+       }
+
+       private void fireCoordinatesChanged(){
+          for( CoordinatesListener listener : listeners ){
+            listener.positionChanged( this, getX(), getY() );
+          }
        }
 
        public abstract void highlight();
@@ -62,6 +75,7 @@ public abstract class XYObject extends Group{
           coordinates.setEntry( 1, 0, y );
           riseRun.setPlaneCoordinates( x, y );
           coordinatesXY.setPlaneCoordinates( x, y );
+          fireCoordinatesChanged();
        }
 
        public Matrix getCoordinates(){ return coordinates; }

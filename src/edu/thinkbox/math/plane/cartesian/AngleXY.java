@@ -87,4 +87,22 @@ public class AngleXY extends XYObject{
             getChildren().add( angle );
             getChildren().add( angleValue );
         }
+
+        public void setCenter( double x, double y ){
+            angle.setCenterX( plane.toSceneX( x ) );
+            angle.setCenterY( plane.toSceneY( y ) );
+        }
+
+        public void setStartAngle( double degrees ){
+            angle.setStartAngle( degrees );
+        }
+
+        public void setLength( double length ){
+            angle.setLength( length );
+        }
+
+        public void setRadius( double radius ){
+            angle.setRadiusX( radius );
+            angle.setRadiusY( radius );
+        }
 }
