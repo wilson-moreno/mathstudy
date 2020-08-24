@@ -110,4 +110,6 @@ public class AngleXY extends XYObject{
            System.out.println( String.format( "%s = [ %2.2f, %2.2f ]", name, angle.getCenterX(), angle.getCenterY() ) );
         }
 
+        public double getLength(){ return angle.getLength(); }
+
 }
