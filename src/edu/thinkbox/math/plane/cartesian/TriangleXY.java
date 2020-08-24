@@ -10,6 +10,9 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
       private PointXY vertex2;
       private PointXY vertex3;
       private AngleXY vertexAngle1;
+      private AngleXY vertexAngle2;
+      private AngleXY vertexAngle3;
+
 
       public TriangleXY( XYPlane plane ){
           super( plane );
@@ -25,8 +28,12 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           vertex3 = new PointXY( -5.0, 0.0, plane );
 
           vertexAngle1 = new AngleXY( plane );
+          vertexAngle2 = new AngleXY( plane );
+          vertexAngle3 = new AngleXY( plane );
 
-          vertexAngle1.setCenter( 0.0, 5.0 );
+          vertexAngle1.setCenter(  0.0, 5.0 );
+          vertexAngle2.setCenter(  5.0, 0.0 );
+          vertexAngle3.setCenter( -5.0, 0.0 );
 
           vertex1.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
           vertex2.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
@@ -53,35 +60,78 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           getChildren().add( vertex3 );
 
           getChildren().add( vertexAngle1 );
+          getChildren().add( vertexAngle2 );
+          getChildren().add( vertexAngle3 );
+          update();
       }
 
       public void positionChanged( XYObject source, double x, double y ){
-          update( source, x, y );
+          update();
       }
 
 
-      public void update( XYObject source, double x, double y ){
-         double theta1 = 0.0;
-         double theta2 = 0.0;
+      public void update(){
+          double theta1 = 0.0;
+          double theta2 = 0.0;
+          double theta3 = 0.0;
+          double degree1 = 0.0;
+          double degree2 = 0.0;
+          double degree3 = 0.0;
+
 
           vertexAngle1.setCenter( vertex1.getX(), vertex1.getY() );
-          theta1 = direction( vertex1, vertex3 );
-          theta2 = angle( vertex1, vertex2, vertex3 );
+          theta1 = direction( vertex1, vertex2 );
+          theta2 = direction( vertex1, vertex3 );
+          degree1 = plane.toDegree( theta2 - theta1 );
           vertexAngle1.setStartAngle( plane.toDegree( theta1 ) );
-          vertexAngle1.setLength( plane.toDegree( theta2 ) );
+          vertexAngle1.setLength( degree1 );
+          //System.out.println( String.format("Angel 1 = %2.2f", plane.toDegree( theta2 - theta1 ) ) );
 
-          System.out.println( plane.toDegree( theta2 ) );
+          vertexAngle2.setCenter( vertex2.getX(), vertex2.getY() );
+          theta1 = direction( vertex2, vertex3 );
+          theta2 = direction( vertex2, vertex1 );
+          degree2 = plane.toDegree( theta2 - theta1 );
+          vertexAngle2.setStartAngle( plane.toDegree( theta1 ) );
+          vertexAngle2.setLength( degree2 );
+          //System.out.println( String.format("Angel 2 = %2.2f", plane.toDegree( theta2 - theta1 ) ) );
+
+          vertexAngle3.setCenter( vertex3.getX(), vertex3.getY() );
+          theta1 = direction( vertex3, vertex2 );
+          theta2 = direction( vertex3, vertex1 );
+          degree3 = plane.toDegree( theta2 - theta1 );
+          vertexAngle3.setStartAngle( plane.toDegree( theta1 ) );
+          vertexAngle3.setLength( plane.toDegree( theta2 - theta1 ) );
+          //System.out.println( String.format("Angel 3 = %2.2f\n\n", plane.toDegree( theta2 - theta1 ) ) );
+
       }
 
+      private double acuteAngle( double degree ){
+          double sign = Math.signum( degree );
 
-      private double direction( PointXY verte1, PointXY vertex2 ){
-         return plane.getDirection(  vertex2.getX() - vertex1.getX(), vertex2.getY() - vertex1.getY() );
+          if( isObtuse( Math.abs( degree ) ) ){
+             degree = 360.0 - Math.abs( degree );
+             degree *= sign;
+          }
+
+          return degree;
       }
 
-      private double slope( PointXY vertex1, PointXY vertex2 ){
-         double slope = ( vertex2.getY() - vertex1.getY() ) / ( vertex2.getX() - vertex1.getX() );
-         double x = vertex2.getX() - vertex1.getX();
-         double y = vertex2.getY() - vertex1.getY();
+      private boolean isAcute( double t ){
+          return ( t > 0.0 && t < ( 90.0 ) );
+      }
+
+      private boolean isObtuse( double t ){
+          return ( t > ( 90.0 ) && t < 180.0 );
+      }
+
+      private double direction( PointXY p1, PointXY p2 ){
+         return plane.getDirection(  p2.getX() - p1.getX(), p2.getY() - p1.getY() );
+      }
+
+      private double slope( PointXY p1, PointXY p2 ){
+         double slope = ( p2.getY() - p1.getY() ) / ( p2.getX() - p1.getX() );
+         double x = p2.getX() - p1.getX();
+         double y = p2.getY() - p1.getY();
 
          if( plane.getQuadrant( x, y ) == 1 ) slope *= +1;
          else if( plane.getQuadrant( x, y ) == 2 ) slope *= +1;
@@ -91,10 +141,14 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
          return slope;
       }
 
-      private double angle( PointXY vertex1, PointXY vertex2, PointXY vertex3 ){
-         double m1 = slope( vertex1, vertex2 );
-         double m2 = slope( vertex1, vertex3 );
+      private double angle( PointXY p1, PointXY p2, PointXY p3 ){
+         double m1 = slope( p1, p2 );
+         double m2 = slope( p1, p3 );
+         double m3 = ( m1 - m2 ) / ( 1 + m1*m2 );
+         double radians = Math.atan( Math.abs( m3 ) );
 
-         return Math.atan( Math.abs( ( m1 - m2 ) / ( 1 + m1*m2 ) ) );
+         if( m3 < 0.0 ) radians = Math.PI - radians;
+
+         return radians;
       }
 }

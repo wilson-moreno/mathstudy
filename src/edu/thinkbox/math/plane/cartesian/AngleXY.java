@@ -105,4 +105,9 @@ public class AngleXY extends XYObject{
             angle.setRadiusX( radius );
             angle.setRadiusY( radius );
         }
+
+        public void printCenter( String name ){
+           System.out.println( String.format( "%s = [ %2.2f, %2.2f ]", name, angle.getCenterX(), angle.getCenterY() ) );
+        }
+
 }
