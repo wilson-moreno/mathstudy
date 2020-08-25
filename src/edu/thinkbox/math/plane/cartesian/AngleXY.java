@@ -40,26 +40,12 @@ public class AngleXY extends XYObject{
         }
 
         private void updateAngleValue(){
-             Double x = 40 * Math.cos( plane.getDirection( getCoordinates() ) / 2.0 );
-             Double y = 40 * Math.sin( plane.getDirection( getCoordinates() ) / 2.0 );
+             Double x = 40 * Math.cos( plane.toRadians( angle.getLength() ) / 2.0 );
+             Double y = 40 * Math.sin( plane.toRadians( angle.getLength() ) / 2.0 );
 
-             if( plane.getQuadrant( getCoordinates() ) == 1 ){
-                   angleValue.setX( getSceneX() + ( x - 10 ) );
-                   angleValue.setY( getSceneY() - y );
-             } else if( plane.getQuadrant( getCoordinates() ) == 2 ){
-                   angleValue.setX( getSceneX() + ( x - 20 ) );
-                   angleValue.setY( getSceneY() - y );
-             } else if( plane.getQuadrant( getCoordinates() ) == 3 ){
-                   angleValue.setX( getSceneX() + ( x - 25 ) );
-                   angleValue.setY( getSceneY() - y );
-             } else if( plane.getQuadrant( getCoordinates() ) == 4 ){
-                   angleValue.setX( getSceneX() + ( x - 30 ) );
-                   angleValue.setY( getSceneY() - y );
-             }
-
-             angleValue.setText( String.format( "%2.2f", angle.getLength() ) );
-
-             //System.out.println( String.format( "[ %2.2f, %2.2f ]", getX(), getY() ) );
+             angleValue.setX( getSceneX() + x - 20 );
+             angleValue.setY( getSceneY() - y );
+             angleValue.setText( String.format( "%2.2f", Math.abs( angle.getLength() ) ) );
         }
 
 
@@ -69,9 +55,7 @@ public class AngleXY extends XYObject{
         }
 
         public void updateAngle(){
-            previousAngle = plane.toDegree( plane.getDirection( previous ) );
-            updatedAngle  = plane.toDegree( plane.getDirection( getCoordinates() ) );
-            angle.setLength( updatedAngle );
+            setCenter( getX(), getY() );
             updateAngleValue();
         }
 
@@ -90,22 +74,25 @@ public class AngleXY extends XYObject{
             getChildren().add( angleValue );
         }
 
-        public void setCenter( double x, double y ){
+        private void setCenter( double x, double y ){
             angle.setCenterX( plane.toSceneX( x ) );
             angle.setCenterY( plane.toSceneY( y ) );
         }
 
         public void setStartAngle( double degrees ){
             angle.setStartAngle( degrees );
+            updateAngleValue();
         }
 
         public void setLength( double length ){
             angle.setLength( length );
+            updateAngleValue();
         }
 
         public void setRadius( double radius ){
             angle.setRadiusX( radius );
             angle.setRadiusY( radius );
+            updateAngleValue();
         }
 
         public void printCenter( String name ){

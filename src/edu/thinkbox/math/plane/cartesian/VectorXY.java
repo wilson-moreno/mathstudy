@@ -59,7 +59,7 @@ public class VectorXY extends XYObject{
            line.setEndX( plane.toSceneX( getX() * shrink ) );
            line.setEndY( plane.toSceneY( getY() * shrink ) );
            arrowHead.setPlaneCoordinates( getX() * shrink, getY() * shrink );
-           angle.setPlaneCoordinates( plane.getCenterX(), plane.getCenterY() );
+           angle.setPlaneCoordinates( 0, 0 );
            angle.setLength( plane.toDegree( plane.getDirection( getCoordinates() ) ) );
            point.setPlaneCoordinates( getX(), getY() );
            updateMagnitude();

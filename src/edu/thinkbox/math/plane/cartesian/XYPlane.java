@@ -148,6 +148,18 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
               return quadrant;
         }
 
+        public double getQuadrant( double degree ){
+              int quadrant = 0;
+
+              if( degree > 0.0 && degree < 90.0 ) quadrant = 1;
+              else if( degree > 90.0 && degree < 180.0 ) quadrant = 2;
+              else if( degree > 180.0 && degree < 270.0 ) quadrant = 3;
+              else if( degree > 270.0 && degree < 360.0 ) quadrant = 4;
+
+              return quadrant;
+        }
+
+
         public double getDirection( Matrix coordinates ){
             double x = coordinates.getEntry( 0, 0 );
             double y = coordinates.getEntry( 1, 0 );
@@ -182,4 +194,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             return radians * ( 180.0 / Math.PI );
         }
 
+        public double toRadians( double degrees ){
+            return degrees * ( Math.PI / 180.0 );
+        }
 }
