@@ -44,20 +44,22 @@ public class AngleXY extends XYObject{
              Double y = 40 * Math.sin( plane.getDirection( getCoordinates() ) / 2.0 );
 
              if( plane.getQuadrant( getCoordinates() ) == 1 ){
-                   angleValue.setX( plane.getCenterX() + ( x - 10 ) );
-                   angleValue.setY( plane.getCenterY() - y );
+                   angleValue.setX( getSceneX() + ( x - 10 ) );
+                   angleValue.setY( getSceneY() - y );
              } else if( plane.getQuadrant( getCoordinates() ) == 2 ){
-                   angleValue.setX( plane.getCenterX() + ( x - 20 ) );
-                   angleValue.setY( plane.getCenterY() - y );
+                   angleValue.setX( getSceneX() + ( x - 20 ) );
+                   angleValue.setY( getSceneY() - y );
              } else if( plane.getQuadrant( getCoordinates() ) == 3 ){
-                   angleValue.setX( plane.getCenterX() + ( x - 25 ) );
-                   angleValue.setY( plane.getCenterY() - y );
+                   angleValue.setX( getSceneX() + ( x - 25 ) );
+                   angleValue.setY( getSceneY() - y );
              } else if( plane.getQuadrant( getCoordinates() ) == 4 ){
-                   angleValue.setX( plane.getCenterX() + ( x - 30 ) );
-                   angleValue.setY( plane.getCenterY() - y );
+                   angleValue.setX( getSceneX() + ( x - 30 ) );
+                   angleValue.setY( getSceneY() - y );
              }
 
              angleValue.setText( String.format( "%2.2f", updatedAngle ) );
+
+             System.out.println( String.format( "[ %2.2f, %2.2f ]", getX(), getY() ) );
         }
 
 
@@ -74,8 +76,8 @@ public class AngleXY extends XYObject{
         }
 
         public void createAngle(){
-            angle.setCenterX( plane.getCenterX() );
-            angle.setCenterY( plane.getCenterY() );
+            angle.setCenterX( getSceneX() );
+            angle.setCenterY( getSceneY() );
             angle.setRadiusX( radius );
             angle.setRadiusY( radius );
             angle.setStartAngle( 0.0f);
