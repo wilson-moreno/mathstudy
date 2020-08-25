@@ -86,7 +86,6 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           System.out.println( String.format("Angel 1 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle1.setStartAngle( plane.toDegree( theta1 ) );
           vertexAngle1.setLength( degree1 );
-          //System.out.println( String.format("Angel 1 = %2.2f", plane.toDegree( theta2 - theta1 ) ) );
 
           vertexAngle2.setCenter( vertex2.getX(), vertex2.getY() );
           theta1 = direction( vertex2, vertex3 );
@@ -95,7 +94,6 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           System.out.println( String.format("Angel 2 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle2.setStartAngle( plane.toDegree( theta1 ) );
           vertexAngle2.setLength( degree2 );
-          //System.out.println( String.format("Angel 2 = %2.2f", plane.toDegree( theta2 - theta1 ) ) );
 
           vertexAngle3.setCenter( vertex3.getX(), vertex3.getY() );
           theta1 = direction( vertex3, vertex2 );
@@ -104,7 +102,6 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           System.out.println( String.format("Angel 3 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f\n\n", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle3.setStartAngle( plane.toDegree( theta1 ) );
           vertexAngle3.setLength( plane.toDegree( theta2 - theta1 ) );
-          //System.out.println( String.format("Angel 3 = %2.2f\n\n", plane.toDegree( theta2 - theta1 ) ) );
 
       }
 
