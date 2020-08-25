@@ -103,25 +103,17 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
       }
 
       private void setLength( AngleXY vertexAngle, double theta1, double theta2 ){
-          double degree1 = plane.toDegree( theta1 );
-          double degree2 = plane.toDegree( theta2 );
+          double angle = plane.toDegree( theta2 - theta1 );
+          double sign = Math.signum( angle );
 
-          if( isAlpha( degree1 ) && isBeta( degree2 ) ){
-              vertexAngle.setLength( ( 360 - plane.toDegree( theta2 - theta1 ) ) * -1 );
-          } else if( isAlpha( degree2 ) && isBeta( degree1 ) ){
-              vertexAngle.setLength( ( 360 - plane.toDegree( theta1 - theta2 ) ) );
-          } else {
-              vertexAngle.setLength( plane.toDegree( theta2 - theta1 ) );
+          if( Math.abs( angle ) > 180.0 ){
+              angle = 360 - Math.abs( angle );
+              if( theta2 > theta1 ) angle *= -1;
           }
+
+          vertexAngle.setLength( angle );
       }
 
-      private boolean isAlpha( double theta ){
-           return theta >= 0.0 && theta <= 45.0;
-      }
-
-      private boolean isBeta( double theta ){
-           return theta >= 225.0 && theta <= 360.0;
-      }
 
 
       private double acuteAngle( double degree ){
