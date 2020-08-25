@@ -7,23 +7,33 @@ import javafx.scene.Scene;
 import edu.thinkbox.math.plane.cartesian.XYPlane;
 import java.util.ArrayList;
 import edu.thinkbox.math.matrix.Transformation;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
+import edu.thinkbox.controls.CustomOutputStream;
+import java.io.PrintStream;
+
 
 public class LinearTransformations extends Application{
         private static final int WIDTH = 600;
         private static final int HEIGHT = 600;
         private static final int zoomFactor = 20;
         private XYPlane cartesianPlane;
+        private TextArea output;
 
         public LinearTransformations(){
             cartesianPlane = new XYPlane( WIDTH, HEIGHT, zoomFactor );
+            output = new TextArea();
+            output.setEditable( false );
+            PrintStream printStream = new PrintStream( new CustomOutputStream( output ) );
+            System.setOut( printStream );
         }
 
         @Override
         public void start( Stage primaryStage ){
             primaryStage.setTitle( "Linear Transformations" );
-            Group root = new Group();
-            root.getChildren().add( cartesianPlane );
-            primaryStage.setScene( new Scene( root, WIDTH, HEIGHT ) );
+            VBox root = new VBox( 2 );
+            root.getChildren().addAll( cartesianPlane, output );
+            primaryStage.setScene( new Scene( root, WIDTH, HEIGHT + 50 ) );
             primaryStage.show();
         }
 

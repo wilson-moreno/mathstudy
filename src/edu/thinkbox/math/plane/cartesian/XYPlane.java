@@ -190,6 +190,8 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             }
         }
 
+        
+
         public double toDegree( double radians ){
             return radians * ( 180.0 / Math.PI );
         }

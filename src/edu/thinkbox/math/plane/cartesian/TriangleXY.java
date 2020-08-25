@@ -9,6 +9,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
       private PointXY vertex1;
       private PointXY vertex2;
       private PointXY vertex3;
+      private PointXY centroid;
       private AngleXY vertexAngle1;
       private AngleXY vertexAngle2;
       private AngleXY vertexAngle3;
@@ -23,25 +24,14 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
       public void unhighlight(){}
       public void setColor( Color color ){}
       public void create(){
-          vertex1 = new PointXY( 0.0, 5.0, plane );
-          vertex2 = new PointXY( 5.0, 0.0, plane );
-          vertex3 = new PointXY( -5.0, 0.0, plane );
+          vertex1 = createVertex( 0.0, 7.0 );
+          vertex2 = createVertex( 8.0, -4.0 );
+          vertex3 = createVertex( -8.0, -4.0 );
 
-          vertexAngle1 = new AngleXY( plane );
-          vertexAngle2 = new AngleXY( plane );
-          vertexAngle3 = new AngleXY( plane );
-
-          vertexAngle1.setPlaneCoordinates(  0.0, 5.0 );
-          vertexAngle2.setPlaneCoordinates(  5.0, 0.0 );
-          vertexAngle3.setPlaneCoordinates( -5.0, 0.0 );
-
-          vertex1.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
-          vertex2.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
-          vertex3.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
-
-          vertex1.setOnContextMenuRequested( new PointContextMenuEventHandler( vertex1 ) );
-          vertex2.setOnContextMenuRequested( new PointContextMenuEventHandler( vertex2 ) );
-          vertex3.setOnContextMenuRequested( new PointContextMenuEventHandler( vertex3 ) );
+          vertexAngle1 = createVertexAngle(  0.0, 5.0 );
+          vertexAngle2 = createVertexAngle(  5.0, 0.0 );
+          vertexAngle3 = createVertexAngle( -5.0, 0.0 );
+          centroid = createCentroid( vertex1, vertex2, vertex3 );
 
           vertex1.connect( vertex2 );
           vertex2.connect( vertex3 );
@@ -51,20 +41,39 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           vertex3.addCoordinatesListener( vertex2 );
           vertex1.addCoordinatesListener( vertex3 );
 
-          vertex1.addCoordinatesListener( this );
-          vertex2.addCoordinatesListener( this );
-          vertex3.addCoordinatesListener( this );
-
-
-          getChildren().add( vertex1 );
-          getChildren().add( vertex2 );
-          getChildren().add( vertex3 );
-
-          getChildren().add( vertexAngle1 );
-          getChildren().add( vertexAngle2 );
-          getChildren().add( vertexAngle3 );
-
           update();
+      }
+
+      private double computeArea( PointXY a, PointXY b, PointXY c ){
+          double A = a.getX() * ( b.getY() - c.getY() );
+          double B = b.getX() * ( c.getY() - a.getY() );
+          double C = c.getX() * ( a.getY() - b.getY() );
+          return Math.abs( ( A + B + C ) / 2.0 );
+      }
+
+      private PointXY createCentroid( PointXY a, PointXY b, PointXY c ){
+          double OX = ( a.getX() + b.getX()  + c.getX() ) / 3.0;
+          double OY = ( a.getY() + b.getY()  + c.getY() ) / 3.0;
+          PointXY centroid = new PointXY( OX, OY, plane );
+          centroid.setCoordinatesVisible( true );
+          getChildren().add( centroid );
+          return centroid;
+      }
+
+      public AngleXY createVertexAngle( double x, double y ){
+         AngleXY vertexAngle = new AngleXY( plane );
+         vertexAngle.setPlaneCoordinates(  0.0, 5.0 );
+         getChildren().add( vertexAngle );
+         return vertexAngle;
+      }
+
+      public PointXY createVertex( double x, double y ){
+          PointXY vertex = new PointXY( x, y, plane );
+          vertex.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
+          vertex.setOnContextMenuRequested( new PointContextMenuEventHandler( vertex ) );
+          vertex.addCoordinatesListener( this );
+          getChildren().add( vertex );
+          return vertex;
       }
 
       public void positionChanged( XYObject source, double x, double y ){
@@ -73,34 +82,34 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
 
 
       public void update(){
+          updateAngle( vertexAngle1, vertex1, vertex2, vertex3 );
+          updateAngle( vertexAngle2, vertex2, vertex3, vertex1 );
+          updateAngle( vertexAngle3, vertex3, vertex1, vertex2 );
+          updateCentroid( vertex1, vertex2, vertex3 );
+          updateArea();
+      }
+
+      private void updateArea(){
+          System.out.println( String.format( "Area = %2.5f", computeArea( vertex1, vertex2, vertex3 ) ) );
+      }
+
+      private void updateCentroid( PointXY a, PointXY b, PointXY c ){
+          double OX = ( a.getX() + b.getX()  + c.getX() ) / 3.0;
+          double OY = ( a.getY() + b.getY()  + c.getY() ) / 3.0;
+          centroid.setPlaneCoordinates( OX, OY );
+      }
+
+
+      private void updateAngle( AngleXY a, PointXY v1, PointXY v2, PointXY v3 ){
+          double degree = 0.0;
           double theta1 = 0.0;
           double theta2 = 0.0;
-          double theta3 = 0.0;
-          double degree1 = 0.0;
-          double degree2 = 0.0;
-          double degree3 = 0.0;
-
-
-          vertexAngle1.setPlaneCoordinates( vertex1.getX(), vertex1.getY() );
-          theta1 = direction( vertex1, vertex2 );
-          theta2 = direction( vertex1, vertex3 );
-          degree1 = plane.toDegree( theta2 - theta1 );
-          vertexAngle1.setStartAngle( plane.toDegree( theta1 ) );
-          setLength( vertexAngle1, theta1, theta2 );
-
-          vertexAngle2.setPlaneCoordinates( vertex2.getX(), vertex2.getY() );
-          theta1 = direction( vertex2, vertex3 );
-          theta2 = direction( vertex2, vertex1 );
-          degree2 = plane.toDegree( theta2 - theta1 );
-          vertexAngle2.setStartAngle( plane.toDegree( theta1 ) );
-          setLength( vertexAngle2, theta1, theta2 );
-
-          vertexAngle3.setPlaneCoordinates( vertex3.getX(), vertex3.getY() );
-          theta1 = direction( vertex3, vertex2 );
-          theta2 = direction( vertex3, vertex1 );
-          degree3 = plane.toDegree( theta2 - theta1 );
-          vertexAngle3.setStartAngle( plane.toDegree( theta1 ) );
-          setLength( vertexAngle3, theta1, theta2 );
+          a.setPlaneCoordinates( v1.getX(), v1.getY() );
+          theta1 = direction( v1, v2 );
+          theta2 = direction( v1, v3 );
+          degree = plane.toDegree( theta2 - theta1 );
+          a.setStartAngle( plane.toDegree( theta1 ) );
+          setLength( a, theta1, theta2 );
       }
 
       private void setLength( AngleXY vertexAngle, double theta1, double theta2 ){
