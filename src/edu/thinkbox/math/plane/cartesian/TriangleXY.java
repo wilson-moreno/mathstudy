@@ -55,13 +55,14 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           vertex2.addCoordinatesListener( this );
           vertex3.addCoordinatesListener( this );
 
+
           getChildren().add( vertex1 );
           getChildren().add( vertex2 );
           getChildren().add( vertex3 );
-
           getChildren().add( vertexAngle1 );
           getChildren().add( vertexAngle2 );
           getChildren().add( vertexAngle3 );
+
           update();
       }
 
@@ -83,27 +84,49 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           theta1 = direction( vertex1, vertex2 );
           theta2 = direction( vertex1, vertex3 );
           degree1 = plane.toDegree( theta2 - theta1 );
-          System.out.println( String.format("Angel 1 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle1.setStartAngle( plane.toDegree( theta1 ) );
+<<<<<<< HEAD
           vertexAngle1.setLength( degree1 );
+=======
+          setLength( vertexAngle1, theta1, theta2 );
+>>>>>>> 816a63b3d4b6c75f4e8163f42d26345d7a12fa36
 
           vertexAngle2.setCenter( vertex2.getX(), vertex2.getY() );
           theta1 = direction( vertex2, vertex3 );
           theta2 = direction( vertex2, vertex1 );
           degree2 = plane.toDegree( theta2 - theta1 );
-          System.out.println( String.format("Angel 2 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle2.setStartAngle( plane.toDegree( theta1 ) );
+<<<<<<< HEAD
           vertexAngle2.setLength( degree2 );
+=======
+          setLength( vertexAngle2, theta1, theta2 );
+>>>>>>> 816a63b3d4b6c75f4e8163f42d26345d7a12fa36
 
           vertexAngle3.setCenter( vertex3.getX(), vertex3.getY() );
           theta1 = direction( vertex3, vertex2 );
           theta2 = direction( vertex3, vertex1 );
           degree3 = plane.toDegree( theta2 - theta1 );
-          System.out.println( String.format("Angel 3 = %2.2f, Theta1 = %2.2f, Theta2 = %2.2f\n\n", plane.toDegree( theta2 - theta1 ), plane.toDegree( theta1 ), plane.toDegree( theta2 ) ) );
           vertexAngle3.setStartAngle( plane.toDegree( theta1 ) );
+<<<<<<< HEAD
           vertexAngle3.setLength( plane.toDegree( theta2 - theta1 ) );
-
+=======
+          setLength( vertexAngle3, theta1, theta2 );
       }
+
+      private void setLength( AngleXY vertexAngle, double theta1, double theta2 ){
+          double angle = plane.toDegree( theta2 - theta1 );
+          double sign = Math.signum( angle );
+>>>>>>> 816a63b3d4b6c75f4e8163f42d26345d7a12fa36
+
+          if( Math.abs( angle ) > 180.0 ){
+              angle = 360 - Math.abs( angle );
+              if( theta2 > theta1 ) angle *= -1;
+          }
+
+          vertexAngle.setLength( angle );
+      }
+
+
 
       private double acuteAngle( double degree ){
           double sign = Math.signum( degree );

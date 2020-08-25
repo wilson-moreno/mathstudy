@@ -88,6 +88,8 @@ public abstract class XYObject extends Group{
        public Color getHighlightColor(){ return highlightColor; }
        protected double getX(){ return coordinates.getEntry( 0, 0 ); }
        protected double getY(){ return coordinates.getEntry( 1, 0 ); }
+       protected double getSceneX(){ return plane.toSceneX( getX() ); }
+       protected double getSceneY(){ return plane.toSceneY( getY() ); }
        public XYObject transform( Matrix transformation ){
            coordinates.copyEntries( transformation.multiply( coordinates ) );
            return this;
