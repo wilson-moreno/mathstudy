@@ -59,6 +59,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           getChildren().add( vertex1 );
           getChildren().add( vertex2 );
           getChildren().add( vertex3 );
+
           getChildren().add( vertexAngle1 );
           getChildren().add( vertexAngle2 );
           getChildren().add( vertexAngle3 );

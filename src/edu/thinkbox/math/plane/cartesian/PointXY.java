@@ -1,5 +1,6 @@
 package edu.thinkbox.math.plane.cartesian;
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -9,7 +10,7 @@ import java.util.Map;
 public class PointXY extends XYObject implements CoordinatesListener {
        private Circle point;
        private Map< PointXY, Line > vertices;
-
+       private Group edges;
 
        public PointXY( XYPlane plane ){
            super( plane );
@@ -42,6 +43,8 @@ public class PointXY extends XYObject implements CoordinatesListener {
            point = new Circle( plane.toSceneX( getX() ),
                                plane.toSceneY( getY() ),
                                getSize(), getColor() );
+           edges = new Group();
+           getChildren().add( edges );
            getChildren().add( point );
        }
 
@@ -50,7 +53,7 @@ public class PointXY extends XYObject implements CoordinatesListener {
                                  plane.toSceneY( getY() ),
                                  plane.toSceneX( point.getX() ),
                                  plane.toSceneY( point.getY() ) );
-           getChildren().add( edge );
+           edges.getChildren().add( edge );
            vertices.put( point, edge );
        }
 
