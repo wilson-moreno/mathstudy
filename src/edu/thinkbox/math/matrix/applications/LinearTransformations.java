@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import edu.thinkbox.math.matrix.Transformation;
 
 public class LinearTransformations extends Application{
-        private static final int WIDTH = 800;
+        private static final int WIDTH = 600;
         private static final int HEIGHT = 600;
         private static final int zoomFactor = 20;
         private XYPlane cartesianPlane;
@@ -21,8 +21,6 @@ public class LinearTransformations extends Application{
         @Override
         public void start( Stage primaryStage ){
             primaryStage.setTitle( "Linear Transformations" );
-            //primaryStage.setMaximized( true );
-            //primaryStage.setFullScreen( true );
             Group root = new Group();
             root.getChildren().add( cartesianPlane );
             primaryStage.setScene( new Scene( root, WIDTH, HEIGHT ) );
