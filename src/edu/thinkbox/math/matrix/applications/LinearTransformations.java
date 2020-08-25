@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import edu.thinkbox.math.matrix.Transformation;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import edu.thinkbox.controls.CustomOutputStream;
 import java.io.PrintStream;
 
@@ -31,9 +32,9 @@ public class LinearTransformations extends Application{
         @Override
         public void start( Stage primaryStage ){
             primaryStage.setTitle( "Linear Transformations" );
-            VBox root = new VBox( 2 );
-            root.getChildren().addAll( cartesianPlane, output );
-            primaryStage.setScene( new Scene( root, WIDTH, HEIGHT + 50 ) );
+            HBox root = new HBox( 2 );
+            root.getChildren().addAll( cartesianPlane );
+            primaryStage.setScene( new Scene( root, WIDTH, HEIGHT ) );
             primaryStage.show();
         }
 

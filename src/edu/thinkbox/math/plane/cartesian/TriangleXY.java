@@ -31,6 +31,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           vertexAngle1 = createVertexAngle(  0.0, 5.0 );
           vertexAngle2 = createVertexAngle(  5.0, 0.0 );
           vertexAngle3 = createVertexAngle( -5.0, 0.0 );
+
           centroid = createCentroid( vertex1, vertex2, vertex3 );
 
           vertex1.connect( vertex2 );
@@ -55,7 +56,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           double OX = ( a.getX() + b.getX()  + c.getX() ) / 3.0;
           double OY = ( a.getY() + b.getY()  + c.getY() ) / 3.0;
           PointXY centroid = new PointXY( OX, OY, plane );
-          centroid.setCoordinatesVisible( true );
+          centroid.setVisible( false );
           getChildren().add( centroid );
           return centroid;
       }
@@ -89,9 +90,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           updateArea();
       }
 
-      private void updateArea(){
-          System.out.println( String.format( "Area = %2.5f", computeArea( vertex1, vertex2, vertex3 ) ) );
-      }
+      private void updateArea(){}
 
       private void updateCentroid( PointXY a, PointXY b, PointXY c ){
           double OX = ( a.getX() + b.getX()  + c.getX() ) / 3.0;
