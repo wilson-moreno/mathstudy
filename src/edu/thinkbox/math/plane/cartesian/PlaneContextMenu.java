@@ -30,6 +30,8 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
       private CheckMenuItem showMouseCoordinatesMenu = new CheckMenuItem( "Show Mouse Coordinates" );
       private SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
       private SeparatorMenuItem separatorMenuItem2 = new SeparatorMenuItem();
+      private SeparatorMenuItem separatorMenuItem3 = new SeparatorMenuItem();
+      private CheckMenuItem showObjectsInformationMenu = new CheckMenuItem( "Show Objects Information" );
       private XYPlane plane;
       private double lastSceneX;
       private double lastSceneY;
@@ -69,7 +71,8 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
                               showAxesMenu,
                               showTicksMenu,
                               showQuadrantsMenu,
-                              showMouseCoordinatesMenu );
+                              showMouseCoordinatesMenu,
+                              separatorMenuItem3 );
       }
 
 

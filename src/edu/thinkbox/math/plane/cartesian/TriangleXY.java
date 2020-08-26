@@ -53,8 +53,8 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           incenter = createIncenter( vertex1, vertex2, vertex3 );
           circumcenter = createCircumcenter( vertex1, vertex2, vertex3 );
 
-          centroid.setColor( Color.ORANGE );
-          incenter.setColor( Color.YELLOW );
+          centroid.setColor( Color.YELLOW );
+          incenter.setColor( Color.ORANGE );
           circumcenter.setColor( Color.PURPLE );
 
           centroid.setCoordinatesVisible( true );
@@ -65,11 +65,10 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           vertex2.setColor( XYObject.GREEN );
           vertex3.setColor( XYObject.GREEN );
 
-
           inscribedCircle = createInscribedCircle( incenter );
           circumscribedCircle = createCircumscribedCircle( circumcenter );
 
-          inscribedCircle.setStroke( Color.YELLOW );
+          inscribedCircle.setStroke( Color.ORANGE );
           circumscribedCircle.setStroke( Color.PURPLE );
 
           update();

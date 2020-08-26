@@ -1,4 +1,4 @@
-package edu.thinkbox.controls;
+package edu.thinkbox.io;
 
 import java.io.IOException;
 import java.io.OutputStream;

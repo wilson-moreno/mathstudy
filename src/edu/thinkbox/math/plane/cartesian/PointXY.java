@@ -4,13 +4,15 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PointXY extends XYObject implements CoordinatesListener {
-       private Circle point;
        private Map< PointXY, Line > vertices;
+       private Circle point;
        private Group edges;
+       private Group weights;
 
        public PointXY( XYPlane plane ){
            super( plane );
