@@ -4,8 +4,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.scene.shape.Line;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
-public class TriangleXY extends XYObject implements CoordinatesListener {
+
+public class TriangleXY extends XYObject implements CoordinatesListener, EventHandler< MouseEvent > {
       private PointXY vertex1;
       private PointXY vertex2;
       private PointXY vertex3;
@@ -45,6 +48,30 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
           update();
       }
 
+
+      public void handle( MouseEvent e ){
+          if( e.getEventType() == MouseEvent.MOUSE_RELEASED ){
+            printObjectInformation();
+          }
+      }
+
+      private void printObjectInformation(){
+          System.out.println( String.format( "Triangle: {" +
+                                             "\n\t Vertex 1 : { x = %2.2f, y = %2.2f }" +
+                                             "\n\t Vertex 2 : { x = %2.2f, y = %2.2f }" +
+                                             "\n\t Vertex 3 : { x = %2.2f, y = %2.2f }" +
+                                             "\n\t Angle 1 : { theta = %2.2f }" +
+                                             "\n\t Angle 2 : { theta = %2.2f }" +
+                                             "\n\t Angle 3 : { theta = %2.2f }" +
+                                             "\n}\n",
+                                             vertex1.getX(), vertex1.getY(),
+                                             vertex2.getX(), vertex2.getY(),
+                                             vertex3.getX(), vertex3.getY(),
+                                             Math.abs( vertexAngle1.getLength() ),
+                                             Math.abs( vertexAngle2.getLength() ),
+                                             Math.abs( vertexAngle3.getLength() ) ) );
+      }
+
       private double computeArea( PointXY a, PointXY b, PointXY c ){
           double A = a.getX() * ( b.getY() - c.getY() );
           double B = b.getX() * ( c.getY() - a.getY() );
@@ -71,6 +98,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener {
       public PointXY createVertex( double x, double y ){
           PointXY vertex = new PointXY( x, y, plane );
           vertex.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
+          vertex.addEventFilter( MouseEvent.MOUSE_RELEASED, this );
           vertex.setOnContextMenuRequested( new PointContextMenuEventHandler( vertex ) );
           vertex.addCoordinatesListener( this );
           getChildren().add( vertex );
