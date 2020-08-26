@@ -118,6 +118,9 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
         public double toCoordinateX( double screenX ){ return ( screenX - getCenterX() ) / moduleSize; }
         public double toCoordinateY( double screenY ){ return ( getCenterY() - screenY ) / moduleSize; }
         public void setColor( Color color ){ plane.setFill( color ); }
+        public double computeDistance( PointXY p1, PointXY p2 ){
+            return Math.sqrt( Math.pow( p2.getX() - p1.getX(), 2 ) + Math.pow( p2.getY() - p1.getY(), 2 ) );
+        }
         public double getQuadrant( Matrix coordinates ){
               double x = coordinates.getEntry( 0, 0 );
               double y = coordinates.getEntry( 1, 0 );
@@ -190,7 +193,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
             }
         }
 
-        
+
 
         public double toDegree( double radians ){
             return radians * ( 180.0 / Math.PI );
