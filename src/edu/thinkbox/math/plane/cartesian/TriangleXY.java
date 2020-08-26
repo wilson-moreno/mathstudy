@@ -53,12 +53,75 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           incenter = createIncenter( vertex1, vertex2, vertex3 );
           circumcenter = createCircumcenter( vertex1, vertex2, vertex3 );
 
+          centroid.setColor( Color.ORANGE );
+          incenter.setColor( Color.YELLOW );
+          circumcenter.setColor( Color.PURPLE );
+
+          centroid.setCoordinatesVisible( true );
+          incenter.setCoordinatesVisible( true );
+          circumcenter.setCoordinatesVisible( true );
+
+          vertex1.setColor( XYObject.GREEN );
+          vertex2.setColor( XYObject.GREEN );
+          vertex3.setColor( XYObject.GREEN );
+
+
           inscribedCircle = createInscribedCircle( incenter );
           circumscribedCircle = createCircumscribedCircle( circumcenter );
+
+          inscribedCircle.setStroke( Color.YELLOW );
+          circumscribedCircle.setStroke( Color.PURPLE );
 
           update();
       }
 
+
+      public void setIncenterVisible( boolean visible ){
+          incenter.setVisible( visible );
+      }
+
+      public void setCircumcenterVisible( boolean visible ){
+          circumcenter.setVisible( visible );
+      }
+
+      public void setCentroidVisible( boolean visible ){
+          centroid.setVisible( visible );
+      }
+
+      public void setAnglesVisible( boolean visible ){
+          vertexAngle1.setVisible( visible );
+          vertexAngle2.setVisible( visible );
+          vertexAngle3.setVisible( visible );
+      }
+
+      public void setInscribedCircleVisible( boolean visible ){
+          inscribedCircle.setVisible( visible );
+      }
+
+      public void setCircumscribedCircleVisible( boolean visible ){
+          circumscribedCircle.setVisible( visible );
+      }
+
+      @Override
+      public void setCoordinatesVisible( boolean visible ){
+          vertex1.setCoordinatesVisible( visible );
+          vertex2.setCoordinatesVisible( visible );
+          vertex3.setCoordinatesVisible( visible );
+      }
+
+      @Override
+      public void setRiseRunVisible( boolean visible ){
+          vertex1.setRiseRunVisible( visible );
+          vertex2.setRiseRunVisible( visible );
+          vertex3.setRiseRunVisible( visible );
+      }
+
+      @Override
+      public void setWholeNumberCoordinates( boolean wholeNumbers ){
+          vertex1.setWholeNumberCoordinates( wholeNumbers );
+          vertex2.setWholeNumberCoordinates( wholeNumbers );
+          vertex3.setWholeNumberCoordinates( wholeNumbers );
+      }
 
       public void handle( MouseEvent e ){
           if( e.getEventType() == MouseEvent.MOUSE_RELEASED ){
@@ -98,6 +161,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           inscribedCircle.setFill( null );
           inscribedCircle.setStroke( GREEN );
           inscribedCircle.setStrokeWidth( getSize() );
+          inscribedCircle.setVisible( false );
           getChildren().add( inscribedCircle );
           return inscribedCircle;
       }
@@ -109,6 +173,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           circumscribedCircle.setFill( null );
           circumscribedCircle.setStroke( GREEN );
           circumscribedCircle.setStrokeWidth( getSize() );
+          circumscribedCircle.setVisible( false );
           getChildren().add( circumscribedCircle );
           return circumscribedCircle;
       }
@@ -218,6 +283,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
       public AngleXY createVertexAngle( double x, double y ){
          AngleXY vertexAngle = new AngleXY( plane );
          vertexAngle.setPlaneCoordinates(  0.0, 5.0 );
+         vertexAngle.setVisible( false );
          getChildren().add( vertexAngle );
          return vertexAngle;
       }
@@ -226,7 +292,6 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           PointXY vertex = new PointXY( x, y, plane );
           vertex.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
           vertex.addEventFilter( MouseEvent.MOUSE_RELEASED, this );
-          vertex.setOnContextMenuRequested( new PointContextMenuEventHandler( vertex ) );
           vertex.addCoordinatesListener( this );
           getChildren().add( vertex );
           return vertex;

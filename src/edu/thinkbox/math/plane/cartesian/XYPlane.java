@@ -65,6 +65,7 @@ public class XYPlane extends Group implements EventHandler< ContextMenuEvent >{
 
         public TriangleXY addTriangle( double x, double y ){
             TriangleXY triangle = new TriangleXY( this );
+            triangle.setOnContextMenuRequested( new TriangleContextMenuEventHandler( triangle ) );
             triangles.getChildren().add( triangle );
             return triangle;
         }

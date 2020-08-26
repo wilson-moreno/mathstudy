@@ -15,7 +15,7 @@ public class PointXY extends XYObject implements CoordinatesListener {
        public PointXY( XYPlane plane ){
            super( plane );
            setSize( 5.0 );
-           setColor( BLUE );
+           super.setColor( BLUE );
            setHighlightSize( 7.0 );
            create();
        }
@@ -27,15 +27,19 @@ public class PointXY extends XYObject implements CoordinatesListener {
 
        public void highlight(){
            point.setFill( getHighlightColor() );
-           point.setRadius(getHighlightSize() );
+           point.setRadius( getHighlightSize() );
        }
        public void unhighlight(){
            point.setFill( getColor() );
            point.setRadius( getSize() );
        }
 
+       @Override
        public void setColor( Color color ){
            super.setColor( color );
+           point.setFill( getColor() );
+           for( Line edge : vertices.values() )
+              edge.setStroke( getColor() );
        }
 
        private void create(){
@@ -53,6 +57,7 @@ public class PointXY extends XYObject implements CoordinatesListener {
                                  plane.toSceneY( getY() ),
                                  plane.toSceneX( point.getX() ),
                                  plane.toSceneY( point.getY() ) );
+           edge.setStrokeWidth( 2.0 );
            edges.getChildren().add( edge );
            vertices.put( point, edge );
        }

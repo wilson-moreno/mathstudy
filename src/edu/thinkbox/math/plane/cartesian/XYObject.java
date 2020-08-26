@@ -28,8 +28,8 @@ public abstract class XYObject extends Group{
           this.riseRun = new RiseRunXY( plane );
           this.coordinatesXY = new CoordinatesXY( plane );
           this.listeners = new ArrayList< CoordinatesListener >();
-          setRiseRunVisible( false );
-          setCoordinatesVisible( false );
+          this.riseRun.setVisible( false );
+          this.coordinatesXY.setVisible( false );
           getChildren().add( riseRun );
           getChildren().add( coordinatesXY );
        }
