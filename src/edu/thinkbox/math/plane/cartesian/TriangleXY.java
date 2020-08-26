@@ -7,7 +7,8 @@ import javafx.scene.shape.Line;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.scene.shape.Circle;
-
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 
 public class TriangleXY extends XYObject implements CoordinatesListener, EventHandler< MouseEvent > {
       private PointXY vertex1;
@@ -15,10 +16,12 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
       private PointXY vertex3;
       private PointXY centroid;
       private PointXY incenter;
+      private PointXY circumcenter;
       private AngleXY vertexAngle1;
       private AngleXY vertexAngle2;
       private AngleXY vertexAngle3;
       private Circle  inscribedCircle;
+      private Circle  circumscribedCircle;
 
 
       public TriangleXY( XYPlane plane ){
@@ -48,6 +51,10 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
 
           centroid = createCentroid( vertex1, vertex2, vertex3 );
           incenter = createIncenter( vertex1, vertex2, vertex3 );
+          circumcenter = createCircumcenter( vertex1, vertex2, vertex3 );
+
+          inscribedCircle = createInscribedCircle( incenter );
+          circumscribedCircle = createCircumscribedCircle( circumcenter );
 
           update();
       }
@@ -70,6 +77,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
                                              "\n\t Area : { %2.2f }" +
                                              "\n\t Centroid : { x = %2.2f, y = %2.2f }" +
                                              "\n\t Incenter : { x = %2.2f, y = %2.2f }" +
+                                             "\n\t Circumcenter : { x = %2.2f, y = %2.2f }" +
                                              "\n}\n",
                                              vertex1.getX(), vertex1.getY(),
                                              vertex2.getX(), vertex2.getY(),
@@ -78,7 +86,70 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
                                              Math.abs( vertexAngle2.getLength() ),
                                              Math.abs( vertexAngle3.getLength() ),
                                              getArea(), centroid.getX(), centroid.getY(),
-                                             incenter.getX(), incenter.getY() ) );
+                                             incenter.getX(), incenter.getY(),
+                                             circumcenter.getX(), circumcenter.getY() ) );
+      }
+
+
+      private Circle createInscribedCircle( PointXY incenter ){
+          Circle inscribedCircle = new Circle();
+          inscribedCircle.setCenterX( incenter.getSceneX() );
+          inscribedCircle.setCenterY( incenter.getSceneY() );
+          inscribedCircle.setFill( null );
+          inscribedCircle.setStroke( GREEN );
+          inscribedCircle.setStrokeWidth( getSize() );
+          getChildren().add( inscribedCircle );
+          return inscribedCircle;
+      }
+
+      private Circle createCircumscribedCircle( PointXY circumcenter ){
+          Circle circumscribedCircle = new Circle();
+          circumscribedCircle.setCenterX( circumcenter.getSceneX() );
+          circumscribedCircle.setCenterY( circumcenter.getSceneY() );
+          circumscribedCircle.setFill( null );
+          circumscribedCircle.setStroke( GREEN );
+          circumscribedCircle.setStrokeWidth( getSize() );
+          getChildren().add( circumscribedCircle );
+          return circumscribedCircle;
+      }
+
+
+      private void updateInscribedCircle( PointXY incenter, PointXY axy , PointXY bxy, PointXY cxy ){
+          double radius = inscribedCircleRadius( axy , bxy, cxy );
+          inscribedCircle.setCenterX( incenter.getSceneX() );
+          inscribedCircle.setCenterY( incenter.getSceneY() );
+          inscribedCircle.setRadius( radius * plane.getModuleSize() );
+      }
+
+      private void updateCircumscribedCircle( PointXY circumcenter, PointXY axy , PointXY bxy, PointXY cxy ){
+          double radius = circumscribedCircleRadius( axy , bxy, cxy );
+          circumscribedCircle.setCenterX( circumcenter.getSceneX() );
+          circumscribedCircle.setCenterY( circumcenter.getSceneY() );
+          circumscribedCircle.setRadius( radius * plane.getModuleSize() );
+      }
+
+
+      private PointXY createCircumcenter( PointXY axy , PointXY bxy, PointXY cxy ){
+          double A = plane.toRadians( vertexAngle1.getLength() );
+          double B = plane.toRadians( vertexAngle2.getLength() );
+          double C = plane.toRadians( vertexAngle3.getLength() );
+          double denominator = ( Math.sin( 2 * A ) + Math.sin( 2 * B ) + Math.sin( 2 * C ) );
+          double cx = ( axy.getX() * Math.sin( 2 * A ) + bxy.getX() * Math.sin( 2 * B ) + cxy.getX() * Math.sin( 2 * C ) ) / denominator;
+          double cy = ( axy.getY() * Math.sin( 2 * A ) + bxy.getY() * Math.sin( 2 * B ) + cxy.getY() * Math.sin( 2 * C ) ) / denominator;
+          PointXY circumcenter = new PointXY( cx, cy, plane );
+          circumcenter.setVisible( false );
+          getChildren().add( circumcenter );
+          return circumcenter;
+      }
+
+      private void updateCircumcenter( PointXY axy , PointXY bxy, PointXY cxy ){
+          double A = plane.toRadians( vertexAngle1.getLength() );
+          double B = plane.toRadians( vertexAngle2.getLength() );
+          double C = plane.toRadians( vertexAngle3.getLength() );
+          double denominator = ( Math.sin( 2 * A ) + Math.sin( 2 * B ) + Math.sin( 2 * C ) );
+          double cx = ( axy.getX() * Math.sin( 2 * A ) + bxy.getX() * Math.sin( 2 * B ) + cxy.getX() * Math.sin( 2 * C ) ) / denominator;
+          double cy = ( axy.getY() * Math.sin( 2 * A ) + bxy.getY() * Math.sin( 2 * B ) + cxy.getY() * Math.sin( 2 * C ) ) / denominator;
+          circumcenter.setPlaneCoordinates( cx, cy );
       }
 
 
@@ -89,12 +160,8 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           double ix = ( ( axy.getX() * a ) + ( bxy.getX() * b ) + ( cxy.getX() * c ) ) / ( a + b + c);
           double iy = ( ( axy.getY() * a ) + ( bxy.getY() * b ) + ( cxy.getY() * c ) ) / ( a + b + c);
           PointXY incenter = new PointXY( ix, iy, plane );
-          inscribedCircle = new Circle( plane.toSceneX( ix ),
-                                        plane.toSceneY( iy ),
-                                        plane.getModuleSize() * incenterRadius( axy, bxy, cxy ),
-                                        getColor() );
+          incenter.setVisible( false );
           getChildren().add( incenter );
-          getChildren().add( inscribedCircle );
           return incenter;
       }
 
@@ -105,18 +172,25 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           double ix = ( ( axy.getX() * a ) + ( bxy.getX() * b ) + ( cxy.getX() * c ) ) / ( a + b + c);
           double iy = ( ( axy.getY() * a ) + ( bxy.getY() * b ) + ( cxy.getY() * c ) ) / ( a + b + c);
           incenter.setPlaneCoordinates( ix, iy );
-          inscribedCircle.setCenterX( plane.toSceneX( ix ) );
-          inscribedCircle.setCenterX( plane.toSceneY( iy ) );
-          inscribedCircle.setRadius( plane.getModuleSize() * incenterRadius( axy, bxy, cxy ) );
       }
 
-      private double incenterRadius( PointXY axy , PointXY bxy, PointXY cxy ){
+      private double circumscribedCircleRadius( PointXY axy , PointXY bxy, PointXY cxy ){
           double a = plane.computeDistance( bxy, cxy );
           double b = plane.computeDistance( axy, cxy );
           double c = plane.computeDistance( axy, bxy );
           double s = ( a + b + c) / 2.0;
-          double radius = ( s - a ) * Math.tan( plane.toRadians( vertexAngle1.getLength() ) / 2.0 );
-          System.out.println( vertexAngle1.getLength() );
+          double numerator = a * b * c;
+          double denominator = 4.0 * Math.sqrt( s * ( s - a ) * ( s - b ) * ( s - c ) );
+          return numerator / denominator;
+      }
+
+      private double inscribedCircleRadius( PointXY axy , PointXY bxy, PointXY cxy ){
+          double a = plane.computeDistance( bxy, cxy );
+          double b = plane.computeDistance( axy, cxy );
+          double c = plane.computeDistance( axy, bxy );
+          double s = ( a + b + c) / 2.0;
+          double theta = plane.toRadians( Math.abs( vertexAngle1.getLength() ) / 2.0 );
+          double radius = ( s - a ) * Math.tan( theta );
           return radius;
       }
 
@@ -169,6 +243,9 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           updateAngle( vertexAngle3, vertex3, vertex1, vertex2 );
           updateCentroid( vertex1, vertex2, vertex3 );
           updateIncenter( vertex1, vertex2, vertex3 );
+          updateCircumcenter( vertex1, vertex2, vertex3 );
+          updateInscribedCircle( incenter, vertex1, vertex2, vertex3 );
+          updateCircumscribedCircle( circumcenter, vertex1, vertex2, vertex3 );
           updateArea();
       }
 
