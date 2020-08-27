@@ -16,7 +16,7 @@ public class MouseOverArrowHeadEventHandler implements EventHandler< MouseEvent 
 
         if( e.getEventType() == MouseEvent.MOUSE_DRAGGED ){
             arrowHead.highlight();
-            arrowHead.setSceneCoordinates( e.getSceneX(), e.getSceneY() );
+            arrowHead.setSceneCoordinates( e.getX(), e.getY() );
         } else if( e.getEventType() == MouseEvent.MOUSE_RELEASED ){
             arrowHead.unhighlight();
         } else {

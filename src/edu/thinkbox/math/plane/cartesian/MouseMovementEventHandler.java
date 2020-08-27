@@ -23,6 +23,7 @@ public class MouseMovementEventHandler implements EventHandler< MouseEvent >{
                                plane.toCoordinateX( e.getSceneX() ),
                                plane.toCoordinateY( e.getSceneY() ) ) );
           coordinates.setVisible( true );
+          //System.out.println( String.format( "Scene = [ %2.2f %2.2f ], [ %2.2f %2.2f ]", e.getSceneX(), e.getSceneY(), e.getX(), e.getY() ) );
         } else {
           coordinates.setVisible( false );
         }

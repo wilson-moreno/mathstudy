@@ -16,7 +16,7 @@ public class MouseOverVectorEventHandler implements EventHandler< MouseEvent >{
 
         if( e.getEventType() == MouseEvent.MOUSE_DRAGGED ){
             vector.highlight();
-            vector.setSceneCoordinates( e.getSceneX(), e.getSceneY() );
+            vector.setSceneCoordinates( e.getX(), e.getY() );
         } else if( e.getEventType() == MouseEvent.MOUSE_RELEASED ){
             vector.unhighlight();
         } else if( e.getEventType() == MouseEvent.MOUSE_CLICKED ) {

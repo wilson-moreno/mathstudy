@@ -16,7 +16,7 @@ public class MouseOverPointEventHandler implements EventHandler< MouseEvent >{
 
         if( e.getEventType() == MouseEvent.MOUSE_DRAGGED ){
             point.highlight();
-            point.setSceneCoordinates( e.getSceneX(), e.getSceneY() );
+            point.setSceneCoordinates( e.getX(), e.getY() );
         } else if( e.getEventType() == MouseEvent.MOUSE_RELEASED ){
             point.unhighlight();
         } else {
