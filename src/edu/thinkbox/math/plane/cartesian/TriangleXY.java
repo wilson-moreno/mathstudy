@@ -23,7 +23,6 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
       private Circle  inscribedCircle;
       private Circle  circumscribedCircle;
 
-
       public TriangleXY( XYPlane plane ){
           super( plane );
           create();
@@ -128,6 +127,24 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           }
       }
 
+      private double sineLaw( PointXY axy, PointXY bxy, PointXY cxy ){
+          double a = plane.computeDistance( bxy, cxy );
+          double A = Math.abs( computeAngle( axy, bxy, cxy ) );
+          return a / Math.sin( A );
+      }
+
+      private double cosineLaw( PointXY axy, PointXY bxy, PointXY cxy ){
+          double a = plane.computeDistance( bxy, cxy );
+          double b = plane.computeDistance( axy, cxy );
+          double c = plane.computeDistance( axy, bxy );
+          double A = Math.abs( computeAngle( axy, bxy, cxy ) );
+          double a2 = Math.pow( a, 2 );
+          double b2 = Math.pow( b, 2 );
+          double c2 = Math.pow( c, 2 );
+          double bc2 = 2 * b * c;
+          return ( b2 + c2 ) - ( bc2 * Math.cos( A ) );
+      }
+
       private void printObjectInformation(){
           System.out.println( String.format( "Triangle: {" +
                                              "\n\t Vertex 1 : { x = %2.2f, y = %2.2f }" +
@@ -140,6 +157,16 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
                                              "\n\t Centroid : { x = %2.2f, y = %2.2f }" +
                                              "\n\t Incenter : { x = %2.2f, y = %2.2f }" +
                                              "\n\t Circumcenter : { x = %2.2f, y = %2.2f }" +
+                                             "\n\t Sine Law : {" +
+                                             "\n\t\ta / sin A : { %2.2f }" +
+                                             "\n\t\tb / sin B : { %2.2f }" +
+                                             "\n\t\tc / sin C : { %2.2f }" +
+                                             "\n\t }" +
+                                             "\n\t Cosine Law : {" +
+                                             "\n\t\ta ^ 2 : { %2.2f }" +
+                                             "\n\t\tb ^ 2 : { %2.2f }" +
+                                             "\n\t\tc ^ 2 : { %2.2f }" +
+                                             "\n\t }" +
                                              "\n}\n",
                                              vertex1.getX(), vertex1.getY(),
                                              vertex2.getX(), vertex2.getY(),
@@ -149,7 +176,13 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
                                              Math.abs( vertexAngle3.getLength() ),
                                              getArea(), centroid.getX(), centroid.getY(),
                                              incenter.getX(), incenter.getY(),
-                                             circumcenter.getX(), circumcenter.getY() ) );
+                                             circumcenter.getX(), circumcenter.getY(),
+                                             sineLaw( vertex1, vertex2, vertex3 ),
+                                             sineLaw( vertex2, vertex1, vertex3 ),
+                                             sineLaw( vertex3, vertex1, vertex2 ),
+                                             cosineLaw( vertex1, vertex2, vertex3 ),
+                                             cosineLaw( vertex2, vertex1, vertex3 ),
+                                             cosineLaw( vertex3, vertex1, vertex2 ) ) );
       }
 
 
@@ -332,6 +365,19 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           degree = plane.toDegree( theta2 - theta1 );
           a.setStartAngle( plane.toDegree( theta1 ) );
           setLength( a, theta1, theta2 );
+      }
+
+      private double  computeAngle( PointXY v1, PointXY v2, PointXY v3 ){
+         double theta1 = direction( v1, v2 );
+         double theta2 = direction( v1, v3 );
+         double radians = theta2 - theta1;
+         double sign = Math.signum( radians );
+         if( Math.abs( radians ) > Math.PI ){
+             radians = ( Math.PI * 2 ) - Math.abs( radians );
+             if( theta2 > theta1 ) radians *= -1;
+         }
+
+         return radians;
       }
 
       private void setLength( AngleXY vertexAngle, double theta1, double theta2 ){
