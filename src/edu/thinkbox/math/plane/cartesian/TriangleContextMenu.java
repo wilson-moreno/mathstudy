@@ -18,6 +18,7 @@ public class TriangleContextMenu extends ContextMenu{
       private CheckMenuItem showCoordinatesMenu = new CheckMenuItem( "Show Coordinates" );
       private CheckMenuItem showInscribedCircleMenu = new CheckMenuItem( "Show Inscribed Circle" );
       private CheckMenuItem showCircumscribedCircleMenu = new CheckMenuItem( "Show Circumscribed Circle" );
+      private CheckMenuItem showSideLengthsMenu = new CheckMenuItem( "Show Side Lengths" );
       private CheckMenuItem wholeNumberCoordinatesMenu = new CheckMenuItem( "Whole Numbers [ x, y ]" );
       private TriangleXY triangle;
 
@@ -32,6 +33,7 @@ public class TriangleContextMenu extends ContextMenu{
           showInscribedCircleMenu.setOnAction( new ShowInscribedCircleEvent() );
           showCircumscribedCircleMenu.setOnAction( new ShowCircumscribedCircleEvent() );
           wholeNumberCoordinatesMenu.setOnAction( new WholeNumberCoordinatesEvent() );
+          showSideLengthsMenu.setOnAction( new ShowSideLenghtsEvent() );
           getItems().addAll( showRiseRunMenu,
                              showAnglesMenu,
                              showCentroidMenu,
@@ -40,7 +42,15 @@ public class TriangleContextMenu extends ContextMenu{
                              showCoordinatesMenu,
                              showInscribedCircleMenu,
                              showCircumscribedCircleMenu,
+                             showSideLengthsMenu,
                              wholeNumberCoordinatesMenu );
+      }
+
+
+      private class ShowSideLenghtsEvent implements EventHandler< ActionEvent >{
+        public void handle( ActionEvent e ){
+              triangle.setSideLengthsVisible( showSideLengthsMenu.isSelected() );
+        }
       }
 
       private class WholeNumberCoordinatesEvent implements EventHandler< ActionEvent >{

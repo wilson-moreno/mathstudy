@@ -10,9 +10,10 @@ import java.util.Map;
 
 public class PointXY extends XYObject implements CoordinatesListener {
        private Map< PointXY, Line > vertices;
+       private Map< Line, Text > weights;
        private Circle point;
        private Group edges;
-       private Group weights;
+       private Group edgeWeights;
 
        public PointXY( XYPlane plane ){
            super( plane );
@@ -46,11 +47,14 @@ public class PointXY extends XYObject implements CoordinatesListener {
 
        private void create(){
            vertices = new HashMap< PointXY, Line >();
+           weights = new HashMap< Line, Text >();
            point = new Circle( plane.toSceneX( getX() ),
                                plane.toSceneY( getY() ),
                                getSize(), getColor() );
            edges = new Group();
+           edgeWeights = new Group();
            getChildren().add( edges );
+           getChildren().add( edgeWeights );
            getChildren().add( point );
        }
 
@@ -59,9 +63,15 @@ public class PointXY extends XYObject implements CoordinatesListener {
                                  plane.toSceneY( getY() ),
                                  plane.toSceneX( point.getX() ),
                                  plane.toSceneY( point.getY() ) );
+           double d = plane.computeDistance( this, point );
+           double tx = ( getSceneX() + point.getSceneX() ) / 2.0;
+           double ty = ( getSceneY() + point.getSceneY() ) / 2.0;
+           Text weight = new Text( tx, ty, String.format( "%2.2f", d ) );
            edge.setStrokeWidth( 2.0 );
            edges.getChildren().add( edge );
+           edgeWeights.getChildren().add( weight );
            vertices.put( point, edge );
+           weights.put( edge, weight );
        }
 
        public void setPlaneCoordinates( double x, double y ){
@@ -69,13 +79,25 @@ public class PointXY extends XYObject implements CoordinatesListener {
            update();
        }
 
+       public void setEdgeWeightsVisible( boolean visible ){
+           edgeWeights.setVisible( visible );
+       }
+
        private void update(){
            point.setCenterX( plane.toSceneX( getX() ) );
            point.setCenterY( plane.toSceneY( getY() ) );
 
-           for( Line edge : vertices.values() ){
-              edge.setStartX( plane.toSceneX( getX() ) );
-              edge.setStartY( plane.toSceneY( getY() ) );
+           for( PointXY vertex : vertices.keySet() ){
+              Line edge = (Line) vertices.get( vertex );
+              edge.setStartX( getSceneX() );
+              edge.setStartY( getSceneY() );
+              Text weight = (Text) weights.get( edge );
+              double d = plane.computeDistance( this, vertex );
+              double tx = ( getSceneX() + vertex.getSceneX() ) / 2.0;
+              double ty = ( getSceneY() + vertex.getSceneY() ) / 2.0;
+              weight.setX( tx );
+              weight.setY( ty );
+              weight.setText( String.format( "%2.2f", d ) );
            }
        }
 
@@ -83,5 +105,6 @@ public class PointXY extends XYObject implements CoordinatesListener {
             Line edge = (Line) vertices.get( source );
             edge.setEndX( plane.toSceneX( x ) );
             edge.setEndY( plane.toSceneY( y ) );
+            update();
        }
 }

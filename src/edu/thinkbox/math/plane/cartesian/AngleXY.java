@@ -45,7 +45,8 @@ public class AngleXY extends XYObject{
 
              angleValue.setX( getSceneX() + x - 20 );
              angleValue.setY( getSceneY() - y );
-             angleValue.setText( String.format( "%2.2f", Math.abs( angle.getLength() ) ) );
+             String format = getLabel() == "" ? "%2.2f" : getLabel() + " = %2.2f";
+             angleValue.setText( String.format( format, Math.abs( angle.getLength() ) ) );
         }
 
 

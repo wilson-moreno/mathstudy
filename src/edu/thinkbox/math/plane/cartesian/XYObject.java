@@ -20,6 +20,7 @@ public abstract class XYObject extends Group{
        private RiseRunXY riseRun;
        private CoordinatesXY coordinatesXY;
        private ArrayList< CoordinatesListener > listeners;
+       private String label;
 
        public XYObject( XYPlane plane ){
           this.plane = plane;
@@ -33,6 +34,12 @@ public abstract class XYObject extends Group{
           getChildren().add( riseRun );
           getChildren().add( coordinatesXY );
        }
+
+       public void setLabel( String label ){
+          this.label = label;
+       }
+
+       public String getLabel(){ return label; }
 
        public void addCoordinatesListener( CoordinatesListener listener ){
           listeners.add( listener );

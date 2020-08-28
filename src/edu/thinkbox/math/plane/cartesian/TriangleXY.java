@@ -36,9 +36,9 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           vertex2 = createVertex( 8.0, -4.0 );
           vertex3 = createVertex( -8.0, -4.0 );
 
-          vertexAngle1 = createVertexAngle(  0.0, 5.0 );
-          vertexAngle2 = createVertexAngle(  5.0, 0.0 );
-          vertexAngle3 = createVertexAngle( -5.0, 0.0 );
+          vertexAngle1 = createVertexAngle( "A", 0.0, 5.0 );
+          vertexAngle2 = createVertexAngle( "B", 5.0, 0.0 );
+          vertexAngle3 = createVertexAngle( "C",-5.0, 0.0 );
 
           vertex1.connect( vertex2 );
           vertex2.connect( vertex3 );
@@ -80,6 +80,12 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
 
       public void setCircumcenterVisible( boolean visible ){
           circumcenter.setVisible( visible );
+      }
+
+      public void setSideLengthsVisible( boolean visible ){
+          vertex1.setEdgeWeightsVisible( visible );
+          vertex2.setEdgeWeightsVisible( visible );
+          vertex3.setEdgeWeightsVisible( visible );
       }
 
       public void setCentroidVisible( boolean visible ){
@@ -150,9 +156,9 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
                                              "\n\t Vertex 1 : { x = %2.2f, y = %2.2f }" +
                                              "\n\t Vertex 2 : { x = %2.2f, y = %2.2f }" +
                                              "\n\t Vertex 3 : { x = %2.2f, y = %2.2f }" +
-                                             "\n\t Angle 1 : { theta = %2.2f }" +
-                                             "\n\t Angle 2 : { theta = %2.2f }" +
-                                             "\n\t Angle 3 : { theta = %2.2f }" +
+                                             "\n\t Angle %s : { theta = %2.2f }" +
+                                             "\n\t Angle %s : { theta = %2.2f }" +
+                                             "\n\t Angle %s : { theta = %2.2f }" +
                                              "\n\t Area : { %2.2f }" +
                                              "\n\t Centroid : { x = %2.2f, y = %2.2f }" +
                                              "\n\t Incenter : { x = %2.2f, y = %2.2f }" +
@@ -163,16 +169,19 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
                                              "\n\t\tc / sin C : { %2.2f }" +
                                              "\n\t }" +
                                              "\n\t Cosine Law : {" +
-                                             "\n\t\ta ^ 2 : { %2.2f }" +
-                                             "\n\t\tb ^ 2 : { %2.2f }" +
-                                             "\n\t\tc ^ 2 : { %2.2f }" +
+                                             "\n\t\ta^2 = b^2 + c^2 - 2bc cos A : { %2.2f }" +
+                                             "\n\t\tb^2 = a^2 + b^2 - 2ab cos B : { %2.2f }" +
+                                             "\n\t\tc^2 = b^2 + c^2 - 2bc cos C : { %2.2f }" +
                                              "\n\t }" +
                                              "\n}\n",
                                              vertex1.getX(), vertex1.getY(),
                                              vertex2.getX(), vertex2.getY(),
                                              vertex3.getX(), vertex3.getY(),
+                                             vertexAngle1.getLabel(),
                                              Math.abs( vertexAngle1.getLength() ),
+                                             vertexAngle2.getLabel(),
                                              Math.abs( vertexAngle2.getLength() ),
+                                             vertexAngle3.getLabel(),
                                              Math.abs( vertexAngle3.getLength() ),
                                              getArea(), centroid.getX(), centroid.getY(),
                                              incenter.getX(), incenter.getY(),
@@ -312,10 +321,11 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           return centroid;
       }
 
-      public AngleXY createVertexAngle( double x, double y ){
+      public AngleXY createVertexAngle( String label, double x, double y ){
          AngleXY vertexAngle = new AngleXY( plane );
          vertexAngle.setPlaneCoordinates(  0.0, 5.0 );
          vertexAngle.setVisible( false );
+         vertexAngle.setLabel( label );
          getChildren().add( vertexAngle );
          return vertexAngle;
       }
@@ -325,6 +335,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           vertex.addEventFilter( MouseEvent.ANY, new MouseOverPointEventHandler( plane ) );
           vertex.addEventFilter( MouseEvent.MOUSE_RELEASED, this );
           vertex.addCoordinatesListener( this );
+          vertex.setEdgeWeightsVisible( false );
           getChildren().add( vertex );
           return vertex;
       }
