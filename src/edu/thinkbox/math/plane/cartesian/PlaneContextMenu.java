@@ -71,8 +71,7 @@ public class PlaneContextMenu extends ContextMenu implements EventHandler< Mouse
                               showAxesMenu,
                               showTicksMenu,
                               showQuadrantsMenu,
-                              showMouseCoordinatesMenu,
-                              separatorMenuItem3 );
+                              showMouseCoordinatesMenu );
       }
 
 

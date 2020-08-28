@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Polygon;
 
 public class TriangleXY extends XYObject implements CoordinatesListener, EventHandler< MouseEvent > {
       private PointXY vertex1;
@@ -22,6 +23,7 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
       private AngleXY vertexAngle3;
       private Circle  inscribedCircle;
       private Circle  circumscribedCircle;
+      private Polygon area;
 
       public TriangleXY( XYPlane plane ){
           super( plane );
@@ -36,9 +38,11 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           vertex2 = createVertex( 8.0, -4.0 );
           vertex3 = createVertex( -8.0, -4.0 );
 
-          vertexAngle1 = createVertexAngle( "A", 0.0, 5.0 );
-          vertexAngle2 = createVertexAngle( "B", 5.0, 0.0 );
-          vertexAngle3 = createVertexAngle( "C",-5.0, 0.0 );
+          vertexAngle1 = createVertexAngle( "", 0.0, 5.0 );
+          vertexAngle2 = createVertexAngle( "", 5.0, 0.0 );
+          vertexAngle3 = createVertexAngle( "",-5.0, 0.0 );
+
+          area = createShadedArea( TEAL, vertex1, vertex2, vertex3 );
 
           vertex1.connect( vertex2 );
           vertex2.connect( vertex3 );
@@ -73,6 +77,10 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           update();
       }
 
+
+      public void setShadedAreaVisible( boolean visible ){
+          area.setVisible( visible );
+      }
 
       public void setIncenterVisible( boolean visible ){
           incenter.setVisible( visible );
@@ -152,13 +160,13 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
       }
 
       private void printObjectInformation(){
-          System.out.println( String.format( "Triangle: {" +
-                                             "\n\t Vertex 1 : { x = %2.2f, y = %2.2f }" +
-                                             "\n\t Vertex 2 : { x = %2.2f, y = %2.2f }" +
-                                             "\n\t Vertex 3 : { x = %2.2f, y = %2.2f }" +
-                                             "\n\t Angle %s : { theta = %2.2f }" +
-                                             "\n\t Angle %s : { theta = %2.2f }" +
-                                             "\n\t Angle %s : { theta = %2.2f }" +
+          System.out.println( String.format( "Triangle %s: {" +
+                                             "\n\t Vertex %s : { x = %2.2f, y = %2.2f }" +
+                                             "\n\t Vertex %s : { x = %2.2f, y = %2.2f }" +
+                                             "\n\t Vertex %s : { x = %2.2f, y = %2.2f }" +
+                                             "\n\t Angle %s : { %2.2f degree(s) }" +
+                                             "\n\t Angle %s : { %2.2f degree(s) }" +
+                                             "\n\t Angle %s : { %2.2f degree(s) }" +
                                              "\n\t Area : { %2.2f }" +
                                              "\n\t Centroid : { x = %2.2f, y = %2.2f }" +
                                              "\n\t Incenter : { x = %2.2f, y = %2.2f }" +
@@ -174,8 +182,14 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
                                              "\n\t\tc^2 = b^2 + c^2 - 2bc cos C : { %2.2f }" +
                                              "\n\t }" +
                                              "\n}\n",
+                                             vertexAngle1.getLabel() +
+                                             vertexAngle2.getLabel() +
+                                             vertexAngle3.getLabel(),
+                                             vertexAngle1.getLabel(),
                                              vertex1.getX(), vertex1.getY(),
+                                             vertexAngle2.getLabel(),
                                              vertex2.getX(), vertex2.getY(),
+                                             vertexAngle3.getLabel(),
                                              vertex3.getX(), vertex3.getY(),
                                              vertexAngle1.getLabel(),
                                              Math.abs( vertexAngle1.getLength() ),
@@ -205,6 +219,24 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           inscribedCircle.setVisible( false );
           getChildren().add( inscribedCircle );
           return inscribedCircle;
+      }
+
+      private Polygon createShadedArea( Color color, PointXY axy, PointXY bxy, PointXY cxy ){
+          Polygon area = new Polygon( new double[] {  axy.getSceneX(), axy.getSceneY(),
+                                                      bxy.getSceneX(), bxy.getSceneY(),
+                                                      cxy.getSceneX(), cxy.getSceneY() } );
+          area.setStroke( null );
+          area.setFill( color );
+          area.setVisible( false );
+          getChildren().add( area );
+          return area;
+      }
+
+      private void updateShadedArea( PointXY axy, PointXY bxy, PointXY cxy ){
+          area.getPoints().clear();
+          area.getPoints().addAll( new Double[] {  axy.getSceneX(), axy.getSceneY(),
+                                                   bxy.getSceneX(), bxy.getSceneY(),
+                                                   cxy.getSceneX(), cxy.getSceneY() } );
       }
 
       private Circle createCircumscribedCircle( PointXY circumcenter ){
@@ -354,10 +386,8 @@ public class TriangleXY extends XYObject implements CoordinatesListener, EventHa
           updateCircumcenter( vertex1, vertex2, vertex3 );
           updateInscribedCircle( incenter, vertex1, vertex2, vertex3 );
           updateCircumscribedCircle( circumcenter, vertex1, vertex2, vertex3 );
-          updateArea();
+          updateShadedArea( vertex1, vertex2, vertex3 );
       }
-
-      private void updateArea(){}
 
       private void updateCentroid( PointXY a, PointXY b, PointXY c ){
           double OX = ( a.getX() + b.getX()  + c.getX() ) / 3.0;

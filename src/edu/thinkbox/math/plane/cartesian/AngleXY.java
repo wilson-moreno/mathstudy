@@ -7,6 +7,7 @@ import javafx.scene.shape.ArcType;
 import edu.thinkbox.math.matrix.Matrix;
 
 public class AngleXY extends XYObject{
+        private static char LABEL = 'A';
         private Arc  angle;
         private Text angleValue;
         private Matrix previous = Matrix.createColumnMatrix( 2 );
@@ -70,6 +71,7 @@ public class AngleXY extends XYObject{
             angle.setFill( null );
             angle.setStroke( GREEN );
             angle.setStrokeWidth( getSize() );
+            setLabel( String.valueOf( LABEL++ ) );
             updateAngle();
             getChildren().add( angle );
             getChildren().add( angleValue );

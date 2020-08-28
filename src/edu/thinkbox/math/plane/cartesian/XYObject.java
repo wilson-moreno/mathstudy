@@ -9,6 +9,8 @@ public abstract class XYObject extends Group{
        protected static final Color RED = Color.web( "ff1a00" );
        protected static final Color GREEN = Color.web( "509237" );
        protected static final Color BLUE = Color.web( "002f55" );
+       protected static final Color LIME = Color.web( "rgba( 0, 255, 0, 0.4)" );
+       protected static final Color TEAL = Color.web( "rgba( 0, 128, 128, 0.4)" );
        private Color  color = GREEN;
        private Color  highlightColor = RED;
        private double size = 2.0;
@@ -31,12 +33,13 @@ public abstract class XYObject extends Group{
           this.listeners = new ArrayList< CoordinatesListener >();
           this.riseRun.setVisible( false );
           this.coordinatesXY.setVisible( false );
+          this.label = new String();
           getChildren().add( riseRun );
           getChildren().add( coordinatesXY );
        }
 
        public void setLabel( String label ){
-          this.label = label;
+          if( label != "" )this.label = label;
        }
 
        public String getLabel(){ return label; }
