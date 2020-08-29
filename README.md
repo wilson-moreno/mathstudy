@@ -1,1 +1,1 @@
-# matrixstudy
+# mathstudy
