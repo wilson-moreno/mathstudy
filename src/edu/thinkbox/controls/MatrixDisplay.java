@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 public class MatrixDisplay extends GridPane{
 
-
       public MatrixDisplay( int elementSize, int maxDimension, boolean bigFontFlag ){
             this.elementSize = elementSize;
             super.setPrefSize( maxDimension * elementSize * 1.20,
