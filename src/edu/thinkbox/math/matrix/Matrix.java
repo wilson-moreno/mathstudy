@@ -142,6 +142,12 @@ public class Matrix{
         }
     }
 
+    public void setRowEntries( int row, double... entries ){
+        for( int j = 0; j < entries.length && j < getColumns(); j++ ){
+            setEntry( row, j, entries[ j ] );
+        }
+    }
+
     /**
     * Set all the values of the entries at once of a specified column
     * @param column the index of the column where the values will be set.
@@ -154,6 +160,12 @@ public class Matrix{
       while( scanner.hasNext() && column < getColumns() ){
         setEntry( row++, column, scanner.nextDouble() );
       }
+    }
+
+    public void setColumnEntries( int column, double... entries ){
+        for( int i = 0; i < entries.length && i < getRows(); i++ ){
+            setEntry( i, column, entries[ i ] );
+        }
     }
 
     public double determinant() throws NonSquareMatrixException {
@@ -169,6 +181,36 @@ public class Matrix{
             // Cofactor expansion: det( A ) = a11C11 + a12C12 + ... + a1nC1n
             for( int j = 0; j < getColumns(); j++ )
               determinant += entries[ 0 ][ j ] * cofactor( 0, j );
+        }
+
+        return determinant;
+    }
+
+    public double determinant( Determinant type ) throws NonSquareMatrixException {
+        if( !isSquare() ) throw new NonSquareMatrixException();
+        double determinant = 0.0;
+
+        if( getRows() == 1 )  {
+            determinant = getEntry( 0, 0 );
+        } else if( getRows() == 2 ) {
+            determinant = ( getEntry( 0, 0 ) * getEntry( 1, 1 ) ) -
+                          ( getEntry( 0, 1 ) * getEntry( 1, 0 ) );
+        } else if( getRows() > 2 ){
+
+            if( Determinant.MAIN_DIAGONAL == type ){
+                Matrix echelon = duplicate();
+                int r = rowEchelon( 0, 0, echelon );
+
+                determinant = 1.0;
+
+                for( int i = 0; i < getRows(); i++ )
+                  determinant *= echelon.getEntry( i, i );
+
+                  determinant *= Math.pow( -1, r );
+            } else if( Determinant.COFACTOR_EXPANSION == type ){
+                  for( int j = 0; j < getColumns(); j++ )
+                    determinant += getEntry( 0, j ) * cofactor( 0, j );
+            }
         }
 
         return determinant;
@@ -249,7 +291,7 @@ public class Matrix{
 
 
     public Matrix inverse() throws NonInvertibleMatrixException {
-        if( determinant() == 0.0 ) throw new NonInvertibleMatrixException();
+        if( determinant( Determinant.MAIN_DIAGONAL ) == 0.0 ) throw new NonInvertibleMatrixException();
         return adjugate().scalarProduct( 1.0 / determinant() );
     }
 
